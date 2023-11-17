@@ -1,5 +1,5 @@
 {
-  "name": "@caweb/env",
+  "name": "@caweb/cli",
   "version": "1.0.0",
   "description": "CAWebPublishing Service Environment.",
   "main": "lib/env.js",
@@ -14,13 +14,13 @@
     "caweb": "caweb",
     "wp-env": "wp-env",
     "launch": "wp-env start --update",
-    "pretest": "npm uninstall @caweb/env",
-    "test": "npm pack && npm i caweb-env-%npm_package_version%.tgz",
-    "posttest": "del caweb-env-%npm_package_version%.tgz"
+    "pretest": "npm uninstall @caweb/cli",
+    "test": "npm pack && npm i caweb-cli-%npm_package_version%.tgz",
+    "posttest": "del caweb-cli-%npm_package_version%.tgz"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CAWebPublishing/env.git"
+    "url": "git+https://github.com/CAWebPublishing/caweb-cli.git"
   },
   "keywords": [
     "caweb",
@@ -29,11 +29,10 @@
   "author": "CAWebPublishing",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/CAWebPublishing/env/issues"
+    "url": "https://github.com/CAWebPublishing/caweb-cli/issues"
   },
-  "homepage": "https://github.com/CAWebPublishing/env#readme",
+  "homepage": "https://github.com/CAWebPublishing/caweb-cli#readme",
   "dependencies": {
-    "@caweb/env": "file:caweb-env-1.0.0.tgz",
     "@wordpress/env": "^8.11.0",
     "chalk": "^4.0.0",
     "dotenv": "^16.3.1",
