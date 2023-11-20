@@ -50,5 +50,10 @@
       "COOKIEPATH": "",
       "SITECOOKIEPATH": ""
     }
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "devDependencies": {}
 }
