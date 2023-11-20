@@ -18,8 +18,8 @@
     "caweb": "caweb",
     "launch": "caweb start",
     "pretest": "npm uninstall @caweb/cli",
-    "test": "npm pack && npm i caweb-cli-%npm_package_version%.tgz",
-    "posttest": "del caweb-cli-%npm_package_version%.tgz && exit 1"
+    "test": "npm pack && npm i ./caweb-cli-%npm_package_version%.tgz",
+    "posttest": "del ./caweb-cli-%npm_package_version%.tgz"
   },
   "repository": {
     "type": "git",
