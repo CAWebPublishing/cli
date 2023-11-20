@@ -13,5 +13,3 @@
 Starts the CAWebPublishing WordPress Environment.  
 ### `caweb shell`  
 Open a shell session in the WordPress environment.
-
-{include} docs/OVERRIDES.md
