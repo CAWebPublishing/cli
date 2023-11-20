@@ -55,5 +55,8 @@
     "doc": "docs",
     "lib": "lib"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }
