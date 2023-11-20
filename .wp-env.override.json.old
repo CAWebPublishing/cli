@@ -1,0 +1,22 @@
+{
+    "port": 80,
+    "config": {
+        "WP_SITEURL": "http://danny.com",
+        "WP_HOME": "http://danny.com",
+        "WP_ALLOW_MULTISITE": true,
+        "WP_ALLOW_REPAIR": true,
+        "ET_USERNAME": "CAWebConsulting",
+        "ET_API_KEY": "c2e97db4affd096887f07fbbcf1ad3b907920d19",
+        "WPFORMS_LICENSE_KEY": "3ea26a9a379bbf0ba7972a0e61c1a7a8"
+    },
+    "mappings": {
+    },
+    "plugins": [
+    ],
+    "env" : {
+        "development": {},
+        "tests": {
+            "port": 90
+        }
+    }
+}
