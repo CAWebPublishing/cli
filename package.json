@@ -7,6 +7,10 @@
     "bin",
     "lib"
   ],
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
   "bin": {
     "caweb": "bin/caweb"
   },
@@ -50,13 +54,5 @@
       "COOKIEPATH": "",
       "SITECOOKIEPATH": ""
     }
-  },
-  "directories": {
-    "doc": "docs",
-    "lib": "lib"
-  },
-  "devDependencies": {},
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   }
 }
