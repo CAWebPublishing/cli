@@ -1,7 +1,7 @@
 {
   "name": "@caweb/cli",
   "version": "1.0.0",
-  "description": "CAWebPublishing Service Environment.",
+  "description": "CAWebPublishing Command Line Interface.",
   "main": "lib/env.js",
   "files": [
     "bin",
@@ -12,8 +12,7 @@
   },
   "scripts": {
     "caweb": "caweb",
-    "wp-env": "wp-env",
-    "launch": "wp-env start --update",
+    "launch": "caweb start",
     "pretest": "npm uninstall @caweb/cli",
     "test": "npm pack && npm i caweb-cli-%npm_package_version%.tgz",
     "posttest": "del caweb-cli-%npm_package_version%.tgz"
@@ -36,7 +35,6 @@
     "@caweb/cli": "file:caweb-cli-1.0.0.tgz",
     "@wordpress/env": "^8.11.0",
     "chalk": "^4.0.0",
-    "dotenv": "^16.3.1",
     "fs-extra": "^11.1.1"
   }
 }

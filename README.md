@@ -11,7 +11,7 @@
 
 ### `caweb start`  
 Starts the CAWebPublishing WordPress Environment.  
-### `caweb ssh`  
+### `caweb shell`  
 Open a shell session in the WordPress environment.
 
 ## [.wp-env.override.json](https://www.npmjs.com/)  
