@@ -1,7 +1,7 @@
 {
-  "name": "@caweb/env",
+  "name": "@caweb/cli",
   "version": "1.0.0",
-  "description": "CAWebPublishing Service Environment.",
+  "description": "CAWebPublishing Command Line Interface.",
   "main": "lib/env.js",
   "files": [
     "bin",
@@ -12,15 +12,14 @@
   },
   "scripts": {
     "caweb": "caweb",
-    "wp-env": "wp-env",
-    "launch": "wp-env start --update",
-    "pretest": "npm uninstall @caweb/env",
-    "test": "npm pack && npm i caweb-env-%npm_package_version%.tgz",
-    "posttest": "del caweb-env-%npm_package_version%.tgz"
+    "launch": "caweb start",
+    "pretest": "npm uninstall @caweb/cli",
+    "test": "npm pack && npm i caweb-cli-%npm_package_version%.tgz",
+    "posttest": "del caweb-cli-%npm_package_version%.tgz"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CAWebPublishing/env.git"
+    "url": "git+https://github.com/CAWebPublishing/caweb-cli.git"
   },
   "keywords": [
     "caweb",
@@ -29,14 +28,32 @@
   "author": "CAWebPublishing",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/CAWebPublishing/env/issues"
+    "url": "https://github.com/CAWebPublishing/caweb-cli/issues"
   },
-  "homepage": "https://github.com/CAWebPublishing/env#readme",
+  "homepage": "https://github.com/CAWebPublishing/caweb-cli#readme",
   "dependencies": {
-    "@caweb/env": "file:caweb-env-1.0.0.tgz",
     "@wordpress/env": "^8.11.0",
     "chalk": "^4.0.0",
-    "dotenv": "^16.3.1",
     "fs-extra": "^11.1.1"
-  }
+  },
+  "config": {
+    "WP_VER": "6.3.1",
+    "PHP_VER": "8.1",
+    "DEFAULTS": {
+      "WP_DEFAULT_THEME": "CAWeb",
+      "FS_METHOD": "direct",
+      "WP_DEBUG": true,
+      "WP_DEBUG_LOG": true,
+      "WP_DEBUG_DISPLAY": false,
+      "ADMIN_COOKIE_PATH": "/",
+      "COOKIE_DOMAIN": "",
+      "COOKIEPATH": "",
+      "SITECOOKIEPATH": ""
+    }
+  },
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "devDependencies": {}
 }

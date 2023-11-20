@@ -10,8 +10,8 @@ node_modules
 private
 \.wp-env\.json
 \.wp-env\.override\.json
-\.docker-compose\.yml
-\.docker-compose\.override\.yml
+docker-compose\.yml
+docker-compose\.override\.yml
 
 # wp core (as of 6.3.2)
 db-config\.php

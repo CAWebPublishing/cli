@@ -1,17 +1,15 @@
 # caweb-cli
-`caweb-cli` lets you easily set up a local CAWebPublishing WordPress environment for building and testing plugins and themes using [wp-env](https://www.npmjs.com/package/@wordpress/env). 
+`caweb-cli` rapidly sets up a local WordPress environment using [wp-env](https://www.npmjs.com/package/@wordpress/env), fully configured to the [CAWebPublishing Service](https://caweb.cdt.ca.gov/). The cli will automatically generate the necessary [.wp-env.json](https://www.npmjs.com/package/@wordpress/env#wp-envjson) file, to override or add additional configuration options use the [.wp-env.override.json](https://www.npmjs.com/package/@wordpress/env#wp-envoverridejson) file.
 
-## Commands
-**Note:** *All commands from wp-env are available, for more information [see](https://www.npmjs.com/package/@wordpress/env).*  
+## Additional Features
+- phpMyAdmin Service  
+- Downloads and configures the [CAWeb Theme](https://github.com/CA-cODE-Works/CAWeb)  
+- Downloads and configures the [Divi Theme](https://www.elegantthemes.com/gallery/divi/) (*requires valid ElegantThemes Username and API Key*)
 
-`caweb init` - Generates the .wp-env.json and docker-compose.override.yml file used and downloads CAWeb Plugins and Theme repositories.
+## Command Reference
+`caweb-cli` is a wrapper for [wp-env](https://www.npmjs.com/package/@wordpress/env); therefore, all commands from wp-env are readily available, for more information on those commands [see](https://www.npmjs.com/package/@wordpress/env#command-referenced). ***Note:** substitute `wp-env` command with `caweb`. 
 
-`caweb start` - Starts the CAWebPublishing WordPress Environment.  
-
-## Environment Variables (.env)
-**Note:** *[.wp-env.override.json](https://www.npmjs.com/package/@wordpress/env#wp-envoverridejson) file takes precedence over .env file and is the preferred override method.*  
-
-`LOCAL_PLUGIN_DIR` - Directory path of projects local plugins. Default: `wp-content/plugins`.  
-`LOCAL_THEME_DIR` - Directory path of projects local themes. Default: `wp-content/themes`.  
-`WP_VERSION` - The WordPress core version. Default: `6.3.1`.  
-`PHP_VERSION` - The PHP version. Default: `8.1`.  
+### `caweb start`  
+Starts the CAWebPublishing WordPress Environment.  
+### `caweb shell`  
+Open a shell session in the WordPress environment.
