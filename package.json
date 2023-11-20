@@ -36,5 +36,20 @@
     "@wordpress/env": "^8.11.0",
     "chalk": "^4.0.0",
     "fs-extra": "^11.1.1"
+  },
+  "config": {
+    "WP_VER": "6.3.1",
+    "PHP_VER": "8.1",
+    "DEFAULTS": {
+      "WP_DEFAULT_THEME": "CAWeb",
+      "FS_METHOD": "direct",
+      "WP_DEBUG": true,
+      "WP_DEBUG_LOG": true,
+      "WP_DEBUG_DISPLAY": false,
+      "ADMIN_COOKIE_PATH": "/",
+      "COOKIE_DOMAIN": "",
+      "COOKIEPATH": "",
+      "SITECOOKIEPATH": ""
+    }
   }
 }
