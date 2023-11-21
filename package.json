@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CAWebPublishing Command Line Interface.",
   "main": "lib/env.js",
   "files": [
