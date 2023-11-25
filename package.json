@@ -39,6 +39,7 @@
   },
   "homepage": "https://github.com/CAWebPublishing/caweb-cli#readme",
   "dependencies": {
+    "@caweb/cli": "file:caweb-cli-1.0.2.tgz",
     "@wordpress/env": "^8.11.0",
     "chalk": "^4.0.0",
     "fs-extra": "^11.1.1"
@@ -57,7 +58,16 @@
       "ADMIN_COOKIE_PATH": "/",
       "COOKIE_DOMAIN": "",
       "COOKIEPATH": "",
-      "SITECOOKIEPATH": ""
+      "SITECOOKIEPATH": "",
+      "ET_DYNAMIC_MODULE": "on",
+      "ET_DYNAMIC_CSS": "on",
+      "ET_CRITICAL_CSS": "on",
+      "ET_DYNAMIC_JS": "on",
+      "ET_STATIC_CSS_GENERATION": "on",
+      "ET_OUTPUT_STYLES_INLINE": "off",
+      "ET_PRODUCT_TOUR": "off",
+      "ET_NEW_BUILDER_EXPERIENCE": "off",
+      "ET_CLASSIC_EDITOR": "on"
     }
   }
 }
