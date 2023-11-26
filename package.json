@@ -16,6 +16,7 @@
   },
   "scripts": {
     "caweb": "caweb",
+    "wp-env": "wp-env",
     "test": "echo \"Error: run tests from root\" && exit 0",
     "prelocaltest": "npm uninstall @caweb/cli",
     "localtest": "npm pack && npm i caweb-cli-%npm_package_version%.tgz",
@@ -55,6 +56,7 @@
       "WP_DEBUG_DISPLAY": false,
       "WP_MEMORY_LIMIT": "256M",
       "WP_MAX_MEMORY_LIMIT": "512M",
+      "WP_PERMALINK": "/%postname%/",
       "ADMIN_COOKIE_PATH": "/",
       "COOKIE_DOMAIN": "",
       "COOKIEPATH": "",
