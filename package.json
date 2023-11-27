@@ -54,10 +54,20 @@
       "WP_DEBUG_DISPLAY": false,
       "WP_MEMORY_LIMIT": "256M",
       "WP_MAX_MEMORY_LIMIT": "512M",
+      "WP_PERMALINK": "/%postname%/",
       "ADMIN_COOKIE_PATH": "/",
       "COOKIE_DOMAIN": "",
       "COOKIEPATH": "",
-      "SITECOOKIEPATH": ""
+      "SITECOOKIEPATH": "",
+      "ET_DYNAMIC_MODULE": "on",
+      "ET_DYNAMIC_CSS": "on",
+      "ET_CRITICAL_CSS": "on",
+      "ET_DYNAMIC_JS": "on",
+      "ET_STATIC_CSS_GENERATION": "on",
+      "ET_OUTPUT_STYLES_INLINE": "off",
+      "ET_PRODUCT_TOUR": "off",
+      "ET_NEW_BUILDER_EXPERIENCE": "off",
+      "ET_CLASSIC_EDITOR": "on"
     }
   }
 }
