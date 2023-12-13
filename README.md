@@ -4,7 +4,8 @@
 ## Additional Features
 - phpMyAdmin Service  
 - Downloads and configures the [CAWeb Theme](https://github.com/CA-cODE-Works/CAWeb)  
-- Downloads and configures the [Divi Theme](https://www.elegantthemes.com/gallery/divi/) (*requires valid ElegantThemes Username and API Key*)
+- Downloads and configures the [Divi Theme](https://www.elegantthemes.com/gallery/divi/) (*requires valid ElegantThemes Username and API Key*)  
+- Adds config.yml for wp cli containers 
 
 ## Command Reference
 `caweb-cli` is a wrapper for [wp-env](https://www.npmjs.com/package/@wordpress/env); therefore, all commands from wp-env are readily available, for more information on those commands [see](https://www.npmjs.com/package/@wordpress/env#command-referenced). ***Note:** substitute `wp-env` command with `caweb`. 

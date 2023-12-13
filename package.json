@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "CAWebPublishing Command Line Interface.",
   "main": "lib/env.js",
   "files": [
@@ -16,11 +16,7 @@
   },
   "scripts": {
     "caweb": "caweb",
-    "wp-env": "wp-env",
-    "test": "echo \"Error: run tests from root\" && exit 0",
-    "prelocaltest": "npm uninstall @caweb/cli",
-    "localtest": "npm pack && npm i caweb-cli-%npm_package_version%.tgz",
-    "postlocaltest": "del caweb-cli-%npm_package_version%.tgz"
+    "test": "echo \"Error: run tests from root\" && exit 0"
   },
   "repository": {
     "type": "git",
