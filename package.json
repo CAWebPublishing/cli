@@ -16,6 +16,7 @@
   },
   "scripts": {
     "caweb": "caweb",
+    "wp-env": "wp-env",
     "test": "echo \"Error: run tests from root\" && exit 0",
     "prelocaltest": "npm uninstall @caweb/cli",
     "localtest": "npm pack && npm i caweb-cli-%npm_package_version%.tgz",
@@ -39,12 +40,12 @@
   },
   "homepage": "https://github.com/CAWebPublishing/caweb-cli#readme",
   "dependencies": {
-    "@wordpress/env": "^8.11.0",
+    "@wordpress/env": "^9.0.0",
     "chalk": "^4.0.0",
     "fs-extra": "^11.1.1"
   },
   "config": {
-    "WP_VER": "6.3.2",
+    "WP_VER": "6.4.2",
     "PHP_VER": "8.1",
     "DEFAULTS": {
       "WP_DEFAULT_THEME": "CAWeb",
