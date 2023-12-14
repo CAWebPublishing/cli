@@ -4,9 +4,9 @@
 ## Additional Features
 - Downloads and configures the [CAWeb Theme](https://github.com/CA-cODE-Works/CAWeb)  
 - Downloads and configures the [Divi Theme](https://www.elegantthemes.com/gallery/divi/) (*requires valid ElegantThemes Username and API Key*)  
-- Adds phpMyAdmin Service for both WordPress environments. (Username: , Password: )  
-&nbsp;&nbsp;&nbsp;&nbsp;phpMyAdmin development site starts at http://localhost:8080  
-&nbsp;&nbsp;&nbsp;&nbsp;phpMyAdmin test site started at http://localhost:9090
+- Adds phpMyAdmin Service for both WordPress environments. (Username: <strong>bold</strong> , Password: <strong>password</strong>)  
+-- phpMyAdmin development site starts at http://localhost:8080  
+-- phpMyAdmin test site started at http://localhost:9090
 
 - Adds config.yml to both cli containers 
 <pre>
