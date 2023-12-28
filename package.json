@@ -2,7 +2,9 @@
   "name": "@caweb/cli",
   "version": "1.0.5",
   "description": "CAWebPublishing Command Line Interface.",
-  "main": "lib/env.js",
+  "exports": "./lib/env.js",
+  "type": "module",
+  "node": ">=16",
   "files": [
     "bin",
     "lib"
@@ -16,6 +18,7 @@
   },
   "scripts": {
     "caweb": "caweb",
+    "wp-env": "wp-env",
     "local": "npm pack && npm i caweb-cli-%npm_package_version%.tgz",
     "test": "echo \"Error: run tests from root\" && exit 0"
   },
@@ -39,6 +42,7 @@
   "dependencies": {
     "@wordpress/env": "^9.0.0",
     "chalk": "^4.0.0",
+    "commander": "^11.1.0",
     "fs-extra": "^11.1.1"
   },
   "config": {
