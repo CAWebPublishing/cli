@@ -60,7 +60,8 @@
       "ADMIN_COOKIE_PATH": "/",
       "COOKIE_DOMAIN": "",
       "COOKIEPATH": "",
-      "SITECOOKIEPATH": ""
+      "SITECOOKIEPATH": "",
+      "CONCATENATE_SCRIPTS": false
     }
   }
 }
