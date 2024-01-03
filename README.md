@@ -1,7 +1,7 @@
 # caweb-cli
 `caweb-cli` is a tool which rapidly sets up a local WordPress environment fully configured for the [CAWebPublishing Service](https://caweb.cdt.ca.gov/), allows for the creation of Gutenberg blocks with the CAWebPublishing template configurations, and much more. The cli will automatically generate the necessary [.wp-env.json](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#wp-env-json) file, to override or add additional configuration options use the [.wp-env.override.json](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#wp-env-override-json) file.
 
-*`caweb-cli` is largely inspired by WordPress major thanks to the whole WordPress team and community!*  
+*`caweb-cli` is largely inspired by WordPress Packages major thanks to the whole WordPress team and community!*  
 The following WordPress packages are used:  
 [wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)  
 [create-block](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/)
@@ -17,17 +17,16 @@ The following WordPress packages are used:
 - Downloads approved plugins utilized by the CAWebPublishing Service  
 - Downloads and configures the [Divi Theme](https://www.elegantthemes.com/gallery/divi/) and [Divi Builder Plugin](https://www.elegantthemes.com/gallery/divi/) (*requires valid ElegantThemes Username and API Key*)  
 - Adds phpMyAdmin Service for both WordPress environments. (Username: <strong>root</strong> , Password: <strong>password</strong>)  
--- phpMyAdmin development site starts at http://localhost:8080  
--- phpMyAdmin test site started at http://localhost:9090
-
+  - phpMyAdmin development site starts at http://localhost:8080  
+  - phpMyAdmin test site started at http://localhost:9090
+- Uses CAWebPublishing [External Project Template Configuration](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/packages-create-block-external-template/) when creating Gutenberg Blocks, see configurations [here](https://github.com/CAWebPublishing/cli/lib/template)
 - Adds config.yml to both cli containers 
 <pre>
 path: /var/www/html
 apache_modules:
   - mod_rewrite
 </pre>
-
-- Uses CAWebPublishing [External Project Template Configuration](https://github.com/CAWebPublishing/cli/lib/template) when creating Gutenberg Blocks.
+.
 
 ## Command Reference
 ### `caweb start`  
