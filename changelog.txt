@@ -1,5 +1,6 @@
 v1.2.0 
 - Added create-block command
+- Added update-block command
 - Added plugin/theme options to start command
 
 v1.1.0
