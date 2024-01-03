@@ -1,0 +1,28 @@
+v1.2.0 
+- Added create-block command
+- Added update-block command
+- Added plugin/theme options to start command
+
+v1.1.0
+- Converted to ESM
+- Upgraded Docker Compose from v1 to V2
+
+v1.0.5
+- Added config.yml to cli containers
+
+v1.0.4
+- Simplified codebase
+
+v1.0.3
+- Added Query Monitor plugin to plugin sources
+
+v1.0.2
+- Added new update-command
+- Added Design System plugin to plugin sources
+- CAWeb and Divi options are now configurable
+- Permalink is configurable
+
+v1.0.1
+- Launches WordPress environments locally with wp-env
+- Added phpMyAdmin services to Docker
+- Added default WP configurations
