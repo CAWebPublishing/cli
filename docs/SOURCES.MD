@@ -1,27 +1,27 @@
-Pure ESM package 
-https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+# Sources  
+### <ins>Design System Components</ins>  
+[Github](https://github.com/cagov/design-system/tree/main/components)  
+[NPM Packages](https://www.npmjs.com/search?q=%40cagov)  
 
-Design System Components
-https://www.npmjs.com/search?q=%40cagov
-https://github.com/cagov/design-system/tree/main/components
+### <ins>docker-compose</ins>  
+[Documentation](https://pdmlab.github.io/docker-compose/)  
+[Github](https://github.com/PDMLab/docker-compose)  
+[NPM Package](https://www.npmjs.com/package/docker-compose)  
 
-docker-compose (npm)
-https://www.npmjs.com/package/docker-compose
-https://github.com/PDMLab/docker-compose
-https://pdmlab.github.io/docker-compose/api.html
+### <ins>wp-env</ins> 
+[Documentation](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)  
+[Github](https://github.com/WordPress/gutenberg/tree/HEAD/packages/env)  
+[NPM Package](https://www.npmjs.com/package/@wordpress/env)  
 
-wp-env
-https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/
+### <ins>create-block</ins> 
+[Block API](https://developer.wordpress.org/block-editor/reference-guides/block-api/)  
+[Documentation](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/)  
+[External Project Templates](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/packages-create-block-external-template/)  
+[NPM Package](https://www.npmjs.com/package/@wordpress/create-block)   
 
-wp cli
-https://developer.wordpress.org/cli/commands/
 
-wordpress create-block
-https://www.npmjs.com/package/@wordpress/create-block
-https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/
-https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/packages-create-block-external-template/
-https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
-https://developer.wordpress.org/block-editor/reference-guides/block-api/block-attributes/
+### <ins>wp cli</ins> 
+[Documentation](https://developer.wordpress.org/cli/commands/)
 
-phpMyAdmin
-https://hub.docker.com/_/phpmyadmin
+### <ins>phpMyAdmin</ins> 
+[Docker](https://hub.docker.com/_/phpmyadmin)
