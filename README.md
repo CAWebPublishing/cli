@@ -1,8 +1,10 @@
 # caweb-cli
-`caweb-cli` utilizes [wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) in the background; to rapidly set up a local WordPress environment, fully configured for the [CAWebPublishing Service](https://caweb.cdt.ca.gov/). The cli will automatically generate the necessary [.wp-env.json](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#wp-env-json) file, to override or add additional configuration options use the [.wp-env.override.json](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#wp-env-override-json) file.
+`caweb-cli` rapidly sets up a local WordPress environment, fully configured for the [CAWebPublishing Service](https://caweb.cdt.ca.gov/). The cli will automatically generate the necessary [.wp-env.json](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#wp-env-json) file, to override or add additional configuration options use the [.wp-env.override.json](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#wp-env-override-json) file.
+
+*`caweb-cli` is largely inspired by [wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) major thanks to the whole WordPress team and community!*
 
 ## Additional Features
-- Downloads and configures the [CAWeb Theme](https://github.com/CA-cODE-Works/CAWeb)  
+- Downloads and configures the [CAWeb Theme](https://github.com/CAWebPublishing/CAWeb)  
 - Downloads and configures the [Divi Theme](https://www.elegantthemes.com/gallery/divi/) (*requires valid ElegantThemes Username and API Key*)  
 - Adds phpMyAdmin Service for both WordPress environments. (Username: <strong>bold</strong> , Password: <strong>password</strong>)  
 -- phpMyAdmin development site starts at http://localhost:8080  
@@ -14,6 +16,9 @@ path: /var/www/html
 apache_modules:
   - mod_rewrite
 </pre>
+
+- [External Project Template Configuration](https://github.com/CAWebPublishing/cli/lib/template)  
+
 ## Command Reference
 ### `caweb start`  
 Generates the required wp-env.json, starts the WordPress environment, downloads any CAWebPublishing sources and approved plugins.  
