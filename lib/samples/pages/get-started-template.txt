@@ -1,0 +1,89 @@
+[et_pb_section bb_built="1" fullwidth="on" specialty="off" next_background_color="#000000"][et_pb_fullwidth_header _builder_version="3.0.106" text_orientation="center" header_fullscreen="off" header_scroll_down="off" image_orientation="center" background_layout="light" content_orientation="center" custom_button_two="off" button_two_icon_placement="right" custom_button_one="off" button_one_icon_placement="right" custom_css_main_element="Margin-bottom: 0px;" background_image="wordpress-development.png" title="Get Started - Template" text_shadow_style="preset2" title_font="|800|||||||" title_font_size="51px" title_text_color="#e09900" background_color="rgba(255, 255, 255, 0)" /][/et_pb_section][et_pb_section bb_built="1" fullwidth="off" specialty="off" prev_background_color="#000000"][et_pb_row][et_pb_column type="2_3"][et_pb_text admin_label="Title Text" _builder_version="3.0.106" background_layout="light" module_class="page-top-title"]
+<h2>A Template Site for Getting Started</h2>
+[/et_pb_text][et_pb_text admin_label="Intro Text" _builder_version="3.0.106" background_layout="light"]
+
+This site is yours to edit and create as you like. You mainly utilize the content modules of the "Divi builder" to create and design your web pages. The Divi builder enables major flexibility and modular design reuse, allowing you to create custom page templates for every type of page you may publish regularly. The pre-built pages in this site are examples you can use as a starting point, for ideas, or to be simply deleted when you have no more use for them.
+
+The following is a list of short "How to's" to do common tasks:
+
+[/et_pb_text][et_pb_toggle admin_label="Logging in - Toggle" _builder_version="3.2.2" title="Logging in" open="off" title_font="|on|||" module_class="cchcs_toggle"]
+
+Go to:  <a href="/wp-admin/" target="_blank" rel="noopener noreferrer"><em>yourtemplatesite.ca.gov/</em>wp-admin/</a> to login.
+
+[/et_pb_toggle][et_pb_toggle admin_label="How to get to the page editor" _builder_version="3.0.106" title="How do I get to the page editor?" open="off" title_font="|on|||" module_class="cchcs_toggle_bottom"]
+
+From the front (public facing) site, navigate to the page you want to edit, and then click the "Edit" link at the top.
+
+<img class="alignnone wp-image-133 size-full" src="edit-button-top-of-page.png" alt="" width="582" height="72" />
+
+or
+
+From the <a href="/wp-admin/" target="_blank" rel="noopener noreferrer">backend (admin) part of the site</a>, click on the "Pages" option on the left to select a page to edit, or create a new one.
+
+<img class="alignnone wp-image-134 size-full" src="edit-via-backend.png" alt="" width="557" height="261" />
+
+For a new page, be sure to click the "Use the Divi Builder" button to enable it.
+
+<img class="alignnone size-full wp-image-137" src="invoke-the-divi-builder.png" alt="" width="548" height="178" />
+
+[/et_pb_toggle][et_pb_toggle admin_label="Intro Video to Divi Builder - Toggle" _builder_version="3.0.106" title="A great introduction to the Divi Builder" open="off" title_font="|on|||" module_class="cchcs_toggle_bottom"]
+
+Note: the last part of the video speaks of the "Theme customizer" which in CAWeb is simpler and handled by the "CAWeb Options".
+
+https://youtu.be/Pfpyr2ibknM?list=PLF17V-5878mVl3PndEVWiiktdNO4UKs9z
+
+[/et_pb_toggle][et_pb_toggle admin_label="Setting CAWeb Options Video - Toggle" _builder_version="3.0.106" title="Setting your CAWeb Options" open="off" title_font="|on|||" module_class="cchcs_toggle_bottom"]
+
+This video describes all the setting under the CAWeb Options Settings tab when using CAWeb Publishing state template 5. Additionally there is a short section on using the Navigation tab as well. All of these settings are typically set for you prior to you receiving your site but you can certainly change any of these options you like.
+
+https://youtu.be/QyfSqoQaCyo
+
+[/et_pb_toggle][et_pb_toggle admin_label="Main Navigation menu video - Toggle" _builder_version="3.0.106" title="Setting up your main navigation" open="off" title_font="|on|||" module_class="cchcs_toggle_bottom"]
+
+The CAWeb option for managing your main navigation of your site can be found on the left of the backend admin page by first clicking on "CAWeb Options" and then on "Navigation" as follows:
+
+<img class="alignnone size-full wp-image-143" src="caweb-navigation.png" alt="" width="612" height="188" />
+
+Next is a short video on how to setup your main menu navigation. This is a "generic" WordPress related video created by a non State publisher on YouTube. Therefore it may show some advertising, which you can turn off. Even though it is for "generic" WordPress, the menu setup is essentially the same.
+
+https://youtu.be/ERpr0TCnf4w
+
+[/et_pb_toggle][et_pb_toggle admin_label="News Channel - Toggle" _builder_version="3.2.2" title="Setting up a News Channel for your site" title_font="|700|||||||"]
+
+A "News Page" is nothing more than a page with a summary list of News Articles embedded on it.
+
+In CAWeb, News Articles are created from the Admin page using the "Posts" content type. While editing a post, your first must select the "Use the Divi Builder" button to activate the Divi Builder editor. Then you select the "Posts Detail" module to publish your news article.
+<p style="padding-left: 30px;"><em>Note: if you are not already familiar with using the Divi Builder, open the item above titled "A great introduction to the Divi Builder."</em></p>
+Then to display a summary list of your news article posts on a page, you create a page, and within the Divi Builder you use a "Posts List" module to display the summarized list of news articles.
+
+You can find an example of this by viewing the underlying content published on the example "<a href="/post-lists/news-list/" target="_blank" rel="noopener noreferrer">Press Releases</a>" page. Simply edit this page, or use it as an example of how to start building your own. You can find the Posts that make up the summary on this page by navigating to the "Posts" section of your Admin page of your site.
+
+<img class="alignnone size-full wp-image-179" src="posts-admin.png" alt="" width="490" height="311" />
+
+[/et_pb_toggle][et_pb_toggle admin_label="Setting up users - Toggle" _builder_version="3.2.2" title="Setting up other user accounts for my site" title_font="|on|||" module_class="cchcs_toggle_top"]
+
+To add a new user, from the Admin Dashboard, on the left side under "Users" click on "Add New". (Or if you first click "Users" there will be a "Add New" button at the top.)
+
+<img class="alignnone size-full wp-image-147" src="add-users.png" alt="add users panel" width="623" height="449" />
+
+[/et_pb_toggle][/et_pb_column][et_pb_column type="1_3"][et_pb_ca_panel admin_label="Related Resources Panel" _builder_version="3.0.106" panel_layout="standout" title="Related Resources" show_button="off" heading_align="left" use_icon="on"]
+<ul class="list_decorative_dark">
+ 	<li><a href="https://caweb.ca.gov/2017/08/31/our-customers/" target="_blank" rel="noopener noreferrer">Get Ideas from other CAWeb Customers</a></li>
+ 	<li><a href="https://caweb.ca.gov/caweb-publishing-videos/" target="_blank" rel="noopener noreferrer">CAWeb Specific Training Videos</a></li>
+ 	<li><a href="https://www.elegantthemes.com/documentation/divi-builder/" target="_blank" rel="noopener noreferrer">Divi Specific Training</a></li>
+ 	<li><a href="https://caweb.ca.gov/training/" target="_blank" rel="noopener noreferrer">CAWeb Publishing Training</a></li>
+</ul>
+[/et_pb_ca_panel][et_pb_ca_panel admin_label="Language Access Forms Panel" _builder_version="3.0.106" panel_layout="standout" title="CAWeb Publishing Service" show_button="off" heading_align="left" use_icon="on"]
+<ul class="list_decorative_dark">
+ 	<li>FAQs
+<ul>
+ 	<li><a href="https://caweb.ca.gov/faq-service-overview/" target="_blank" rel="noopener noreferrer">Service Overview</a></li>
+ 	<li><a href="https://caweb.ca.gov/faq-costrates/" target="_blank" rel="noopener noreferrer">Costs &amp; Rates</a></li>
+ 	<li><a href="https://caweb.ca.gov/faq-support/" target="_blank" rel="noopener noreferrer">Support</a></li>
+ 	<li><a href="https://caweb.ca.gov/faq-technical/" target="_blank" rel="noopener noreferrer">Technical</a></li>
+</ul>
+</li>
+ 	<li><a href="https://caweb.ca.gov/on-boarding/" target="_blank" rel="noopener noreferrer">How to On-Board with CAWeb</a></li>
+ 	<li><a href="https://caweb.ca.gov/contact-us/#" target="_blank" rel="noopener noreferrer">Contact Us</a></li>
+</ul>
+[/et_pb_ca_panel][/et_pb_column][/et_pb_row][/et_pb_section]

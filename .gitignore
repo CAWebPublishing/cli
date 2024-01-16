@@ -15,6 +15,7 @@ docker-compose\.override\.yml
 caweb-cli-*.tgz
 
 # wp core (as of 6.3.2)
+debug\.log
 db-config\.php
 index\.php
 license\.txt

@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -44,7 +44,8 @@
     "@wordpress/env": "^9.0.0",
     "chalk": "^4.0.0",
     "commander": "^11.1.0",
-    "fs-extra": "^11.1.1"
+    "fs-extra": "^11.1.1",
+    "walker": "^1.0.8"
   },
   "config": {
     "WP_VER": "6.4.2",
