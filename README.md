@@ -7,7 +7,7 @@ The following WordPress packages are used:
 [create-block](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/)
 
 ## Prerequisites
-- Latest version of [Docker Desktop](https://www.docker.com/products/docker-desktop), which includes [Compose v2}(https://docs.docker.com/compose/migrate/), is installed.
+- Latest version of [Docker Desktop](https://www.docker.com/products/docker-desktop), which includes [Compose v2](https://docs.docker.com/compose/migrate/), is installed.
   - <strong>For Debian-Based Linux distributions:</strong> <code>docker-compose</code> may need to be installed with: <code>sudo apt-get install docker-compose</code>.
   - <strong>For Windows users:</strong> [WSL should be set to version 2 for Windows Docker Desktop compatibility](https://docs.docker.com/desktop/windows/wsl/).
 - git is installed.
