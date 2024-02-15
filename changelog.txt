@@ -1,3 +1,9 @@
+v1.3.0 
+- Added more options to start command
+- Added build, serve, a11y, sync commands
+- Added wp-cli.phar build
+- Added template for create-block command
+
 v1.2.0 
 - Added create-block command
 - Added update-block command
