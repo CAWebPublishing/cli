@@ -20,15 +20,17 @@ const CONFIG_CACHE_KEY = 'config_checksum';
 /**
  * Internal dependencies
  */
-import { appPath } from '../../lib/helpers.js';
+import { 
+	appPath,
+	projectPath,
+	configureCAWeb,
+	downloadSources,
+	configureWordPress,
+	runCmd
+} from '../../lib/index.js';
 import wpEnvConfig from '../../configs/wp-env.js';
 import dockerConfig from '../../configs/docker-compose.js';
 
-import { 
-	configureCAWeb,
-	downloadSources,
-	configureWordPress
- } from '../../lib/wordpress/index.js';
 
 /**
  * Starts the development server.
@@ -145,6 +147,19 @@ export default async function start({
 			} ),
 		] );
 
+		// Create an Application Password for the user.
+		/*
+		const devAppPwd = await runCmd(
+				'php',
+					[
+						path.join(projectPath, 'bin', 'wp-cli.phar'),
+						`--ssh=docker:${path.basename(workDirectoryPath)}-cli-1`,
+						`user application-password create 1 caweb`,
+						'--porcelain'
+					]
+				);
+		*/
+		
 	}
 
 	// Start phpMyAdmin Service.
