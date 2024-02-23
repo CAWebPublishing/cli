@@ -1,3 +1,9 @@
+v1.3.1
+- Fixed issues with stderr mode being invalid
+- Updated package dependencies
+- Fixed issue with sync of menus
+- Axios Error Handling now done by spinner
+
 v1.3.0 
 - Added more options to start command
 - Added build, serve, a11y, sync commands

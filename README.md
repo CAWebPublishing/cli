@@ -11,6 +11,7 @@ The following WordPress packages are used:
   - <strong>For Debian-Based Linux distributions:</strong> <code>docker-compose</code> may need to be installed with: <code>sudo apt-get install docker-compose</code>.
   - <strong>For Windows users:</strong> [WSL should be set to version 2 for Windows Docker Desktop compatibility](https://docs.docker.com/desktop/windows/wsl/).
 - git is installed.
+- php is installed.
 
 ## Additional Features
 - Downloads and configures the [CAWeb Theme](https://github.com/CAWebPublishing/CAWeb)
@@ -20,13 +21,17 @@ The following WordPress packages are used:
   - phpMyAdmin development site starts at http://localhost:8080  
   - phpMyAdmin test site started at http://localhost:9090
 - Uses CAWebPublishing [External Project Template Configuration](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/packages-create-block-external-template/) when creating Gutenberg Blocks, see configurations [here](https://github.com/CAWebPublishing/cli/lib/template)
-- Adds config.yml to both cli containers 
+- Allows for syncing of WordPress instance via Rest API and CLI, requires ssh. 
+- Adds config.yml to both cli containers, alias are added for each ssh connection.  
+<b>Example config.yml file</b>
 <pre>
-path: /var/www/html
-apache_modules:
-  - mod_rewrite
+    path: /var/www/html
+    apache_modules:
+      - mod_rewrite
+    @staging:
+        ssh: wpcli@staging.wp-cli.org
 </pre>
-.
+
 
 ## Command Reference
 ### `caweb start`  
