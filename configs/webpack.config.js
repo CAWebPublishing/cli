@@ -85,7 +85,7 @@ let webpackConfig = {
   devtool: false,
   output: {
     ...baseConfig.output,
-    publicPath: `/`,
+    publicPath: `./`,
     clean: false
   },
   plugins: [

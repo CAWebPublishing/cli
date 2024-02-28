@@ -149,11 +149,9 @@ export default async function start({
 
 		// Create an Application Password for the user.
 		/*
-		const devAppPwd = await runCmd(
-				'php',
+		const devAppPwd = await runCLICmd(
+				'wp',
 					[
-						path.join(projectPath, 'bin', 'wp-cli.phar'),
-						`--ssh=docker:${path.basename(workDirectoryPath)}-cli-1`,
 						`user application-password create 1 caweb`,
 						'--porcelain'
 					]
