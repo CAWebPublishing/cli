@@ -24,21 +24,6 @@ async function generateCLIConfig(workDirectoryPath){
         apache_modules: ['mod_rewrite']
     };
     
-    let { homedir } = os.userInfo();
-	
-    // add any ssh hosts to the config
-    if( fs.existsSync( path.join( homedir, '.ssh', 'config' )) ){
-			
-		let ssh_hosts = fs.readFileSync(path.join( homedir, '.ssh', 'config' )).toString().match(/Host\s+(.*)[^\n\r]/g);
-
-		ssh_hosts.forEach((host) => {
-			let s = host.replace(/Host\s+/, '');
-
-			yml[`@${s}`] = { ssh: s};
-		})
-	}
-
-
     fs.writeFileSync(
         path.join(workDirectoryPath, 'config.yml'),
         yaml.dump(yml));
