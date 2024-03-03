@@ -2,16 +2,12 @@
 `caweb-cli` is a tool which rapidly sets up a local WordPress environment fully configured for the [CAWebPublishing Service](https://caweb.cdt.ca.gov/), allows for the creation of Gutenberg blocks with the CAWebPublishing template configurations, and much more. The cli will automatically generate the necessary [.wp-env.json](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#wp-env-json) file, to override or add additional configuration options use the [.wp-env.override.json](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#wp-env-override-json) file.
 
 *`caweb-cli` is largely inspired by WordPress Packages major thanks to the whole WordPress team and community!*  
-The following WordPress packages are used:  
-[wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)  
-[create-block](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/)
 
 ## Prerequisites
 - Latest version of [Docker Desktop](https://www.docker.com/products/docker-desktop), which includes [Compose v2](https://docs.docker.com/compose/migrate/), is installed.
   - <strong>For Debian-Based Linux distributions:</strong> <code>docker-compose</code> may need to be installed with: <code>sudo apt-get install docker-compose</code>.
   - <strong>For Windows users:</strong> [WSL should be set to version 2 for Windows Docker Desktop compatibility](https://docs.docker.com/desktop/windows/wsl/).
 - git is installed.
-- php is installed.
 
 ## Additional Features
 - Downloads and configures the [CAWeb Theme](https://github.com/CAWebPublishing/CAWeb)
@@ -21,15 +17,13 @@ The following WordPress packages are used:
   - phpMyAdmin development site starts at http://localhost:8080  
   - phpMyAdmin test site started at http://localhost:9090
 - Uses CAWebPublishing [External Project Template Configuration](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/packages-create-block-external-template/) when creating Gutenberg Blocks, see configurations [here](https://github.com/CAWebPublishing/cli/lib/template)
-- Allows for syncing of WordPress instance via Rest API and CLI, requires ssh. 
+- Allows for syncing of WordPress instance via Rest API, to maintain ID's please ensure [CAWebPublishing Development Toolbox](https://github.com/CAWebPublishing/caweb-dev/) plugin is installed. 
 - Adds config.yml to both cli containers, alias are added for each ssh connection.  
 <b>Example config.yml file</b>
 <pre>
     path: /var/www/html
     apache_modules:
       - mod_rewrite
-    @staging:
-        ssh: wpcli@staging.wp-cli.org
 </pre>
 
 
@@ -81,7 +75,7 @@ Options:
 </pre>
 ### `caweb run <container> [command...]`  
 <pre>
-caweb run <container> [command...]
+caweb run &lt;container&gt; [command...]
 
 Runs an arbitrary command in one of the underlying Docker containers. A double
 dash can be used to pass arguments to the container without parsing them. This
@@ -166,7 +160,7 @@ Options:
 
 ### `caweb create-block [options] <slug>`  
 <pre>
-caweb create-block [options] <slug>
+caweb create-block [options] &lt;slug&gt;
 
 Scaffold for WordPress plugin to register CA.gov Design System Block.
 
@@ -178,7 +172,7 @@ Options:
 </pre>
 ### `caweb update-block [options] <slug>`  
 <pre>
-caweb update-block [options] <slug>
+caweb update-block [options] &lt;slug&gt;
 
 Updates a CA.gov Design System Block.
 
@@ -187,4 +181,19 @@ Arguments:
 
 Options:
   -h, --help     display help for command
+</pre>
+### `caweb sync <from> <to>`  
+In order for the sync process to work correctly, you must have a caweb.json file in the project root directory. For more information read [caweb.json](./docs/SYNC.MD) configuration.
+<pre>
+caweb sync &lt;from&gt; &lt;to&gt;
+
+Sync changes from one destination to another.
+
+Arguments:
+  from               Target Site URL with current changes.
+  to                 Destination Site URL that should be synced.
+
+Options:
+  -h, --help         display help for command
+  -t,--tax [tax...]  Taxonomy that should be synced. Omitting this option will sync the full site. (choices: "pages", "posts", "media", "menus")
 </pre>

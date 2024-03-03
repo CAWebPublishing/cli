@@ -1,7 +1,10 @@
 v1.3.2
+- Removed timeout from requests
+- Removed ssh, posts_per_page param from being added to every request
+- Updated sync endpoint reference
 - Removed wp-cli.phar
 - Sync uses CAWebPublishing Development Plugin to maintain ID's
-- Fixed issue with webpack publicPath not references correct path location
+- Fixed issue with webpack publicPath not referencing correct path location 
 
 v1.3.1
 - Fixed issues with stderr mode being invalid
