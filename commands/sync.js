@@ -79,13 +79,11 @@ export default async function sync({
         }
     }
     
-    let ssh = 'local' !== to ? to : `docker:${path.basename(workDirectoryPath)}-cli-1`;
 
     to = serviceConfig.sync[to];
 
     let toOptions = {
         url: to.url,
-        ssh,
         headers: {
             Authorization: 'Basic ' + Buffer.from(`${to.user}:${to.pwd}`).toString('base64'),
             'content-type': 'multipart/form-data',
@@ -100,14 +98,18 @@ export default async function sync({
     let menus = [];
     let menuNavItems = [];
 
-    // get all settings 
-    // site settings are always synced
     spinner.text = `Getting Site Settings from ${from.url}`;
+    /**
+     * Site settings are always synced
+     * 
+     * @see https://developer.wordpress.org/rest-api/reference/settings/
+     */
     let settings = await getTaxonomies({
         ...fromOptions,
         fields: [
             'show_on_front',
-            'page_on_front'
+            'page_on_front',
+            'posts_per_page'
         ],
     }, 'settings')
     
