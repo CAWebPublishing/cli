@@ -76,7 +76,8 @@ export default async function sync({
         url: from.url,
         headers: {
             Authorization: 'Basic ' + Buffer.from(`${from.user}:${from.pwd}`).toString('base64')
-        }
+        },
+        orderby: 'parent' // all requests will be ordered by parent.
     }
     
 
