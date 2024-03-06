@@ -2,6 +2,8 @@ v1.3.4
 - Removed ssh generation in cli config.yml 
 - Added orderby argument to GET requests
 - Resolved issue with Menus that have the same slug but not the same ID
+- Any Media items src'd in page/post content are now sync'd
+- Refined sync process
 
 v1.3.3
 - Removed timeout from requests
