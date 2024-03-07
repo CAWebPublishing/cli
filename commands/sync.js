@@ -77,7 +77,7 @@ export default async function sync({
 
     const localFile = path.join(appPath, 'caweb.json');
     const {workDirectoryPath} = await loadConfig(path.resolve('.'));
-		
+
     process.env.WP_CLI_CONFIG_PATH  = path.join(workDirectoryPath, 'config.yml');
     
     // if caweb.json file doesn't exist we don't do anything
@@ -163,7 +163,7 @@ export default async function sync({
                 'post',
                 'media_details'
             ],
-            include: tax.includes('media') && include ? include.join(',') : null
+            include: tax && tax.includes('media') && include ? include.join(',') : null
         }, 
         'media'
     );

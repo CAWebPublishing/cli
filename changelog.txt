@@ -1,3 +1,6 @@
+v1.3.5
+- Resolved issue when include argument not passed during full sync
+
 v1.3.4
 - Removed ssh generation in cli config.yml 
 - Added orderby argument to GET requests
