@@ -14,12 +14,49 @@ import {
     getTaxonomies,
     createTaxonomies
 } from '../lib/index.js';
+import { get } from 'http';
 
 const errors = [];
 
+/**
+ * Return all parent items for a given set of ids.
+ *
+ * @async
+ * @param {Array} ids
+ * @param {*} request
+ * @param {string} [tax='pages']
+ * @returns {unknown}
+ */
+async function getParentItems( objects, request, tax = 'pages' ){
+    let parentItemsObjects = [];
+    let objectParentIds = objects.map((obj) => { return obj.parent; });
+
+    while( objectParentIds.length > 0 ){
+
+        // if we have parent ids, we have to collect any parent items.
+        let parentItems = await getTaxonomies({
+            ...request, 
+            orderby: 'parent',
+            embed: true,
+            include: objectParentIds
+        }, tax);
+
+        // if we have parent items, we have to add to the items array.
+        if( parentItems ){
+            parentItemsObjects = parentItemsObjects.concat( parentItems );
+        }
+
+        // if the parent items have parent ids, we have to save those for the next run.
+        objectParentIds = parentItems.map((obj) => { return obj.parent; }).filter((id) => { return id !== 0; })   
+    }
+
+    return objects.concat( parentItemsObjects ).sort( (a,b) => a.parent - b.parent );
+}
 
 /**
  * Sync Environments.
+ * 
+ * @see https://developer.wordpress.org/rest-api/reference/
  * 
  * @param {Object}  options
  * @param {Object}  options.spinner A CLI spinner which indicates progress.
@@ -27,13 +64,15 @@ const errors = [];
  * @param {boolean} options.to   Destination Site URL that should be synced.
  * @param {boolean} options.debug   True if debug mode is enabled.
  * @param {Array} options.tax   Taxonomy that should be synced.
+ * @param {Array} options.include   Include specific IDs only.
  */
 export default async function sync({
 	spinner,
 	debug,
 	from,
     to,
-    tax
+    tax,
+    include
 } ) {
 
     const localFile = path.join(appPath, 'caweb.json');
@@ -91,104 +130,165 @@ export default async function sync({
         }
     }
 
+    /**
+     * Sync Process 
+     * If taxonomy is undefined then we don't sync that section.
+     * 
+     * 1) Site Settings are always synced.
+     * 2) We always collect all the media.
+     * 3) We only collect pages if the taxonomy is undefined or it's set to pages.
+     * 4) We only collect posts if the taxonomy is undefined or it's set to posts.
+     * 5) We only collect menus if the taxonomy is undefined or it's set to menus.
+     *    - We also collect menu items if menus are collected.
+     */
+    let settings = [];
+    let media = [];
     let pages = [];
     let posts = [];
-    let attachedMedia = [];
-    let featuredMedia = [];
     let menus = [];
     let menuNavItems = [];
 
-    spinner.text = `Getting Site Settings from ${from.url}`;
-    /**
-     * Site settings are always synced
-     * 
-     * @see https://developer.wordpress.org/rest-api/reference/settings/
-     */
-    let settings = await getTaxonomies({
-        ...fromOptions,
-        fields: [
-            'show_on_front',
-            'page_on_front',
-            'posts_per_page'
-        ],
-    }, 'settings')
-    
-    /**
-     * If taxonomy is undefined then we sync everything, otherwise we only sync what's being requested.
-     * First we collect everything we need from the base, then we send the information to the target.
-     * If media is requested then we need to download posts/pages to get any attached/featured media.
-     */
-    // collect pages
-    if( undefined === tax || tax.includes('pages') || tax.includes('media')){
-        // get all pages/posts
-        spinner.text = `Gathering all pages from ${from.url}`;
-        pages = await getTaxonomies(fromOptions);
-    }
+    // Media Library.
+    spinner.text = `Collecting Media Library ${from.url}`;
+    let mediaLibrary = await getTaxonomies({ 
+            ...fromOptions, 
+            fields: [
+                'id', 
+                'source_url', 
+                'title', 
+                'caption', 
+                'alt_text', 
+                'date',
+                'mime_type',
+                'post',
+                'media_details'
+            ],
+            include: tax.includes('media') && include ? include.join(',') : null
+        }, 
+        'media'
+    );
 
-    // collect posts
-    if( undefined === tax || tax.includes('posts')|| tax.includes('media')){
-        // get all pages/posts
-        spinner.text = `Gathering all posts from ${from.url}`;
-        posts = await getTaxonomies(fromOptions, 'posts');
-    }
-
-    // collect media
-    if( undefined === tax || tax.includes('media')){
-       
-        spinner.text = `Collecting all attached/featured images from ${from.url}`;
-        /**
-         * Media Library Handling
-         * 1) attached media items by default are only possible on pages.
-         * 2) featured media by default are only possible on posts.
-         */
-        const mediaFields = [
-            'id', 
-            'source_url', 
-            'title', 
-            'caption', 
-            'alt_text', 
-            'date',
-            'mime_type'
-        ];
-        attachedMedia = await getTaxonomies({ 
-                ...fromOptions, 
-                fields: mediaFields,
-                parent: pages.map((p) => { return p.id })
-            }, 
-            'media'
-        );
-
-        featuredMedia = await getTaxonomies({ 
-                ...fromOptions, 
-                fields: mediaFields,
-                include: posts.map((p) => { if(p.featured_media){return p.featured_media } })
-            }, 
-            'media'
-        );
+    // Site Settings.
+    if( undefined === tax || tax.includes('settings') ){
+        spinner.text = `Collecting Site Settings from ${from.url}`;
+        settings = await getTaxonomies({
+            ...fromOptions,
+            fields: [
+                'show_on_front',
+                'page_on_front',
+                'posts_per_page'
+            ],
+        }, 'settings')
         
-        // before we can upload media files.
-        for( let mediaObj of [].concat( attachedMedia, featuredMedia ) ){
-            // generate a blob from the media object source_url.
-            const mediaBlob = await axios.request( 
-                {
-                    ...fromOptions,
-                    url: mediaObj.source_url,
-                    responseType: 'arraybuffer'
-                } 
-            )
-            .then( (img) => {  return new Blob([img.data]) })
-            .catch( (error) => {
-                errors.push(`${mediaObj.source_url} could not be downloaded.`)
-                return false;
-            });
-            
-            if( mediaBlob ){
-                mediaObj.data = mediaBlob;
-            }
+    }
+
+    // Pages.
+    if( undefined === tax || tax.includes('pages') ){
+        // get all pages/posts
+        spinner.text = `Collecting pages from ${from.url}`;
+        pages = await getTaxonomies({
+                ...fromOptions, 
+                orderby: 'parent',
+                embed: true,
+                include: tax && include ? include.join(',') : null
+            }, 
+            'pages'
+        );
+
+        // we only do this if specific ids were requested.
+        if( include ){
+            // if we have parent ids, we have to collect any parent items.
+            pages = await getParentItems( 
+                pages, 
+                fromOptions, 
+                'pages'
+            ) 
         }
     }
 
-    // collect menu and nav items.
+    // Posts.
+    if( undefined === tax || tax.includes('posts') ){
+        // get all pages/posts
+        spinner.text = `Collecting all posts from ${from.url}`;
+        posts = await getTaxonomies({
+                ...fromOptions, 
+                orderby: 'parent',
+                include: tax && include ? include.join(',') : null
+            }, 
+            'posts'
+        );
+
+        // we only do this if specific ids were requested.
+        if( include ){
+            // if we have parent ids, we have to collect any parent items.
+            posts = await getParentItems( 
+                posts, 
+                fromOptions, 
+                'posts'
+            ) 
+        }
+    }
+
+    /**
+     * Media Library Handling
+     * 
+     * We iterate thru the media library to identify which media should be synced.
+     * 1) attached media items by default are only possible on pages.
+     * 2) featured media by default are only possible on posts.
+     * 3) save any linked media in the content of pages and posts.
+     */
+    for( let m of mediaLibrary ){
+        // check if the media is attached to a page.
+        // if tax is undefined, we collect all media attached to posts and pages.
+        // if tax is defined, we only collect media attached to posts and pages if the id match.
+        if( ( ! tax && m.post ) ||
+             ( tax && include.includes(m.id.toString()) ) ){
+            media.push( m );
+
+            // we don't have to check any further.
+            continue;
+        }
+
+        for( let p of [].concat( pages, posts ) ){
+            // if the media is featured on a post or linked in the content.
+            if( p.featured_media === m.id ||
+                p.content.rendered.match( new RegExp(`src=&#8221;(${m.source_url}.*)&#8221;`, 'g') )){
+                media.push( m );
+            }
+        }
+    }
+    
+    // filter any duplicate media.
+    media = media.filter((m, index, self) => { return index === self.findIndex((t) => { return t.id === m.id; })} );
+    
+    // before we can upload media files we have to generate the media blob data.
+    for( let m of media ){
+        const mediaBlob = await axios.request( 
+            {
+                ...fromOptions,
+                url: m.source_url,
+                responseType: 'arraybuffer'
+            } 
+        )
+        .then( (img) => {  return new Blob([img.data]) })
+        .catch( (error) => {
+            errors.push(`${m.source_url} could not be downloaded.`)
+            return false;
+        });
+        
+        if( mediaBlob ){
+            m.data = mediaBlob;
+        }
+    }
+    
+    // this has to be done after we have the media data.
+    // Lets replace the url references in the content of the pages and posts.
+    for( let p of [].concat( pages, posts ) ){
+        p.content.rendered = p.content.rendered.replace( new RegExp(from.url, 'g'), to.url );
+    }
+
+    
+    // Menu and Nav Items.
     if( undefined === tax || tax.includes('menus')){
         spinner.text = `Collecting assigned navigation menus from ${from.url}`;
         // get all menus and navigation links
@@ -201,7 +301,8 @@ export default async function sync({
                 'slug',
                 'meta',
                 'locations'
-            ]
+            ],
+            include: tax && include ? include.join(',') : null
             }, 'menus');
     
         menuNavItems = await getTaxonomies( 
@@ -226,6 +327,7 @@ export default async function sync({
                     'meta',
                     'menus'
                 ],
+                include: tax && include ? include.join(',') : null,
                 menus: menus.map((menu) => { return menu.id; })
             }, 
             'menu-items'
@@ -236,43 +338,50 @@ export default async function sync({
     /**
      * Now we have all the data we can begin to create the taxonomies on the target.
      * 
-     * Creation order is important otherwise missing dependencies will cause errors to trigger.
-     * We create media first, then pages, then posts, then menus and navigation links.
+     * Import Order is important otherwise missing dependencies will cause errors to trigger
+     * 1) Media
+     * 2) Pages
+     * 3) Posts
+     * 4) Menus & Navigation Links
+     * 5) Settings
      */
 
-    // create media attachments
-    if( undefined === tax || tax.includes('media')){
+    // Media.
+    if( media ){
         spinner.text = `Uploading media files to ${to.url}`;
         await createTaxonomies(
-            [].concat( attachedMedia, featuredMedia ).filter((img) => { return img.data }), 
+            media.filter((img) => { return img.data }), 
             toOptions, 
             'media', 
             spinner
             )
     }
 
-     // create pages
-    if( undefined === tax || tax.includes('pages')){
+     // Pages.
+    if( pages ){
         spinner.text = `Creating all pages to ${to.url}`;
         await createTaxonomies( pages, toOptions, 'pages', spinner );
     }
 
-     // create posts
-    if( undefined === tax || tax.includes('posts')){
+     // Posts.
+    if( posts ){
         spinner.text = `Creating all posts to ${to.url}`;
         await createTaxonomies( posts, toOptions, 'posts', spinner );
     }
 
-    // create menus and navigation links
-    if( undefined === tax || tax.includes('menus')){
+    // Menus and Navigation Links.
+    if( menus ){
         spinner.text = `Reconstructing navigation menus to ${to.url}`;
         await createTaxonomies(menus, toOptions, 'menus', spinner);
         await createTaxonomies(menuNavItems, toOptions, 'menu-items', spinner);
     }
     
 
-    // update settings
-    await createTaxonomies(settings, toOptions, 'settings', spinner);
+    // Settings.
+    if( settings ){
+        spinner.text = `Updating site settings to ${to.url}`;
+        await createTaxonomies(settings, toOptions, 'settings', spinner);
+    }
 
     spinner.text = `Sync from ${from.url} to ${to.url} completed successfully.`
 
