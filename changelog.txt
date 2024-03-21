@@ -1,3 +1,6 @@
+v1.3.6
+- Added filter when grabbing parentItems to remove any undefined objects
+
 v1.3.5
 - Resolved issue when include argument not passed during full sync
 

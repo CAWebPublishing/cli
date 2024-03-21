@@ -14,7 +14,6 @@ import {
     getTaxonomies,
     createTaxonomies
 } from '../lib/index.js';
-import { get } from 'http';
 
 const errors = [];
 
@@ -29,7 +28,7 @@ const errors = [];
  */
 async function getParentItems( objects, request, tax = 'pages' ){
     let parentItemsObjects = [];
-    let objectParentIds = objects.map((obj) => { return obj.parent; });
+    let objectParentIds = objects.map((obj) => { return obj.parent; }).filter(n => n);
 
     while( objectParentIds.length > 0 ){
 
