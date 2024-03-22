@@ -173,6 +173,8 @@ export default async function sync({
         settings = await getTaxonomies({
             ...fromOptions,
             fields: [
+                'title',
+                'description',
                 'show_on_front',
                 'page_on_front',
                 'posts_per_page'
@@ -237,11 +239,16 @@ export default async function sync({
      * 3) save any linked media in the content of pages and posts.
      */
     for( let m of mediaLibrary ){
+        // remove any new line characters.
+        m.source_url = m.source_url.replace('\n','');
+
         // check if the media is attached to a page.
         // if tax is undefined, we collect all media attached to posts and pages.
-        // if tax is defined, we only collect media attached to posts and pages if the id match.
+        // if tax is defined, if include is undefined or media is matches post/page, we collect the media.
         if( ( ! tax && m.post ) ||
-             ( tax && include.includes(m.id.toString()) ) ){
+            ( tax && 
+                ( undefined === include || include.includes( m.id.toString() ) )
+            ) ){
             media.push( m );
 
             // we don't have to check any further.
@@ -252,11 +259,11 @@ export default async function sync({
             // if the media is featured on a post or linked in the content.
             if( p.featured_media === m.id ||
                 p.content.rendered.match( new RegExp(`src=&#8221;(${m.source_url}.*)&#8221;`, 'g') )){
-                media.push( m );
-            }
+                    media.push( m );
+                }
         }
     }
-    
+
     // filter any duplicate media.
     media = media.filter((m, index, self) => { return index === self.findIndex((t) => { return t.id === m.id; })} );
     
