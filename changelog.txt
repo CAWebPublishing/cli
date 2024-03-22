@@ -1,3 +1,7 @@
+v1.3.7
+- Updated permalink structure to /%year%/%monthnum%/%postname%/
+- Added title and description to settings when syncing
+
 v1.3.6
 - Added filter when grabbing parentItems to remove any undefined objects
 
