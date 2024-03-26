@@ -74,6 +74,10 @@ export default async function start({
 	const { workDirectoryPath } = config;
 	const cacheKey = await getCache(CONFIG_CACHE_KEY, {workDirectoryPath});
 	
+	// Set extra congiguration for WordPress.
+	// Increase max execution time to 300 seconds.
+	process.env.WORDPRESS_CONFIG_EXTRA = 'set_time_limit(300);';
+
 	// wp-env launch.
 	await wpEnvStart({
 		spinner,

@@ -266,9 +266,15 @@ export default async function sync({
 
     // filter any duplicate media.
     media = media.filter((m, index, self) => { return index === self.findIndex((t) => { return t.id === m.id; })} );
+    let i = 0;
     
     // before we can upload media files we have to generate the media blob data.
     for( let m of media ){
+        if( debug ){
+            i++;
+            spinner.info(`Media ID ${m.id} Collected: ${i}/${media.length}`)
+        }
+        
         const mediaBlob = await axios.request( 
             {
                 ...fromOptions,
