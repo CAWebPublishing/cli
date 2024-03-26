@@ -1,3 +1,8 @@
+v1.3.8
+- Fixed issue when media is uploaded sometimes warnings will be included with the data. ( This occurs mostly if WP_DEBUG is true )
+- Max execution time set to 300 seconds
+- Added debug message to media library collection 
+
 v1.3.7
 - Updated permalink structure to /%year%/%monthnum%/%postname%/
 - Added title and description to settings when syncing
