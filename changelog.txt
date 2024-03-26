@@ -1,4 +1,4 @@
-v1.3.9
+v1.3.10
 - Added extension to bin file for extensionless support 
 
 v1.3.8
