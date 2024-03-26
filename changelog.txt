@@ -1,3 +1,6 @@
+v1.3.9
+- Added extension to bin file for extensionless support 
+
 v1.3.8
 - Fixed issue when media is uploaded sometimes warnings will be included with the data. ( This occurs mostly if WP_DEBUG is true )
 - Max execution time set to 300 seconds
