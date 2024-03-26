@@ -81,7 +81,7 @@ baseConfig.module.rules.forEach((rule, i) => {
 // Our Webpack Configuration.
 let webpackConfig = {
   ...baseConfig,
-  target: 'browserslist',
+  //target: 'browserslist',
   devtool: false,
   output: {
     ...baseConfig.output,
