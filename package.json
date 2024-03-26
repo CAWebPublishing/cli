@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.3.8",
+  "version": "1.3.9",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -8,7 +8,7 @@
   "author": "CAWebPublishing",
   "license": "ISC",
   "bin": {
-    "caweb": "bin/caweb"
+    "caweb": "bin/caweb.js"
   },
   "files": [
     "assets",
