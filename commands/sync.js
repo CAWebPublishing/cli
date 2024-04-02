@@ -133,14 +133,15 @@ export default async function sync({
      * Sync Process 
      * If taxonomy is undefined then we don't sync that section.
      * 
-     * 1) Site Settings are always synced.
-     * 2) We always collect all the media.
+     * 1) We collect media if the taxonomy is undefined or includes media, pages, posts.
+     * 2) We only collect settings if the taxonomy is undefined or it's set to settings.
      * 3) We only collect pages if the taxonomy is undefined or it's set to pages.
      * 4) We only collect posts if the taxonomy is undefined or it's set to posts.
      * 5) We only collect menus if the taxonomy is undefined or it's set to menus.
      *    - We also collect menu items if menus are collected.
      */
     let settings = [];
+    let mediaLibrary = [];
     let media = [];
     let pages = [];
     let posts = [];
@@ -148,24 +149,26 @@ export default async function sync({
     let menuNavItems = [];
 
     // Media Library.
-    spinner.text = `Collecting Media Library ${from.url}`;
-    let mediaLibrary = await getTaxonomies({ 
-            ...fromOptions, 
-            fields: [
-                'id', 
-                'source_url', 
-                'title', 
-                'caption', 
-                'alt_text', 
-                'date',
-                'mime_type',
-                'post',
-                'media_details'
-            ],
-            include: tax && tax.includes('media') && include ? include.join(',') : null
-        }, 
-        'media'
-    );
+    if( undefined === tax || tax.includes('media', 'pages', 'posts') ){
+        spinner.text = `Collecting Media Library ${from.url}`;
+        mediaLibrary = await getTaxonomies({ 
+                ...fromOptions, 
+                fields: [
+                    'id', 
+                    'source_url', 
+                    'title', 
+                    'caption', 
+                    'alt_text', 
+                    'date',
+                    'mime_type',
+                    'post',
+                    'media_details'
+                ],
+                include: tax && tax.includes('media') && include ? include.join(',') : null
+            }, 
+            'media'
+        );
+    }
 
     // Site Settings.
     if( undefined === tax || tax.includes('settings') ){
@@ -339,7 +342,6 @@ export default async function sync({
                     'meta',
                     'menus'
                 ],
-                include: tax && include ? include.join(',') : null,
                 menus: menus.map((menu) => { return menu.id; })
             }, 
             'menu-items'
