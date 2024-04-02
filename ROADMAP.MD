@@ -14,3 +14,6 @@ https://www.npmjs.com/package/accessibility-checker
 
 ## Control Panel
 https://aapanel.com/new/download.html
+
+## SNYK
+https://www.npmjs.com/package/snyk

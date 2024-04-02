@@ -1,3 +1,7 @@
+v1.3.12
+- Added sanity check for media library
+- Removed include param for menu items.
+
 v1.3.11
 - Commented out browserlist from webpack config 
 
