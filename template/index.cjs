@@ -13,10 +13,12 @@ const blockSlugTitle = capitalCase( blockSlug );
 const customScripts = {};
 
 const npmDependencies = [ 
-	'@wordpress/icons@9.22.0' 
+	'@wordpress/icons@9.44.0' 
 ];
 
-const npmDevDependencies = [];
+const npmDevDependencies = [
+	'@wordpress/scripts@27.6.0'
+];
 
 // assetsPath: join( __dirname, 'assets' ),
 module.exports = {
@@ -26,7 +28,7 @@ module.exports = {
 		pluginURI: `https://github.com/CAWebPublishing/${ blockSlug }`,
 		plugin: true,
 		description: `${ blockSlugTitle } Gutenberg Block`,
-		version: '1.2.0',
+		version: '1.3.0',
 		author: 'CAWebPublishing',
 		license: 'GPL-2.0-or-later',
 		licenseURI: 'https://www.gnu.org/licenses/gpl-2.0.html',

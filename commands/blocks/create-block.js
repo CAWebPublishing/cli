@@ -11,9 +11,6 @@ import inquirer from 'inquirer';
 import {runCmd, projectPath} from '../../lib/index.js';
 import updateBlock from './update-block.js';
 
-const localFile = path.join(projectPath, 'package.json');
-const pkg = JSON.parse( fs.readFileSync(localFile) );
-
 /**
  * Get NPM Package Latest Version
  * @param {string}  options.slug   Block slug.
@@ -26,9 +23,10 @@ async function getNPMPackageVersion(pkg, spinner){
 			'view',
 			`${pkg}`,
 			'version'
-		],
-		spinner
-	)
+		]
+	).then(({stdout, stderr}) => {
+		return ! stdout.toString() ? false : stdout.toString();
+	})
 	
 }
 
@@ -45,6 +43,8 @@ export default async function createBlock({
 	debug,
 	slug
 } ) {
+		spinner.stop();
+
 		// if block directory already exists.	
 		if( fs.existsSync(path.resolve(process.cwd(), slug)) ){
 			spinner.info(`${slug} already exists.`)
@@ -75,7 +75,6 @@ export default async function createBlock({
 					slug,
 					'--template=' + path.join(projectPath, 'template', 'index.cjs')
 				],
-				spinner,
 				{
 					stdio: 'inherit'
 				}
@@ -93,7 +92,6 @@ export default async function createBlock({
 						'install',
 						`@cagov/${slug}@${version}`,
 					],
-					spinner,
 					{
 						cwd: path.join(process.cwd(), slug ),
 						stdio: 'inherit'

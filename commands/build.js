@@ -68,6 +68,13 @@ export default async function build({
     await runCmd(
 		'webpack', 
 		webPackArgs, 
-	)
+	).then(({stdout, stderr}) => {
+        // if an error was thrown, and no output
+        if( stderr && ! stdout.toString() ){
+            console.log( stderr.toString() )
+        }else{
+            spinner.text = 'Done'
+        }
+    });
 
 };
