@@ -1,3 +1,11 @@
+v1.3.13
+- Added error handler to webpack build command
+- Updated @wordpress/icons for create-block template
+- Updated create-block run command parameters
+- Updated update-block, process no longer destructively overwrites package.json or plugin.php header file
+- Added @wordpress/create-block to npm packages list
+- Added @wordpress/scripts to npm packages list
+
 v1.3.12
 - Added sanity check for media library
 - Removed include param for menu items.
