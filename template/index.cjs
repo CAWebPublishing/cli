@@ -13,14 +13,13 @@ const blockSlugTitle = capitalCase( blockSlug );
 const customScripts = {};
 
 const npmDependencies = [ 
-	'@wordpress/icons@9.44.0' 
+	'@wordpress/icons@9.45.0' 
 ];
 
 const npmDevDependencies = [
 	'@wordpress/scripts@27.6.0'
 ];
 
-// assetsPath: join( __dirname, 'assets' ),
 module.exports = {
 	pluginTemplatesPath: join( __dirname, 'plugin' ),
 	blockTemplatesPath: join( __dirname, 'block' ),
@@ -47,4 +46,8 @@ module.exports = {
 		npmDependencies: npmDependencies,
 		npmDevDependencies: npmDevDependencies,
 	},
+	customBlockJSON: {
+		viewScript: "file:./frontend.js",
+		render: "file:./render.php"
+	}
 };

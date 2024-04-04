@@ -44,9 +44,6 @@ export default async function updateBlock({
 			// make tmp directory
 			fs.ensureDir( `${slug}.tmp`);
 
-			// move inc directory to tmp directory
-			fs.copySync(`${slug}/inc/`, `${slug}.tmp/inc/`);
-			
 			// move src directory to tmp directory
 			fs.copySync(`${slug}/src/`, `${slug}.tmp/src/`);
 
@@ -62,9 +59,6 @@ export default async function updateBlock({
 			// Recreate the block.
 			await createBlock({spinner, debug, slug});
 
-			// move inc directory back to block directory
-			fs.copySync(`${slug}.tmp/inc/`, `${slug}/inc/` );
-			
 			// move src directory back to block directory
 			fs.copySync(`${slug}.tmp/src/`, `${slug}/src/`);
 
@@ -73,7 +67,7 @@ export default async function updateBlock({
 			let newPkg = JSON.parse( fs.readFileSync(path.join(slug, 'package.json')) )			
 			
 			/**
-			 * 
+			 * package.json changes
 			 * @since 1.3.0 Gulp is no longer used.
 			 */
 			if( oldPkg.version < '1.3.0' ){

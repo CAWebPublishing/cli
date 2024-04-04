@@ -1,3 +1,7 @@
+v1.3.14
+- Webpack config updated to output.clean = true
+- Updated create-block template
+
 v1.3.13
 - Added error handler to webpack build command
 - Updated @wordpress/icons for create-block template
