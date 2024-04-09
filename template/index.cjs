@@ -2,18 +2,17 @@
  * External dependencies
  */
 const { join } = require( 'path' );
-const { capitalCase } = require( 'change-case' );
 
 /**
  * Internal dependencies
  */
 const blockSlug = process.argv[ 2 ];
-const blockSlugTitle = capitalCase( blockSlug );
+const blockSlugTitle = blockSlug.charAt(0).toUpperCase() + blockSlug.substring(1);
 
 const customScripts = {};
 
 const npmDependencies = [ 
-	'@wordpress/icons@9.45.0' 
+	'@wordpress/icons@9.46.0' 
 ];
 
 const npmDevDependencies = [
@@ -45,8 +44,6 @@ module.exports = {
 		customScripts: customScripts,
 		npmDependencies: npmDependencies,
 		npmDevDependencies: npmDevDependencies,
-	},
-	customBlockJSON: {
 		viewScript: "file:./frontend.js",
 		render: "file:./render.php"
 	}
