@@ -1,3 +1,8 @@
+v1.3.15
+- Removed data-viz categories from block template
+- Removed issue from .svg webpack rules
+- Removed allowed_block_types filter
+
 v1.3.14
 - Webpack config updated to output.clean = true
 - Updated create-block template
