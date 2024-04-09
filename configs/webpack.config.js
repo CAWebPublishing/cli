@@ -74,6 +74,10 @@ baseConfig.module.rules.forEach((rule, i) => {
           baseConfig.module.rules[i].generator = {
             filename: 'fonts/[name][ext]'
           };
+
+          // we don't care who the issuer is
+          delete baseConfig.module.rules[i].issuer;
+
         }
   }
 })
