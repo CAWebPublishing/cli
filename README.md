@@ -195,5 +195,6 @@ Arguments:
 
 Options:
   -h, --help         display help for command
-  -t,--tax [tax...]  Taxonomy that should be synced. Omitting this option will sync the full site. (choices: "pages", "posts", "media", "menus")
+  -i, --include [include...]     IDs to of taxonomies to include. Omitting this option will sync all items for given taxonomy.
+  -t, --tax [tax...]  Taxonomy that should be synced. Omitting this option will sync the full site. (choices: "pages", "posts", "media", "menus")
 </pre>
