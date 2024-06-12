@@ -39,6 +39,8 @@ export default async function serve({
     // Otherwise we load a blank html page
     process.env.CDT_TEMPLATE = template;
     
+    // Let our webpack config know it's serving not building
+    process.env.CAWEB_SERVE = true;
 
    // Our default Webpack Configuration 
    const defaultConfig = path.join( projectPath, 'configs', 'webpack.config.js' );
@@ -46,7 +48,7 @@ export default async function serve({
    let webPackArgs = [
       'serve',
       '--open',
-      '--mode=development',
+      '--mode=none',
       '--config',
       defaultConfig
     ];
@@ -72,7 +74,14 @@ export default async function serve({
     await runCmd(
 		  'webpack', 
       webPackArgs
-    )
+    ).then(({stdout, stderr}) => {
+        // if an error was thrown, and no output
+        if( stderr && ! stdout.toString() ){
+            console.log( stderr.toString() )
+        }else{
+            spinner.text = 'Done'
+        }
+    });
     
 
 };

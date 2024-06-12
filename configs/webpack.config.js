@@ -10,10 +10,7 @@
  * External dependencies
  */
 import baseConfig from '@wordpress/scripts/config/webpack.config.js';
-import path from 'path';
-import fs from 'fs';
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 /**
  * Internal dependencies
@@ -85,11 +82,11 @@ baseConfig.module.rules.forEach((rule, i) => {
 // Our Webpack Configuration.
 let webpackConfig = {
   ...baseConfig,
-  //target: 'browserslist',
+  target: 'web',
   devtool: false,
   output: {
     ...baseConfig.output,
-    publicPath: `./`,
+    publicPath: `/`,
     clean: true
   },
   plugins: [
@@ -104,10 +101,10 @@ let webpackConfig = {
   module: {
     rules: [
       ...baseConfig.module.rules,
-      {
+      /*{
         test: /\.html$/,
-        loader: 'handlebars-loader'
-      }
+        loader:'handlebars-loader'
+      }*/
     ]
   },
   performance: {
@@ -116,7 +113,9 @@ let webpackConfig = {
   }
 };
 
-if( ! isProduction ){
+if( process.env.CAWEB_SERVE ){
+  delete webpackConfig.devServer;
+
   SiteGenerator( webpackConfig );
 }
 
