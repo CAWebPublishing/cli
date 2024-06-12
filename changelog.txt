@@ -1,3 +1,8 @@
+v1.4.0
+- Update Core WordPress version to 6.5.4
+- Update all npm package reference
+- Updated serve command, site generator and webpack config process
+
 v1.3.17
 - Updated Core WordPress version to 6.5.3
 - Updated npm package reference

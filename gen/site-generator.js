@@ -14,14 +14,18 @@ import {
   generatePages
 } from './parser.js';
 
-import {
+/*import {
   projectPath,
   appPath
-} from '../lib/helpers.js';
-
+} from '../lib/index.js';
+*/
+const currentPath = path.dirname(fileURLToPath(import.meta.url));
+const projectPath = path.resolve( currentPath, '..' );
+const appPath = path.resolve( process.cwd() );
+const samplePath = path.join( appPath, 'sample');
 const srcPath = path.join( appPath, 'src');
 const dataPath = path.join( srcPath, 'data');
-const assetsPath = path.join( srcPath, 'assets');
+//const assetsPath = path.join( srcPath, 'assets');
 
 // default meta used for site generation when no meta is passed
 const meta = {
@@ -56,7 +60,7 @@ function getSiteData(){
 
 export default (webpackConfig) => {
   // we only proceed if and index.html exists
-  if( ! fs.existsSync( path.join( srcPath, 'index.html' )) ){
+  if( ! fs.existsSync( path.join( samplePath, 'index.html' )) ){
     return;
   }
 
@@ -66,10 +70,21 @@ export default (webpackConfig) => {
   // get site data
   let siteData = getSiteData();
 
-  // if favicon doesn't exist use fallback asset.
-  let favicon = fs.existsSync(path.join(assetsPath, 'images', 'favicon.ico')) ?
-    path.join(assetsPath, 'images', 'favicon.ico') :
-    path.join(projectPath, 'assets', 'favicon.ico') ;
+  /**
+   * Favicon
+   * 
+   * Locations:
+   * - ./favicon.ico - root of the project
+   * - ./src/favicon.ico - src directory
+   * - favicon.ico - default icon
+   */
+  let favicon = fs.existsSync(path.join(appPath, 'favicon.ico')) ?
+    path.join(appPath, 'favicon.ico') :
+    ( 
+      fs.existsSync(path.join(srcPath, 'favicon.ico')) ? 
+        path.join(srcPath, 'favicon.ico') : 
+        path.join(projectPath, 'assets', 'logo.ico')  
+    );
 
   let defaultPage = {
     minify: false,
@@ -81,8 +96,8 @@ export default (webpackConfig) => {
   webpackConfig.plugins = [
     ...webpackConfig.plugins,
     new HtmlWebpackPlugin({
-      filename: path.join( process.cwd(), 'public', 'index.html'),
-      template: path.join(srcPath, 'index.html'),
+      filename: path.join( appPath, 'public', 'index.html'),
+      template: path.join(samplePath, 'index.html'),
       //templateContent: generatePages(siteData),
       title: 'Test Site',
       ...defaultPage
@@ -99,13 +114,31 @@ export default (webpackConfig) => {
     host: 'localhost',
     port: 9000,
     compress: true,
-    proxy: {
-      '/public': {
-        pathRewrite: {
-          '^/build': '',
-        },
+    static: [
+      {
+        directory: path.join( appPath, 'build'),
       },
-    },
+      {
+        directory: path.join(appPath, 'node_modules'),
+      },
+      {
+        directory: path.join(appPath, 'public'),
+      },
+      {
+        directory: path.join(appPath, 'src'),
+      }
+    ],
+    proxy: [
+      {
+        context: ['/node_modules'],
+        target: 'http://localhost:9000',
+        pathRewrite: { '^/node_modules': '' },
+      },
+      {
+        context: ['/src'],
+        target: 'http://localhost:9000',
+        pathRewrite: { '^/src': '' },
+      }
+    ],
   }  
-
 };
