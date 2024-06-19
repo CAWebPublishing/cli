@@ -1,3 +1,7 @@
+v1.4.1
+- Fixed self documentor script
+- Fixed a11y checker
+
 v1.4.0
 - Update Core WordPress version to 6.5.4
 - Update all npm package reference

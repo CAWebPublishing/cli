@@ -7,7 +7,7 @@
 import path from 'node:path';
 import fs from 'fs-extra';
 
-import { CAWEB_OPTIONS, DIVI_OPTIONS } from '../../lib/options.js';
+import { CAWEB_OPTIONS, DIVI_OPTIONS } from '../../lib/index.js';
 
 generateOverridesMD()
 

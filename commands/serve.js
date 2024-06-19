@@ -15,6 +15,8 @@ import {
     runCmd
  } from '../lib/index.js';
 
+import a11y from './a11y.js';
+
 /**
  * Serves the current project
  * 
@@ -79,6 +81,11 @@ export default async function serve({
         if( stderr && ! stdout.toString() ){
             console.log( stderr.toString() )
         }else{
+                    
+            // run a11y checker as well
+            //await a11y({spinner, debug, url: './public/index.html' })
+
+            //return;
             spinner.text = 'Done'
         }
     });
