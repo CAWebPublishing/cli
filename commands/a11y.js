@@ -3,9 +3,10 @@
 /**
  * External dependencies
  */
+import achecker from 'accessibility-checker';
 import path from 'path';
+import { isUrl } from 'check-valid-url';
 import fs from 'fs';
-import resolveBin from 'resolve-bin';
 
 /**
  * Internal dependencies
@@ -16,7 +17,7 @@ import defaultConfig from '../configs/aceconfig.js';
 import { 
     runCmd, 
 } from '../lib/index.js';
-
+import { stderr, stdout } from 'process';
 
 
 /**
@@ -25,14 +26,17 @@ import {
  * @param {Object}  options
  * @param {Object}  options.spinner A CLI spinner which indicates progress.
  * @param {boolean} options.debug   True if debug mode is enabled.
+ * @param {boolean} options.url   True if debug mode is enabled.
  */
 export default async function a11y({
 	spinner,
 	debug, 
+    url
 } ) {
 
     // Spinner not needed at the moment
-	spinner.stop()
+	spinner.stop();
+
     const {
         ruleArchive,
         policies,
@@ -62,13 +66,30 @@ export default async function a11y({
         outputFormat,
         '---outputFilenameTimestamp',
         outputFilenameTimestamp,
-        process.argv.pop()
+        url
     ];
 
-    // run webpack with our arguments.
-    await runCmd(
-		'achecker', 
-		acheckerArgs, 
-	)
+    // run accessibility checker with our arguments.
+    if( isUrl( url ) || fs.existsSync( url ) ){
+        let outputDir = path.resolve('.',  outputFolder);
+        let outputFileName = isUrl( url ) ?
+            url.replace(/http[s]+:\/\//, '')
+            :
+            path.resolve(url).replace(':', '_');
+
+        
+        let reportFile = path.resolve(outputDir, outputFileName ) + '.html'
+
+        await runCmd(
+            'achecker', 
+            acheckerArgs,
+        ).then(({stderr, stdout}) => {
+            console.log( reportFile );
+        })
+
+    }else{
+        console.log( `${url} is not a valid url.` )
+    }
+    
 
 };

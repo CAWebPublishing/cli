@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -22,6 +22,7 @@
     "template"
   ],
   "scripts": {
+    "doc": "node ./docs/tool/index.js",
     "test": "echo \"Error: run tests from root\" && exit 0"
   },
   "homepage": "https://github.com/CAWebPublishing/cli#readme",
@@ -58,14 +59,15 @@
     }
   },
   "dependencies": {
-    "@wordpress/create-block": "^4.43.0",
-    "@wordpress/env": "^10.0.0",
-    "@wordpress/scripts": "^28.0.0",
-    "accessibility-checker": "^3.1.72",
+    "@wordpress/create-block": "^4.44.0",
+    "@wordpress/env": "^10.1.0",
+    "@wordpress/scripts": "^28.1.0",
+    "accessibility-checker": "^3.1.73",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
     "axios-retry": "^4.4.0",
     "chalk": "^5.3.0",
+    "check-valid-url": "^0.1.0",
     "commander": "^12.1.0",
     "cross-spawn": "^7.0.3",
     "css-loader": "^7.1.2",
@@ -82,6 +84,6 @@
     "sass-loader": "^14.2.1",
     "terminal-link": "^3.0.0",
     "url": "^0.11.3",
-    "webpack": "^5.92.0"
+    "webpack": "^5.92.1"
   }
 }
