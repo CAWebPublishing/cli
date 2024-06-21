@@ -50,6 +50,7 @@ export default async function serve({
    let webPackArgs = [
       'serve',
       '--open',
+      '--hot',
       '--mode=none',
       '--config',
       defaultConfig
