@@ -31,7 +31,7 @@
 ### `caweb start`  
 Generates the required wp-env.json, starts the WordPress environment, downloads any CAWebPublishing sources and approved plugins.  
 <pre>
-caweb start [options]
+Usage: caweb start [options]
 
 Starts two CAWebPublishing WordPress instances
 development on port 8888 (​http://localhost:8888​) (override with WP_ENV_PORT)
@@ -52,7 +52,7 @@ Options:
 </pre>
 ### `caweb stop`  
 <pre>
-caweb stop
+Usage: caweb stop
 
 Stops running WordPress for development and tests and frees the ports.
 
@@ -61,7 +61,7 @@ Options:
 </pre>
 ### `caweb clean [environment]`  
 <pre>
-caweb clean [environment]
+Usage: caweb clean [environment]
 
 Cleans the WordPress databases.
 
@@ -75,7 +75,7 @@ Options:
 </pre>
 ### `caweb run <container> [command...]`  
 <pre>
-caweb run &lt;container&gt; [command...]
+Usage: caweb run &lt;container&gt; [command...]
 
 Runs an arbitrary command in one of the underlying Docker containers. A double
 dash can be used to pass arguments to the container without parsing them. This
@@ -98,7 +98,7 @@ Options:
 </pre>
 ### `caweb destroy`  
 <pre>
-caweb destroy
+Usage: caweb destroy
 
 Destroy the WordPress environment. Deletes docker containers, volumes, and
 networks associated with the WordPress environment and removes local files.
@@ -109,7 +109,7 @@ Options:
 </pre>
 ### `caweb logs [environment]`  
 <pre>
-caweb logs [environment]
+Usage: caweb logs [environment]
 
 displays PHP and Docker logs for given WordPress environment.
 
@@ -123,7 +123,7 @@ Options:
 </pre>
 ### `caweb install-path`  
 <pre>
-caweb install-path
+Usage: caweb install-path
 
 Get the path where all of the environment files are stored. This includes the
 Docker files, WordPress, PHPUnit files, and any sources that were downloaded.
@@ -133,7 +133,7 @@ Options:
 </pre>
 ### `caweb shell [environment]`  
 <pre>
-caweb shell [environment]
+Usage: caweb shell [environment]
 
 Open shell terminal in WordPress environment.
 
@@ -146,7 +146,7 @@ Options:
 </pre>
 ### `caweb update-plugins [environment]`  
 <pre>
-caweb update-plugins [environment]
+Usage: caweb update-plugins [environment]
 
 Updates all plugins in the WordPress environment.
 
@@ -160,7 +160,7 @@ Options:
 
 ### `caweb create-block [options] <slug>`  
 <pre>
-caweb create-block [options] &lt;slug&gt;
+Usage: caweb create-block [options] &lt;slug&gt;
 
 Scaffold for WordPress plugin to register CA.gov Design System Block.
 
@@ -172,7 +172,7 @@ Options:
 </pre>
 ### `caweb update-block [options] <slug>`  
 <pre>
-caweb update-block [options] &lt;slug&gt;
+Usage: caweb update-block [options] &lt;slug&gt;
 
 Updates a CA.gov Design System Block.
 
@@ -185,7 +185,7 @@ Options:
 ### `caweb sync <from> <to>`  
 In order for the sync process to work correctly, you must have a caweb.json file in the project root directory. For more information read [caweb.json](./docs/SYNC.MD) configuration.
 <pre>
-caweb sync &lt;from&gt; &lt;to&gt;
+Usage: caweb sync &lt;from&gt; &lt;to&gt;
 
 Sync changes from one destination to another.
 
@@ -197,4 +197,30 @@ Options:
   -h, --help         display help for command
   -i, --include [include...]     IDs to of taxonomies to include. Omitting this option will sync all items for given taxonomy.
   -t, --tax [tax...]  Taxonomy that should be synced. Omitting this option will sync the full site. (choices: "pages", "posts", "media", "menus")
+</pre>
+### `caweb a11y <url>`  
+Runs accessibility checks.
+<pre>
+Usage: caweb a11y url
+
+Runs accessibility checks.
+
+Arguments:
+  url               URL or local file to scan for accessibility checks.
+
+Options:
+  -h, --help         display help for command
+</pre>
+### `caweb a11y <url>`  
+Runs WordPress CSS Audit tool against projects.
+<pre>
+Usage: caweb audit [options] [files...]
+
+Runs WordPress CSS Audit tool against projects.
+
+Arguments:
+  files          Files or directory path to CSS files. (default: "build")
+
+Options:
+  -h, --help         display help for command
 </pre>

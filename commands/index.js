@@ -14,7 +14,11 @@ import installPath from '@wordpress/env/lib/commands/install-path.js';
  */
 import build from './build.js';
 import serve from './serve.js';
+
 import a11y from './a11y.js';
+
+import audit from './audit.js'
+
 import shell from './tasks/shell.js';
 
 import sync from './sync.js';
@@ -43,6 +47,7 @@ export {
     build,
     serve,
     a11y,
+    audit,
     sync,
     updatePlugins,
     shell,
