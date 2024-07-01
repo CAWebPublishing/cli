@@ -81,8 +81,6 @@ export default async function webpack({
         }else{
             spinner.text = 'Done'
         }
-        console.log( 'stderr', stderr.toString() );
-        console.log( 'stdout', stdout.toString() );
 
     });
 

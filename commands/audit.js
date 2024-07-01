@@ -116,7 +116,7 @@ export default async function audit({
                 console.log( stderr.toString())
             }
             if( stdout ){
-                console.log( stdout.toString().replace('undefined') )
+                console.log( stdout.toString().replace('undefined', '') )
             }
         })
             
