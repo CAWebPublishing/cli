@@ -13,8 +13,7 @@ import {
     runCmd, 
     projectPath,
     appPath
-} from '../lib/index.js';
-
+} from '../../lib/index.js';
 
 /**
  * Build the current project
@@ -23,30 +22,37 @@ import {
  * @param {Object}  options.spinner A CLI spinner which indicates progress.
  * @param {boolean} options.debug   True if debug mode is enabled.
  */
-export default async function build({
+export default async function webpack({
 	spinner,
 	debug, 
 } ) {
 
     // Spinner not needed at the moment
-	spinner.stop()
+	//spinner.stop()
+
+    const webpackCommand = 'build' === process.argv[2] ? 'build' : 'serve' ;
 
     // Since we use @wordpress/scripts webpack config we can leverage
     // the environment variables as well.
     process.env.WP_COPY_PHP_FILES_TO_DIST  = true;
 
-    // Our default Webpack Configuration 
-    const defaultConfig = path.join( projectPath, 'configs', 'webpack.config.js' );
-
     // pass any arguments from the cli
     // add our default config as an extension.
     // users can overwrite any values by creating a webconfig of their own.
     let webPackArgs = [
-        '--mode=none',
-        '--progress',
+        webpackCommand,
         '--config',
-        defaultConfig
+        path.join( projectPath, 'configs', 'webpack.config.js' ),
+        ...process.argv.slice(3)
     ];
+
+
+    // Added arguments if serving.
+    if( 'serve' === webpackCommand ){
+        webPackArgs.push(
+            '--open',
+        )
+    }
 
     // CommonJS
     if( fs.existsSync( path.join(appPath, 'webpack.config.cjs' ))){
@@ -75,6 +81,9 @@ export default async function build({
         }else{
             spinner.text = 'Done'
         }
+        console.log( 'stderr', stderr.toString() );
+        console.log( 'stdout', stdout.toString() );
+
     });
 
 };

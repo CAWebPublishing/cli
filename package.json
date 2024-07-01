@@ -44,7 +44,7 @@
     "access": "public"
   },
   "config": {
-    "WP_VER": "6.5.4",
+    "WP_VER": "6.5.5",
     "PHP_VER": "8.1",
     "DEFAULTS": {
       "FS_METHOD": "direct",
@@ -62,9 +62,9 @@
     }
   },
   "dependencies": {
-    "@wordpress/create-block": "^4.44.0",
-    "@wordpress/env": "^10.1.0",
-    "@wordpress/scripts": "^28.1.0",
+    "@wordpress/create-block": "^4.45.0",
+    "@wordpress/env": "^10.2.0",
+    "@wordpress/scripts": "^28.2.0",
     "accessibility-checker": "^3.1.73",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
@@ -82,12 +82,13 @@
     "handlebars-loader": "^1.7.3",
     "html-to-json-parser": "^2.0.1",
     "html-webpack-plugin": "^5.6.0",
+    "html-webpack-skip-assets-plugin": "^1.0.4",
     "mini-css-extract-plugin": "^2.9.0",
     "ora": "^8.0.1",
     "postcss-loader": "^8.1.1",
     "resolve-bin": "^1.0.1",
     "sass-loader": "^14.2.1",
-    "snyk": "^1.1291.1",
+    "snyk": "^1.1292.1",
     "terminal-link": "^3.0.0",
     "url": "^0.11.3",
     "webpack": "^5.92.1"

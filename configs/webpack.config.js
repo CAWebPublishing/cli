@@ -10,102 +10,61 @@
  * External dependencies
  */
 import baseConfig from '@wordpress/scripts/config/webpack.config.js';
+import path from 'path';
+import fs from 'fs';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import {HtmlWebpackSkipAssetsPlugin} from 'html-webpack-skip-assets-plugin';
+
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 /**
  * Internal dependencies
  */
+import {
+  projectPath,
+  appPath
+} from '../lib/index.js';
+
+const samplePath = path.join( appPath, 'sample');
+const srcPath = path.join( appPath, 'src');
+const dataPath = path.join( srcPath, 'data');
+
 import SiteGenerator from '../gen/site-generator.js';
 
-// fallback to env variable
-let isProduction = "production" === process.env.NODE_ENV;
-
-// because we use WordPress default WebPack config 
-// 'mode' is defined by process.env.NODE_ENV
-// some of the webpack cli flags are ignored
-// so let's make some corrections.
-let corrections = {};
-
-process.argv.splice( 2 ).forEach(element => {
-    // if flag
-    if( element.startsWith( '--' ) ){
-      let splitterIndex = element.indexOf( '=' );
-      let flag = element.substring(2, splitterIndex );
-      let value = element.substring( splitterIndex + 1 );
-
-      // if flag is a webpack flag add corrections.
-      switch( flag ){
-        case 'mode':
-          // if cli arg was passed use that value
-          isProduction = "production" === value;
-
-          corrections[flag] = value
-          break
-      }
-      
-    }
-   
-});
-
-
-// update the WordPress default webpack rules with ours.
+// Update some of the default WordPress webpack rules.
 baseConfig.module.rules.forEach((rule, i) => {
   const r = new RegExp(rule.test).toString();
 
-  // WordPress adds a hash to asset file names we remove that hash
-  if( r === new RegExp(/\.(bmp|png|jpe?g|gif|webp)$/i).toString() ){
-    baseConfig.module.rules[i].generator = {
-      filename: 'images/[name][ext]'
-    }
-  }
-  if( r  === new RegExp(/\.(woff|woff2|eot|ttf|otf)$/i).toString() ){
-    baseConfig.module.rules[i].generator = {
-      filename: 'fonts/[name][ext]'
-    }
-  }
-  // SVG rules
-  if( r  === new RegExp(/\.svg$/).toString()  ){
-        // we don't want SVG to be inline move them to fonts folder
-        if( 'asset/inline' === rule.type ){
-          baseConfig.module.rules[i].type = 'asset/resource';
-          baseConfig.module.rules[i].generator = {
-            filename: 'fonts/[name][ext]'
-          };
+  switch(r){
+    // WordPress adds a hash to asset file names we remove that hash.
+    case new RegExp(/\.(bmp|png|jpe?g|gif|webp)$/i).toString():
+      rule.generator.filename = 'images/[name].[ext]';
+      break;
+    case new RegExp(/\.(woff|woff2|eot|ttf|otf)$/i).toString():
+      rule.generator.filename = 'fonts/[name].[ext]';
+      break;
+    case new RegExp(/\.svg$/).toString():
+      // we don't want SVG to be asset/inline otherwise the resource may not be available.
+      // the asset should be an asset/resource we move them to the fonts folder. 
+      if( 'asset/inline' === rule.type ){
+        rule.type = 'asset/resource';
+        rule.generator = { filename: 'fonts/[name].[ext]' };
 
-          // we don't care who the issuer is
-          delete baseConfig.module.rules[i].issuer;
-
-        }
+        delete rule.issuer;
+      }
+      break;
   }
-})
+});
 
 // Our Webpack Configuration.
 let webpackConfig = {
   ...baseConfig,
   target: 'web',
-  devtool: false,
+  cache: false,
   output: {
     ...baseConfig.output,
     publicPath: `/`,
     clean: true
-  },
-  plugins: [
-    ...baseConfig.plugins,
-    new MiniCssExtractPlugin(
-      {
-        linkType: "text/css",
-        filename: '[name].css'
-      }
-    )
-  ],
-  module: {
-    rules: [
-      ...baseConfig.module.rules,
-      /*{
-        test: /\.html$/,
-        loader:'handlebars-loader'
-      }*/
-    ]
   },
   performance: {
     maxAssetSize: 500000,
@@ -113,10 +72,95 @@ let webpackConfig = {
   }
 };
 
-if( process.env.CAWEB_SERVE ){
+// Only add the Dev Server if the serve command is ran.
+if( 'serve' === process.argv[2] ){
+  // Delete the default WP Dev Server
   delete webpackConfig.devServer;
 
-  SiteGenerator( webpackConfig );
+  // Add html rule
+  webpackConfig.module.rules = [
+    ...baseConfig.module.rules,
+    {
+      test: /\.html$/,
+      loader:'handlebars-loader'
+    }
+  ]
+
+  // we only want to display errors and warnings
+  webpackConfig.stats = 'errors-warnings';
+
+  let pageTemplate = {
+    title: path.basename(appPath),
+    minify: false,
+    meta: {
+      "Author": "CAWebPublishing",
+      "Description": "State of California",
+      "Keywords": "California,government",
+      "viewport": "width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    },
+    templateParameters: {
+      "title" : path.basename(appPath)
+    },
+    skipAssets: ['**/index-rtl.css']
+  }
+
+  // if an favicon exists.
+  if( fs.existsSync(path.join(srcPath, 'favicon.ico')) ){
+    pageTemplate.favicon = path.join(srcPath, 'favicon.ico');
+  }
+
+  // Sample Page.
+  let sample = {
+    ...pageTemplate,
+    filename: path.join( appPath, 'public', 'index.html'),
+    template: path.join(samplePath, 'index.html')
+  }
+
+  webpackConfig.plugins.push(
+    new HtmlWebpackPlugin(sample),
+    new HtmlWebpackSkipAssetsPlugin()
+  );
+
+  webpackConfig.devServer = {
+    devMiddleware: {
+      writeToDisk: true
+    },
+    headers: {
+    },
+    hot: true,
+    allowedHosts: 'auto',
+    host: 'localhost',
+    port: 9000,
+    compress: true,
+    static: [
+      {
+        directory: path.join( appPath, 'build'),
+      },
+      {
+        directory: path.join(appPath, 'public'),
+      },
+      {
+        directory: path.join(appPath, 'node_modules'),
+      },
+      {
+        directory: path.join(appPath, 'src'),
+      }
+    ],
+    proxy: [
+      {
+        context: ['/node_modules'],
+        target: 'http://localhost:9000',
+        pathRewrite: { '^/node_modules': '' },
+      },
+      {
+        context: ['/src'],
+        target: 'http://localhost:9000',
+        pathRewrite: { '^/src': '' },
+      }
+    ],
+  }
+
+
 }
 
 export default webpackConfig;
