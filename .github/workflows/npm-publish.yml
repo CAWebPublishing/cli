@@ -16,7 +16,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: git submodule init
-      - run: git submodule update
+      - run: git submodule update --init
       - run: npm ci
       - run: npm test
