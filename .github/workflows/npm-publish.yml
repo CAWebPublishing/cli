@@ -17,5 +17,6 @@ jobs:
         with:
           node-version: 20
       - run: git submodule init
+      - run: git submodule update
       - run: npm ci
       - run: npm test
