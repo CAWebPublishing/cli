@@ -20,8 +20,7 @@
     "docs",
     "gen",
     "lib",
-    "template",
-    "css-audit.config.cjs"
+    "template"
   ],
   "scripts": {
     "doc": "node ./docs/tool/index.js",
@@ -75,6 +74,7 @@
     "cross-spawn": "^7.0.3",
     "css-audit": "file:css-audit",
     "css-loader": "^7.1.2",
+    "deepmerge": "^4.3.1",
     "docker-compose": "^0.24.8",
     "fs-extra": "^11.2.0",
     "get-all-files": "^5.0.0",

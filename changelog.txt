@@ -3,6 +3,8 @@ v1.4.3
 - Added new audit command which runs WordPress CSS Audit tool
 - Cleaned up build/serve commands
 - Update Core WordPress version to 6.5.5
+- Added --audit flag to serve command
+- Added css-audit directory to webpack config static directories
 
 v1.4.2
 - Added hot flag to webpack serve command

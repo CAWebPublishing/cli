@@ -72,10 +72,11 @@ let webpackConfig = {
   }
 };
 
+// Delete the default WP Dev Server
+delete webpackConfig.devServer;
+
 // Only add the Dev Server if the serve command is ran.
 if( 'serve' === process.argv[2] ){
-  // Delete the default WP Dev Server
-  delete webpackConfig.devServer;
 
   // Add html rule
   webpackConfig.module.rules = [
@@ -144,6 +145,9 @@ if( 'serve' === process.argv[2] ){
       },
       {
         directory: path.join(appPath, 'src'),
+      },
+      {
+        directory: path.join(projectPath, 'bin', 'css-audit', 'public'),
       }
     ],
     proxy: [

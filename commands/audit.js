@@ -30,7 +30,6 @@ export default async function audit({
 } ) {
     
     let files = [];
-    
 
     process.argv.slice(3).forEach( (paths, i) => {
         let resolvePath = path.resolve(paths);
@@ -116,7 +115,14 @@ export default async function audit({
                 console.log( stderr.toString())
             }
             if( stdout ){
-                console.log( stdout.toString().replace('undefined', '') )
+                let msg = stdout.toString().replace('undefined', '');
+            
+                if( 'audit' === process.argv[2] ){
+                    console.log( msg )
+                }else{
+                    return msg;
+                }
+
             }
         })
             
