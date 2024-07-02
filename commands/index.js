@@ -12,9 +12,12 @@ import installPath from '@wordpress/env/lib/commands/install-path.js';
 /**
  * Internal dependencies
  */
-import build from './build.js';
-import serve from './serve.js';
+import webpack from './webpack/webpack.js';
+
 import a11y from './a11y.js';
+
+import audit from './audit.js'
+
 import shell from './tasks/shell.js';
 
 import sync from './sync.js';
@@ -40,9 +43,9 @@ export {
     start,
 	stop,
     destroy,
-    build,
-    serve,
+    webpack,
     a11y,
+    audit,
     sync,
     updatePlugins,
     shell,
