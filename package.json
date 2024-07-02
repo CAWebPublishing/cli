@@ -25,7 +25,7 @@
   "scripts": {
     "doc": "node ./docs/tool/index.js",
     "test": "echo \"Error: run tests from root\" && exit 0",
-    "postinstall": "cd bin/css-audit && ls -al"
+    "postinstall": "cd bin/ && ls -al"
   },
   "homepage": "https://github.com/CAWebPublishing/cli#readme",
   "repository": {
