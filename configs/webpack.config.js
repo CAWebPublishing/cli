@@ -39,17 +39,17 @@ baseConfig.module.rules.forEach((rule, i) => {
   switch(r){
     // WordPress adds a hash to asset file names we remove that hash.
     case new RegExp(/\.(bmp|png|jpe?g|gif|webp)$/i).toString():
-      rule.generator.filename = 'images/[name].[ext]';
+      rule.generator.filename = 'images/[name][ext]';
       break;
     case new RegExp(/\.(woff|woff2|eot|ttf|otf)$/i).toString():
-      rule.generator.filename = 'fonts/[name].[ext]';
+      rule.generator.filename = 'fonts/[name][ext]';
       break;
     case new RegExp(/\.svg$/).toString():
       // we don't want SVG to be asset/inline otherwise the resource may not be available.
       // the asset should be an asset/resource we move them to the fonts folder. 
       if( 'asset/inline' === rule.type ){
         rule.type = 'asset/resource';
-        rule.generator = { filename: 'fonts/[name].[ext]' };
+        rule.generator = { filename: 'fonts/[name][ext]' };
 
         delete rule.issuer;
       }
