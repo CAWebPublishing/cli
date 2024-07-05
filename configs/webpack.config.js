@@ -25,6 +25,7 @@ import {
   appPath
 } from '../lib/index.js';
 
+
 const samplePath = path.join( appPath, 'sample');
 const srcPath = path.join( appPath, 'src');
 const dataPath = path.join( srcPath, 'data');
@@ -63,7 +64,7 @@ let webpackConfig = {
   cache: false,
   output: {
     ...baseConfig.output,
-    publicPath: `/`,
+    publicPath: `/public`,
     clean: true
   },
   performance: {
@@ -119,10 +120,11 @@ if( 'serve' === process.argv[2] ){
 
   webpackConfig.plugins.push(
     new HtmlWebpackPlugin(sample),
-    new HtmlWebpackSkipAssetsPlugin()
+    new HtmlWebpackSkipAssetsPlugin()    
   );
 
   webpackConfig.devServer = {
+    open: true,
     devMiddleware: {
       writeToDisk: true
     },
@@ -146,9 +148,6 @@ if( 'serve' === process.argv[2] ){
       {
         directory: path.join(appPath, 'src'),
       },
-      {
-        directory: path.join(projectPath, 'bin', 'css-audit', 'public'),
-      }
     ],
     proxy: [
       {

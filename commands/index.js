@@ -14,9 +14,12 @@ import installPath from '@wordpress/env/lib/commands/install-path.js';
  */
 import webpack from './webpack/webpack.js';
 
-import a11y from './a11y.js';
 
-import audit from './audit.js'
+import A11yPlugin from '../lib/webpack/plugins/a11y/index.js';
+const a11y = new A11yPlugin().a11yCheck;
+
+import CSSAuditPlugin from '../lib/webpack/plugins/css-audit/index.js';
+const audit = new CSSAuditPlugin({}).audit;
 
 import shell from './tasks/shell.js';
 
