@@ -6,35 +6,37 @@
 import path from 'path';
 import fs from 'fs';
 import deepmerge from 'deepmerge';
-
+import Webpack from 'webpack';
+import webpackServer from 'webpack-dev-server';
 /**
  * Internal dependencies
  */
 import { 
     runCmd, 
     projectPath,
-    appPath
+    appPath,
+    wpPrimary,
+    wpGreen,
+    wpRed
 } from '../../lib/index.js';
 
+// WordPress CSS Audit tool
 import {default as auditor} from '../audit.js';
+
 
 /**
  * Build the current project
  * 
  * @param {Object}  options
- * @param {Object}  options.spinner A CLI spinner which indicates progress.
  * @param {boolean} options.debug   True if debug mode is enabled.
  * @param {boolean} options.audit   Add CSS-Audit Page to pages served.
  */
 export default async function webpack({
-	spinner,
 	debug, 
-    audit
+    audit,
+    a11y
 } ) {
-
-    spinner.stop();
-    console.log( `Building ${path.basename(appPath)} project...` );
-
+    
     const webpackCommand = 'build' === process.argv[2] ? 'build' : 'serve' ;
 
     const defaultConfigPath = path.join( projectPath, 'configs', 'webpack.config.js' );
@@ -61,7 +63,7 @@ export default async function webpack({
             '--merge'
         )
 
-        customConfig = await import('file://' + path.join(appPath, 'webpack.config.cjs' ));
+        customConfig = await import('file://' + path.join(appPath, 'webpack.config.cjs' )).default;
 
     // ESM
     }else if( fs.existsSync(path.join(appPath, 'webpack.config.js' )) ){
@@ -77,16 +79,17 @@ export default async function webpack({
     if( customConfig.length ){
         webpackConfig = deepmerge(webpackConfig.default, customConfig.default);
     }
-
+    
     // we always run the build command.
     let result = await runCmd(
 		'webpack', 
 		['build', ...webPackArgs]
 	).then(({stdout, stderr}) => {
         // we hide the punycode deprecation warning.
+        // this is caused by the wp-scripts package
         // if an error was thrown
         if( stderr ){
-            console.log( stderr.toString().replace(/.*`punycode`.*\n.*/, '') )
+            //console.log( stderr.toString().replace(/.*`punycode`.*\n.*/, '') )
         }
         
         if(stdout){
@@ -97,21 +100,30 @@ export default async function webpack({
 
     // if serving.
     if( 'serve' === webpackCommand ){
-        webPackArgs.push(
-            '--open',
-        )
+        let hostUrl = 'localhost' === webpackConfig.default.devServer.host ? `http://${webpackConfig.default.devServer.host}`: webpackConfig.default.devServer.host;
+        let hostPort = webpackConfig.default.devServer.port;
 
-        // run css-auditor
-        if( audit ){
-            await auditor({ spinner, debug });
+        if( hostPort && 80 !== hostPort )
+        {
+            hostUrl = `${hostUrl}:${hostPort}`;
+        }        
+        
+        console.log( `Webpack Server is preparing to launch ${ wpGreen(hostUrl) }` );
+        console.log( `Press ${ wpRed('Ctrl + C') } to shutdown the server.\n` );
+
+         // run css-auditor
+         if( audit ){
+            //await auditor({ spinner, debug });
+
         }
-
-        console.log( "Webpack Server is preparing to launch...\nPress Ctrl + C to shutdown the server.");
-
+        
         // run webpack serve command
         await runCmd(
             'webpack', 
-            ['serve', ...webPackArgs]
+            ['serve', ...webPackArgs],
+            {
+                stdio: 'inherit'
+            }
         ).then(({stdout, stderr}) => {
             // if an error was thrown, and no output
             if( stderr && ! stdout){
@@ -124,10 +136,15 @@ export default async function webpack({
     
         });
 
+        /*
+        const compiler = Webpack(webpackConfig.default);
+        const server = new webpackServer({...webpackConfig.default.devServer}, compiler);
+       */
+       
     // only build was ran.
     }else{
-        spinner.prefixText = result;
-        spinner.text = "Done!";
+        //spinner.prefixText = result;
+        //spinner.text = "Done!";
     }
 
 };

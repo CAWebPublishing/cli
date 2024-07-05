@@ -25,6 +25,8 @@ import {
   appPath
 } from '../lib/index.js';
 
+import A11yPlugin from '../lib/webpack/plugins/a11y/index.js';
+
 const samplePath = path.join( appPath, 'sample');
 const srcPath = path.join( appPath, 'src');
 const dataPath = path.join( srcPath, 'data');
@@ -63,7 +65,7 @@ let webpackConfig = {
   cache: false,
   output: {
     ...baseConfig.output,
-    publicPath: `/`,
+    publicPath: `/public`,
     clean: true
   },
   performance: {
@@ -119,10 +121,14 @@ if( 'serve' === process.argv[2] ){
 
   webpackConfig.plugins.push(
     new HtmlWebpackPlugin(sample),
-    new HtmlWebpackSkipAssetsPlugin()
+    new HtmlWebpackSkipAssetsPlugin(),
+    new A11yPlugin({
+      outputFilename: 'a11y'
+    })
   );
 
   webpackConfig.devServer = {
+    open: true,
     devMiddleware: {
       writeToDisk: true
     },
@@ -145,6 +151,9 @@ if( 'serve' === process.argv[2] ){
       },
       {
         directory: path.join(appPath, 'src'),
+      },
+      {
+        directory: path.join(appPath, 'a11y'),
       },
       {
         directory: path.join(projectPath, 'bin', 'css-audit', 'public'),

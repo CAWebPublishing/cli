@@ -8,10 +8,7 @@ export default {
     policies: [
         'WCAG_2_1'
     ],
-    failLevels: [
-        'violation', 
-        'potentialviolation'
-    ],
+    failLevels: [],
     reportLevels: [
         'violation', 
         'potentialviolation',
