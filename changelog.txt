@@ -1,6 +1,6 @@
 v1.4.4
-- accessibility-checker and cli a11y command now use new @caweb/a11y-webpack-plugin
-
+- accessibility-checker and cli a11y command now use new @caweb/a11y-webpack-plugin class
+- css-audit and cli audit command now use new @caweb/css-audit-webpack-plugin class
 
 v1.4.3
 - Submoduled WordPress/css-audit repo

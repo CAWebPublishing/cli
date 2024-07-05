@@ -20,9 +20,8 @@ import {
     wpRed
 } from '../../lib/index.js';
 
-// WordPress CSS Audit tool
-import {default as auditor} from '../audit.js';
-
+import CSSAuditPlugin from '../../lib/webpack/plugins/css-audit/index.js';
+import A11yPlugin from '../../lib/webpack/plugins/a11y/index.js';
 
 /**
  * Build the current project
@@ -32,11 +31,12 @@ import {default as auditor} from '../audit.js';
  * @param {boolean} options.audit   Add CSS-Audit Page to pages served.
  */
 export default async function webpack({
+    spinner,
 	debug, 
     audit,
-    a11y
+    a11y,
+    selectors
 } ) {
-    
     const webpackCommand = 'build' === process.argv[2] ? 'build' : 'serve' ;
 
     const defaultConfigPath = path.join( projectPath, 'configs', 'webpack.config.js' );
@@ -83,7 +83,8 @@ export default async function webpack({
     // we always run the build command.
     let result = await runCmd(
 		'webpack', 
-		['build', ...webPackArgs]
+		['build', ...webPackArgs],
+        {stdio:'pipe'}
 	).then(({stdout, stderr}) => {
         // we hide the punycode deprecation warning.
         // this is caused by the wp-scripts package
@@ -111,14 +112,51 @@ export default async function webpack({
         console.log( `Webpack Server is preparing to launch ${ wpGreen(hostUrl) }` );
         console.log( `Press ${ wpRed('Ctrl + C') } to shutdown the server.\n` );
 
-         // run css-auditor
+        // add a11y plugin
+        if( a11y ){
+            webpackConfig.default.plugins.push(new A11yPlugin({
+                outputFilename: 'a11y'
+              }) )
+
+            webpackConfig.default.devServer.static.push({
+                directory: path.join(appPath, 'a11y')
+            })
+        }
+        
+         // add css-auditor plugin
          if( audit ){
-            //await auditor({ spinner, debug });
+            webpackConfig.default.plugins.push(new CSSAuditPlugin({
+                format: 'html',
+                filename: 'css-audit',
+                colors: ! process.argv.includes('--no-colors'),
+                important: ! process.argv.includes('--no-important'),
+                displayNone: ! process.argv.includes('--no-display-none'),
+                selectors: ! process.argv.includes('--no-selectors'),
+                mediaQueries: ! process.argv.includes('--no-media-queries'),
+                typography: ! process.argv.includes('--no-typography'),
+                propertyValues: process.argv.includes('--no-property-values') ? false : [
+                    'font-size',
+                    'padding,padding-top,padding-bottom,padding-right,padding-left' ,
+                    'property-values', 'margin,margin-top,marin-bottom,marin-right,marin-left',
+                ],
+            }));
+
+            
+            webpackConfig.default.devServer.static.push({
+                directory: path.join(projectPath, 'bin', 'css-audit', 'public'),
+            })
 
         }
         
+        const compiler = Webpack(webpackConfig.default);
+        const server = new webpackServer({...webpackConfig.default.devServer}, compiler);
+    
+        await server.start();
+
+        //process.stdin.resume();
+
         // run webpack serve command
-        await runCmd(
+        /*await runCmd(
             'webpack', 
             ['serve', ...webPackArgs],
             {
@@ -134,7 +172,7 @@ export default async function webpack({
                 spinner.text = "Webpack Server was closed.";
             }
     
-        });
+        });*/
 
         /*
         const compiler = Webpack(webpackConfig.default);

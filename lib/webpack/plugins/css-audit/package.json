@@ -1,7 +1,7 @@
 {
-  "name": "@caweb/a11y-webpack-plugin",
+  "name": "@caweb/css-audit-webpack-plugin",
   "version": "1.0.0",
-  "description": "Webpack Plugin to run Accessibility Scans",
+  "description": "Webpack Plugin to run WordPress CSS Audit",
   "type": "module",
   "main": "index.js",
   "scripts": {
