@@ -3,6 +3,7 @@ v1.4.4
 - css-audit and cli audit command now use new @caweb/css-audit-webpack-plugin class
 - Fixed issue with webpack file naming
 - Added new commands reference sheet
+- jshint and cli jshint command now use new @caweb/jshint-webpack-plugin class
 
 v1.4.3
 - Submoduled WordPress/css-audit repo

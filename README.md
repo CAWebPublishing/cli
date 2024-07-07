@@ -18,10 +18,5 @@
   - phpMyAdmin test site started at http://localhost:9090
 - Uses CAWebPublishing [External Project Template Configuration](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-create-block/packages-create-block-external-template/) when creating Gutenberg Blocks, see configurations [here](https://github.com/CAWebPublishing/cli/lib/template)
 - Allows for syncing of WordPress instance via Rest API, to maintain ID's please ensure [CAWebPublishing Development Toolbox](https://github.com/CAWebPublishing/caweb-dev/) plugin is installed. 
-- Adds config.yml to both cli containers.  
-<b>Example config.yml file</b>
-<pre>
-    path: /var/www/html
-    apache_modules:
-      - mod_rewrite
-</pre>
+- Allows for generation of  WordPress CSS Audits 
+- Allows for IBM Accessibility Scan reports.
