@@ -13,10 +13,7 @@ private
 docker-compose\.yml
 docker-compose\.override\.yml
 caweb-cli-*.tgz
-
-# WordPress CSS-Audit Tool
-# [Github](https://github.com/wordpress/css-audit)   
-bin/css-audit/public/
+public
 
 # wp core (as of 6.3.2)
 db-config\.php

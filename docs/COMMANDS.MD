@@ -13,7 +13,7 @@ url                                URL to scan for accessibility checks.
 --policies &lt;policy...&gt;             Specify one or many policies to scan.
                                    Default: WCAG_2_1
 --fail-levels &lt;levels...&gt;          Specify one or many violation levels on which to fail the test.
-                                   Default: 
+                                   Default: violation,potentialviolation
 --report-levels &lt;levels...&gt;        Specify one or many violation levels that should be reported.
                                    Default: violation,potentialviolation,recommendation,potentialrecommendation,manual,pass
 --labels &lt;label...&gt;                Specify labels that you would like associated to your scan.

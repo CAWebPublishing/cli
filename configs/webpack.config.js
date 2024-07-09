@@ -16,7 +16,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import {HtmlWebpackSkipAssetsPlugin} from 'html-webpack-skip-assets-plugin';
 
 import CSSAuditPlugin from '../lib/webpack/plugins/css-audit/index.js';
-//import A11yPlugin from '../../lib/webpack/plugins/a11y/index.js';
+import A11yPlugin from '../lib/webpack/plugins/a11y/index.js';
 import JSHintPlugin from '../lib/webpack/plugins/jshint/index.js';
 
 /**
@@ -127,6 +127,7 @@ if( 'serve' === process.argv[2] ){
     new HtmlWebpackPlugin(sample),
     new HtmlWebpackSkipAssetsPlugin(),
     new JSHintPlugin(),
+    new A11yPlugin(),
     new CSSAuditPlugin({
       format: 'html',
       colors: ! process.argv.includes('--no-colors'),
