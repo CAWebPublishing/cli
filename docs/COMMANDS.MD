@@ -36,9 +36,9 @@ files                              Files or directory path to CSS files.
                                    Default: ./build
 
 <b>Options:</b>
---format                           Format to use for displaying report.
+--format [format]                  Format to use for displaying report.
                                    Default: html
---filename                         If using a format that outputs to a file, specify the file name.
+--filename [name]                  If using a format that outputs to a file, specify the file name.
                                    Default: css-audit
 --colors                           Runs colors audit.
                                    Default: true
@@ -102,6 +102,19 @@ Deletes docker containers, volumes, and networks associated with the CAWebPublis
 Get the path where all of the environment files are stored. This includes the Docker files, WordPress, PHPUnit files, and any sources that were downloaded.
 <pre>
 <b>Usage:</b> caweb install-path [options]
+</pre>
+### `caweb jshint`
+Runs JSHint tool against projects.
+<pre>
+<b>Usage:</b> caweb jshint [options] [files...]
+
+<b>Arguments:</b>
+files                              Files or directory path to JS files.
+                                   Default: ./src
+
+<b>Options:</b>
+--output-filename &lt;name&gt;           Filename for the scan results.
+--output-folder &lt;folder&gt;           Where the hint results should be saved.
 </pre>
 ### `caweb logs`
 Displays PHP and Docker logs for given WordPress environment.

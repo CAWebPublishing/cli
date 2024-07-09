@@ -15,7 +15,9 @@ import fs from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import {HtmlWebpackSkipAssetsPlugin} from 'html-webpack-skip-assets-plugin';
 
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import CSSAuditPlugin from '../lib/webpack/plugins/css-audit/index.js';
+//import A11yPlugin from '../../lib/webpack/plugins/a11y/index.js';
+import JSHintPlugin from '../lib/webpack/plugins/jshint/index.js';
 
 /**
  * Internal dependencies
@@ -30,7 +32,6 @@ const samplePath = path.join( appPath, 'sample');
 const srcPath = path.join( appPath, 'src');
 const dataPath = path.join( srcPath, 'data');
 
-import SiteGenerator from '../gen/site-generator.js';
 
 // Update some of the default WordPress webpack rules.
 baseConfig.module.rules.forEach((rule, i) => {
@@ -103,7 +104,11 @@ if( 'serve' === process.argv[2] ){
     templateParameters: {
       "title" : path.basename(appPath)
     },
-    skipAssets: ['**/index-rtl.css']
+    skipAssets: [
+      '**/index-rtl.css', // we skip the Right-to-Left Styles
+      '**/css-audit.*', // we skip the CSSAudit Files
+      '**/jshint.*', // we skip the JSHint Files
+    ]
   }
 
   // if an favicon exists.
@@ -120,17 +125,33 @@ if( 'serve' === process.argv[2] ){
 
   webpackConfig.plugins.push(
     new HtmlWebpackPlugin(sample),
-    new HtmlWebpackSkipAssetsPlugin()    
+    new HtmlWebpackSkipAssetsPlugin(),
+    new JSHintPlugin(),
+    new CSSAuditPlugin({
+      format: 'html',
+      colors: ! process.argv.includes('--no-colors'),
+      important: ! process.argv.includes('--no-important'),
+      displayNone: ! process.argv.includes('--no-display-none'),
+      selectors: ! process.argv.includes('--no-selectors'),
+      mediaQueries: ! process.argv.includes('--no-media-queries'),
+      typography: ! process.argv.includes('--no-typography'),
+      propertyValues: process.argv.includes('--no-property-values') ? false : [
+          'font-size',
+          'padding,padding-top,padding-bottom,padding-right,padding-left' ,
+          'property-values', 'margin,margin-top,marin-bottom,marin-right,marin-left',
+      ]
+    })
   );
 
   webpackConfig.devServer = {
-    open: true,
     devMiddleware: {
       writeToDisk: true
     },
     headers: {
     },
     hot: true,
+    open: ['http://localhost:9000'],
+    //client: 'verbose',
     allowedHosts: 'auto',
     host: 'localhost',
     port: 9000,
@@ -140,7 +161,7 @@ if( 'serve' === process.argv[2] ){
         directory: path.join( appPath, 'build'),
       },
       {
-        directory: path.join(appPath, 'public'),
+        directory: path.join(appPath, 'public')
       },
       {
         directory: path.join(appPath, 'node_modules'),

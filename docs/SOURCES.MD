@@ -25,6 +25,10 @@
 ### <ins>phpMyAdmin</ins> 
 [Docker](https://hub.docker.com/_/phpmyadmin)
 
+### <ins>jshint</ins>
+[Documentation](https://jshint.com/docs/)  
+[NPM Package](https://www.npmjs.com/package/jshint)
+
 ### <ins>css-audit</ins>
 [Documentation](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/css/)  
 [Documentation](https://make.wordpress.org/core/2021/05/17/introducing-the-wordpress-css-audit-tool/)  

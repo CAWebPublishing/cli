@@ -4,10 +4,11 @@
  * External dependencies
  */
 import path from 'path';
-import fs from 'fs';
+import fs, { watch } from 'fs';
 import deepmerge from 'deepmerge';
 import Webpack from 'webpack';
 import webpackServer from 'webpack-dev-server';
+
 /**
  * Internal dependencies
  */
@@ -20,8 +21,6 @@ import {
     wpRed
 } from '../../lib/index.js';
 
-import CSSAuditPlugin from '../../lib/webpack/plugins/css-audit/index.js';
-import A11yPlugin from '../../lib/webpack/plugins/a11y/index.js';
 
 /**
  * Build the current project
@@ -114,38 +113,17 @@ export default async function webpack({
 
         // add a11y plugin
         if( a11y ){
-            webpackConfig.default.plugins.push(new A11yPlugin({
+            /*webpackConfig.default.plugins.push(new A11yPlugin({
                 outputFilename: 'a11y'
               }) )
 
             webpackConfig.default.devServer.static.push({
                 directory: path.join(appPath, 'a11y')
-            })
+            })*/
         }
         
          // add css-auditor plugin
          if( audit ){
-            webpackConfig.default.plugins.push(new CSSAuditPlugin({
-                format: 'html',
-                filename: 'css-audit',
-                colors: ! process.argv.includes('--no-colors'),
-                important: ! process.argv.includes('--no-important'),
-                displayNone: ! process.argv.includes('--no-display-none'),
-                selectors: ! process.argv.includes('--no-selectors'),
-                mediaQueries: ! process.argv.includes('--no-media-queries'),
-                typography: ! process.argv.includes('--no-typography'),
-                propertyValues: process.argv.includes('--no-property-values') ? false : [
-                    'font-size',
-                    'padding,padding-top,padding-bottom,padding-right,padding-left' ,
-                    'property-values', 'margin,margin-top,marin-bottom,marin-right,marin-left',
-                ],
-            }));
-
-            
-            webpackConfig.default.devServer.static.push({
-                directory: path.join(projectPath, 'bin', 'css-audit', 'public'),
-            })
-
         }
         
         const compiler = Webpack(webpackConfig.default);

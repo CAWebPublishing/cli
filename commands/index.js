@@ -21,6 +21,9 @@ const a11y = new A11yPlugin().a11yCheck;
 import CSSAuditPlugin from '../lib/webpack/plugins/css-audit/index.js';
 const audit = new CSSAuditPlugin({}).audit;
 
+import JSHintPlugin from '../lib/webpack/plugins/jshint/index.js';
+const hint = new JSHintPlugin().hint;
+
 import shell from './tasks/shell.js';
 
 import sync from './sync.js';
@@ -49,6 +52,7 @@ export {
     webpack,
     a11y,
     audit,
+    hint,
     sync,
     updatePlugins,
     shell,
