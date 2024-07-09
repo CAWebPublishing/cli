@@ -3,8 +3,6 @@
 
 - SNYK  
     https://www.npmjs.com/package/snyk
-- CSS-Audit  
-    https://github.com/wordpress/css-audit
 
 ## Testaro
 https://www.npmjs.com/package/testaro  

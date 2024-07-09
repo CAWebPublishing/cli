@@ -1,7 +1,7 @@
-v1.4.5
-- Fixed issue with webpack file naming
-
 v1.4.4
+- Fixed issue with webpack file naming
+- Added new commands reference sheet
+- jshint and cli jshint command now use new @caweb/jshint-webpack-plugin class
 - accessibility-checker and cli a11y command now use new @caweb/a11y-webpack-plugin class
 - css-audit and cli audit command now use new @caweb/css-audit-webpack-plugin class
 

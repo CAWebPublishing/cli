@@ -12,9 +12,6 @@ import os from 'os';
  */
 import { runCLICmds, runCmd, projectPath } from '../lib/index.js';
 import { CAWEB_OPTIONS, DIVI_OPTIONS } from '../lib/wordpress/index.js';
-/*
-import generateOverridesMD from '../admin.js';
-*/
 /**
  * Promisified dependencies
  */
