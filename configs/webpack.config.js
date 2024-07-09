@@ -107,6 +107,7 @@ if( 'serve' === process.argv[2] ){
     skipAssets: [
       '**/index-rtl.css', // we skip the Right-to-Left Styles
       '**/css-audit.*', // we skip the CSSAudit Files
+      '**/a11y.*', // we skip the A11y Files
       '**/jshint.*', // we skip the JSHint Files
     ]
   }
