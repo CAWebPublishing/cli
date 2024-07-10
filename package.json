@@ -77,6 +77,7 @@
     "get-all-files": "^5.0.0",
     "got": "^14.4.1",
     "handlebars-loader": "^1.7.3",
+    "html-format": "^1.1.7",
     "html-to-json-parser": "^2.0.1",
     "html-webpack-plugin": "^5.6.0",
     "html-webpack-skip-assets-plugin": "^1.0.4",
