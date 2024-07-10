@@ -1,3 +1,9 @@
+v1.4.6
+- Fixed issue with jshint reporter
+
+v1.4.5
+- Added missing npm package
+
 v1.4.4
 - Fixed issue with webpack file naming
 - Added new commands reference sheet
