@@ -1,24 +1,16 @@
-#!/usr/bin/env node
-
 /**
  * External dependencies
  */
 import path from 'path';
-import fs, { watch } from 'fs';
-import deepmerge from 'deepmerge';
-import Webpack from 'webpack';
-import webpackServer from 'webpack-dev-server';
+import fs from 'fs';
 
 /**
  * Internal dependencies
  */
 import { 
-    runCmd, 
-    projectPath,
     appPath,
-    wpPrimary,
-    wpGreen,
-    wpRed
+    projectPath,
+    runCmd
 } from '../../lib/index.js';
 
 
@@ -32,13 +24,11 @@ import {
 export default async function webpack({
     spinner,
 	debug, 
-    audit,
-    a11y,
-    selectors
 } ) {
     const webpackCommand = 'build' === process.argv[2] ? 'build' : 'serve' ;
 
-    const defaultConfigPath = path.join( projectPath, 'configs', 'webpack.config.js' );
+    // we use our default config from the @caweb/html-webpack-plugin
+    const defaultConfigPath = path.resolve(projectPath, '..', 'webpack', 'webpack.config.js' );
     let webpackConfig = await import('file://' + defaultConfigPath);
     let customConfig = {};
 
@@ -46,16 +36,15 @@ export default async function webpack({
     // the environment variables as well.
     process.env.WP_COPY_PHP_FILES_TO_DIST  = true;
 
-    // pass any arguments from the cli
     // add our default config as an extension.
     // users can overwrite any values by creating a webconfig of their own.
     let webPackArgs = [
         '--config',
-        defaultConfigPath,
-    ];
-    
+        defaultConfigPath
+    ].filter(e => e);
+
     // CommonJS
-    if( fs.existsSync( path.join(appPath, 'webpack.config.cjs' ))){
+    if( fs.existsSync( path.join(appPath, 'webpack.config.cjs' ) ) ){
         webPackArgs.push(
             '--config',
             path.join(appPath, 'webpack.config.cjs' ),
@@ -78,89 +67,17 @@ export default async function webpack({
     if( customConfig.length ){
         webpackConfig = deepmerge(webpackConfig.default, customConfig.default);
     }
-    
-    // we always run the build command.
-    let result = await runCmd(
+        
+    // run the webpackCommand command.
+    await runCmd(
 		'webpack', 
-		['build', ...webPackArgs],
-        {stdio:'pipe'}
-	).then(({stdout, stderr}) => {
-        // we hide the punycode deprecation warning.
-        // this is caused by the wp-scripts package
-        // if an error was thrown
-        if( stderr ){
-            //console.log( stderr.toString().replace(/.*`punycode`.*\n.*/, '') )
-        }
-        
-        if(stdout){
-            return stdout.toString().replace(/.*`punycode`.*\n.*/, '');
-        }
-
-    });
-
-    // if serving.
-    if( 'serve' === webpackCommand ){
-        let hostUrl = 'localhost' === webpackConfig.default.devServer.host ? `http://${webpackConfig.default.devServer.host}`: webpackConfig.default.devServer.host;
-        let hostPort = webpackConfig.default.devServer.port;
-
-        if( hostPort && 80 !== hostPort )
+		[
+            webpackCommand, 
+            ...webPackArgs
+        ],
         {
-            hostUrl = `${hostUrl}:${hostPort}`;
-        }        
-        
-        console.log( `Webpack Server is preparing to launch ${ wpGreen(hostUrl) }` );
-        console.log( `Press ${ wpRed('Ctrl + C') } to shutdown the server.\n` );
-
-        // add a11y plugin
-        if( a11y ){
-            /*webpackConfig.default.plugins.push(new A11yPlugin({
-                outputFilename: 'a11y'
-              }) )
-
-            webpackConfig.default.devServer.static.push({
-                directory: path.join(appPath, 'a11y')
-            })*/
+            stdio: 'inherit',
+            argv0: process.argv.join(' ')
         }
-        
-         // add css-auditor plugin
-         if( audit ){
-        }
-        
-        const compiler = Webpack(webpackConfig.default);
-        const server = new webpackServer({...webpackConfig.default.devServer}, compiler);
-    
-        await server.start();
-
-        //process.stdin.resume();
-
-        // run webpack serve command
-        /*await runCmd(
-            'webpack', 
-            ['serve', ...webPackArgs],
-            {
-                stdio: 'inherit'
-            }
-        ).then(({stdout, stderr}) => {
-            // if an error was thrown, and no output
-            if( stderr && ! stdout){
-                console.log( stderr.toString() )
-            }
-            
-            if( stdout ){
-                spinner.text = "Webpack Server was closed.";
-            }
-    
-        });*/
-
-        /*
-        const compiler = Webpack(webpackConfig.default);
-        const server = new webpackServer({...webpackConfig.default.devServer}, compiler);
-       */
-       
-    // only build was ran.
-    }else{
-        //spinner.prefixText = result;
-        //spinner.text = "Done!";
-    }
-
+	);
 };
