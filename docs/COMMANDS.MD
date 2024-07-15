@@ -21,6 +21,7 @@ url                                URL to scan for accessibility checks.
 --output-format &lt;format&gt;           In which formats should the results be output.
                                    Default: html
 --output-filename &lt;name&gt;           Filename for the scan results.
+                                   Default: a11y
 --output-folder &lt;folder&gt;           Where the scan results should be saved.
                                    Default: a11y
 --output-filename-timestamp        Should the timestamp be included in the filename of the reports?
@@ -114,7 +115,9 @@ files                              Files or directory path to JS files.
 
 <b>Options:</b>
 --output-filename &lt;name&gt;           Filename for the scan results.
+                                   Default: jshint
 --output-folder &lt;folder&gt;           Where the hint results should be saved.
+                                   Default: jshint
 </pre>
 ### `caweb logs`
 Displays PHP and Docker logs for given WordPress environment.

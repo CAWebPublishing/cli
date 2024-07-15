@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.4.5",
+  "version": "1.5.0",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -9,8 +9,7 @@
   "author": "CAWebPublishing",
   "license": "ISC",
   "bin": {
-    "caweb": "bin/caweb.js",
-    "auditor": "bin/css-audit/index.js"
+    "caweb": "bin/caweb.js"
   },
   "files": [
     "bin",
@@ -21,8 +20,7 @@
   ],
   "scripts": {
     "doc": "node ./docs/tool/index.js",
-    "test": "echo \"Error: run tests from root\" && exit 0",
-    "postinstall": "cd bin/css-audit && npm ci"
+    "test": "echo \"Error: run tests from root\" && exit 0"
   },
   "homepage": "https://github.com/CAWebPublishing/cli#readme",
   "repository": {
@@ -58,39 +56,17 @@
     }
   },
   "dependencies": {
+    "@caweb/webpack": "^1.0.0",
     "@wordpress/create-block": "^4.45.0",
     "@wordpress/env": "^10.2.0",
-    "@wordpress/scripts": "^28.2.0",
-    "accessibility-checker": "^3.1.73",
-    "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
     "axios-retry": "^4.4.1",
     "chalk": "^5.3.0",
-    "check-valid-url": "^0.1.0",
     "commander": "^12.1.0",
     "cross-spawn": "^7.0.3",
-    "css-audit": "file:css-audit",
-    "css-loader": "^7.1.2",
-    "deepmerge": "^4.3.1",
     "docker-compose": "^0.24.8",
-    "fs-extra": "^11.2.0",
-    "get-all-files": "^5.0.0",
-    "got": "^14.4.1",
-    "handlebars-loader": "^1.7.3",
-    "html-format": "^1.1.7",
-    "html-to-json-parser": "^2.0.1",
-    "html-webpack-plugin": "^5.6.0",
-    "html-webpack-skip-assets-plugin": "^1.0.4",
-    "jshint": "^2.13.6",
-    "mini-css-extract-plugin": "^2.9.0",
     "ora": "^8.0.1",
-    "postcss-loader": "^8.1.1",
     "resolve-bin": "^1.0.1",
-    "sass-loader": "^14.2.1",
-    "snyk": "^1.1292.1",
-    "terminal-link": "^3.0.0",
-    "url": "^0.11.3",
-    "webpack": "^5.92.1",
-    "webpack-dev-server": "^5.0.4"
+    "terminal-link": "^3.0.0"
   }
 }
