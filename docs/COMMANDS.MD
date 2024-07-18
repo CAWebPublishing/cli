@@ -205,16 +205,21 @@ Stops running WordPress for development and tests and frees the ports.
 ### `caweb sync`
 Sync changes from one WordPress instance to another.
 <pre>
-<b>Usage:</b> caweb sync [options] &lt;from&gt; <to>
+<b>Usage:</b> caweb sync [options] [target] [dest]
 
 <b>Arguments:</b>
-from                               Target Site URL.
-to                                 Destination Site URL.
+target                             Target Site URL.
+dest                               Destination Site URL.
 
 <b>Options:</b>
--t,--tax [tax...]                  Taxonomy that should be synced. Omitting this option will sync the full site.
-                                   Choices: pages,posts,media,menus,settings
--i,--include [include...]          IDs to of taxonomies to include. Omitting this option will sync all items for given taxonomy.
+--interactive                      Runs the sync process with prompts
+-t,--tax &lt;tax...&gt;                  Taxonomy that should be synced. Default is full site sync.
+                                   Default: media,menus,pages,posts,settings
+                                   Choices: media,menus,pages,posts,settings
+--media-ids &lt;ids...&gt;               Sync specific Media IDs.
+--menu-ids &lt;ids...&gt;                Sync specific Menu IDs.
+--page-ids &lt;ids...&gt;                Sync specific Page IDs.
+--post-ids &lt;ids...&gt;                Sync specific Post IDs.
 </pre>
 ### `caweb update-block`
 Updates a CA.gov Design System Block.
