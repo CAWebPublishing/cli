@@ -23,7 +23,7 @@ const a11y = new A11yPlugin().a11yCheck;
 
 import shell from './tasks/shell.js';
 
-import sync from './sync.js';
+import sync from './sync/index.js';
 
 import updatePlugins from './tasks/update-plugins.js'
 import createBlock from './blocks/create-block.js'

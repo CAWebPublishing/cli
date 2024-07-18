@@ -1,3 +1,8 @@
+v1.5.2
+- Update npm packages
+- Added interactive mode for sync command
+- create-block command now uses @inquirer/prompts instead of inquirer
+
 v1.5.1
 - Update npm packages
 - Added Alias to Webpack build/start commands

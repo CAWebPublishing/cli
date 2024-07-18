@@ -3,7 +3,10 @@
  */
 import path from 'path';
 import fs from 'fs';
-import inquirer from 'inquirer';
+// since we are in a spinner,
+// we have to silence all the cancellation errors when using prompts
+// .catch(() => {process.exit(1);})
+import { confirm } from '@inquirer/prompts';
 
 /**
  * Internal dependencies
@@ -49,14 +52,10 @@ export default async function createBlock({
 		if( fs.existsSync(path.resolve(process.cwd(), slug)) ){
 			spinner.info(`${slug} already exists.`)
 
-			const { yesUpdate } = await inquirer.prompt( [
-				{
-					type: 'confirm',
-					name: 'yesUpdate',
-					message: 'Would you like to update it?',
-					default: false,
-				},
-			] );
+			const yesUpdate = await confirm({
+				message: 'Would you like to update it?',
+				default: false,
+			} ).catch(() => {process.exit(1);});
 
 			if( yesUpdate ){
 				spinner.text = `Updating ${slug}...`;
