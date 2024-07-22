@@ -1,3 +1,9 @@
+v1.5.4
+- Update npm packages
+
+v1.5.3
+- Update npm packages
+
 v1.5.2
 - Update npm packages
 - Added interactive mode for sync command
