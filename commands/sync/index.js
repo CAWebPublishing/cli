@@ -21,6 +21,8 @@ import {
 } from '../../lib/index.js';
 
 import {
+    bullet,
+    info,
     promptGetInstanceInfo,
     promptSaveInstanceInfo,
     promptForSync,
@@ -135,7 +137,7 @@ export default async function sync({
     const {workDirectoryPath} = await loadConfig(path.resolve('.'));
 
     // read caweb configuration file.    
-    let serviceConfig = fs.existsSync(configFile) ? JSON.parse( fs.readFileSync(configFile) ) : {};
+    let serviceConfig = fs.existsSync(configFile) ? JSON.parse( fs.readFileSync(configFile) ) : { "sync": {} };
 
     process.env.WP_CLI_CONFIG_PATH  = path.join(workDirectoryPath, 'config.yml');
     
@@ -146,20 +148,21 @@ export default async function sync({
     // if no target was specified or no target saved.
     if( ! target ){
         spinner.stop()
+        console.log( info, 'A target instance, this is the site containing the latest changes.')
 
-       target = await getInstanceInfo(serviceConfig, 'target')
+        target = await getInstanceInfo(serviceConfig, 'target')
 
-       // if still no target then exit
-       if( ! target ){
-            process.exit(1)
-       }
+        // if still no target then exit
+        if( ! target ){
+                process.exit(1)
+        }
     }
 
 
     // if no dest was specified or no dest saved.
     if( ! dest ){
         spinner.stop()
-
+        console.log( info, 'A destination instance, this is the site where the latest changes should go.')
         dest = await getInstanceInfo(serviceConfig, 'destination');
 
         
