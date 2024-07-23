@@ -36,9 +36,13 @@ export default function wpEnvConfig ( bare, multisite, plugin, theme ) {
         }
     }
 
-    // if not bare then include our theme.
+    // if not bare.
     if( ! bare ){
+        // include our theme
         themes.push('CAWebPublishing/CAWeb')
+
+        // include our dev plugin
+        plugins.push('CAWebPublishing/caweb-dev')
     }
 
     // if root directory is a theme
