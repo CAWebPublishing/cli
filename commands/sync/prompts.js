@@ -9,8 +9,8 @@ import chalk from 'chalk';
 // .catch(() => {process.exit(1);})
 import { confirm, input, password } from '@inquirer/prompts';
 
-
-const boldWhite = chalk.bold.white;
+const bullet = chalk.yellow('-');
+const info = chalk.cyan('i');
 
 /**
  * Prompt for instance information
@@ -49,8 +49,6 @@ async function promptSaveInstanceInfo(){
 }
 
 async function promptForSync(tax){
-    let bullet = chalk.yellow('-');
-    let info = chalk.cyan('i');
     console.log(`Sync WordPress Instances\n${chalk.green('#'.repeat(25))}\n`);
 
     console.log(chalk.red('Requirements:'));
@@ -100,6 +98,8 @@ async function promptForId(title){
 }
 
 export {
+    bullet,
+    info,
     promptGetInstanceInfo,
     promptSaveInstanceInfo,
     promptForSync,
