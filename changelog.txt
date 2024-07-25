@@ -1,3 +1,5 @@
+v1.5.10
+- Update npm packages
 
 v1.5.9
 - Added template flag to serve command
