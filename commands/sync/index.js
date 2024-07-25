@@ -41,7 +41,7 @@ const configFile = path.join(appPath, 'caweb.json');
  * @param {string} [tax='pages']
  * @returns {unknown}
  */
-async function getParentItems( objects, request, tax = 'pages' ){
+async function getParentItems( objects, request, tax = 'pages', debug = false ){
     let parentItemsObjects = [];
     let objectParentIds = objects.map((obj) => { return obj.parent; }).filter(n => n);
 
@@ -53,7 +53,7 @@ async function getParentItems( objects, request, tax = 'pages' ){
             orderby: 'parent',
             embed: true,
             include: objectParentIds
-        }, tax);
+        }, tax, debug);
 
         // if we have parent items, we have to add to the items array.
         if( parentItems ){
@@ -260,7 +260,8 @@ export default async function sync({
                 ],
                 include: mediaIds && mediaIds.length ? mediaIds.join(',') : null
             }, 
-            'media'
+            'media', 
+            debug
         );
     }
 
@@ -276,7 +277,7 @@ export default async function sync({
                 'page_on_front',
                 'posts_per_page'
             ],
-        }, 'settings')
+        }, 'settings', debug )
         
     }
 
@@ -290,14 +291,19 @@ export default async function sync({
                 embed: true,
                 include: pageIds && pageIds.length ? pageIds.join(',') : null
             }, 
-            'pages'
+            'pages', 
+            debug
         );
 
+        console.log( debug );
+        console.log( pages );
+        console.log( pageIds );
         // pages can be nested so we have to collect any parent items.
         pages = await getParentItems( 
             pages, 
             targetOptions, 
-            'pages'
+            'pages',
+            debug
         ) 
     }
 
@@ -310,14 +316,16 @@ export default async function sync({
                 orderby: 'parent',
                 include: postIds && postIds.length ? postIds.join(',') : null
             }, 
-            'posts'
+            'posts',
+            debug
         );
 
         // posts can be nested so we have to collect any parent items.
         posts = await getParentItems( 
         posts, 
         targetOptions, 
-        'posts'
+        'posts',
+        debug
     ) 
     }
 
@@ -398,7 +406,6 @@ export default async function sync({
         p.content.rendered = p.content.rendered.replace( new RegExp(target.url, 'g'), dest.url );
     }
 
-    
     // Menu and Nav Items.
     if( tax.includes('menus')){
         spinner.text = `Collecting assigned navigation menus from ${target.url}`;
@@ -414,7 +421,7 @@ export default async function sync({
                 'locations'
             ],
             include: menuIds && menuIds.length ? menuIds.join(',') : null
-            }, 'menus');
+            }, 'menus', debug);
     
         menuNavItems = await getTaxonomies( 
             {
@@ -440,7 +447,8 @@ export default async function sync({
                 ],
                 menus: menus.map((menu) => { return menu.id; })
             }, 
-            'menu-items'
+            'menu-items', 
+            debug
         )
 
         let missingPages = [];
@@ -464,14 +472,16 @@ export default async function sync({
                 embed: true,
                 include: missingPages.join(',')
                 }, 
-                'pages'
+                'pages', 
+                debug
             );
 
             // pages can be nested so we have to collect any parent items.
             missingPages = await getParentItems( 
                 missingPages, 
                 targetOptions, 
-                'pages'
+                'pages',
+                debug
             );
             
             // add the missing pages to the pages array
@@ -487,14 +497,16 @@ export default async function sync({
                     orderby: 'parent',
                     include: missingPosts.join(',')
                 }, 
-                'posts'
+                'posts', 
+                debug
             );
 
             // posts can be nested so we have to collect any parent items.
             missingPosts = await getParentItems( 
                 missingPosts, 
                 targetOptions, 
-                'posts'
+                'posts',
+                debug
             )
             
             // add the missing posts to the posts array

@@ -1,6 +1,7 @@
 
 v1.5.8
 - Update npm packages
+- Added debug to sync process 
 
 v1.5.7
 - Updated WordPress to 6.6.1
