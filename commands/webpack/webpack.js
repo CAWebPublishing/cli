@@ -20,10 +20,12 @@ import {
  * @param {Object}  options
  * @param {boolean} options.debug   True if debug mode is enabled.
  * @param {boolean} options.audit   Add CSS-Audit Page to pages served.
+ * @param {boolean} options.template   Serves the project using templating.
  */
 export default async function webpack({
     spinner,
-	debug, 
+	debug,
+    template
 } ) {
     const webpackCommand = 'build' === process.argv[2] ? 'build' : 'serve' ;
 
@@ -67,7 +69,10 @@ export default async function webpack({
     if( customConfig.length ){
         webpackConfig = deepmerge(webpackConfig.default, customConfig.default);
     }
-        
+    
+    // add the template flag to the node options
+    process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS} --template ${template}`;
+
     // run the webpackCommand command.
     await runCmd(
 		'webpack', 
