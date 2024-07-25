@@ -1,4 +1,7 @@
 
+v1.5.9
+- Added template flag to serve command
+
 v1.5.8
 - Update npm packages
 - Added debug to sync process 
