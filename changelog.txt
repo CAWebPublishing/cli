@@ -1,4 +1,5 @@
 v1.5.11
+- Added additional flags to serve command
 - Update npm packages
 
 v1.5.10
