@@ -12,11 +12,11 @@ const blockSlugTitle = blockSlug.charAt(0).toUpperCase() + blockSlug.substring(1
 const customScripts = {};
 
 const npmDependencies = [ 
-	'@wordpress/icons@9.46.0' 
+	'@wordpress/icons@10.4.0' 
 ];
 
 const npmDevDependencies = [
-	'@wordpress/scripts@27.6.0'
+	'@wordpress/scripts@28.4.0'
 ];
 
 module.exports = {
