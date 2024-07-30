@@ -42,7 +42,6 @@ export default function dockerConfig ( workDirectoryPath ) {
     generateCLIConfig(workDirectoryPath);
 
     let dockerConfig = {
-        version: '3.7',
         services: {
             phpmyadmin: {
                 image: `phpmyadmin:latest`,
