@@ -1,3 +1,6 @@
+v1.6.2
+- Updated npm packages
+
 v1.6.1
 - Updated block template npm dependencies
 - Updated npm packages
