@@ -1,3 +1,7 @@
+v1.6.0
+- Removed version from docker-compose.override.yml the field is obsolete
+- Updated npm packages
+
 v1.5.11
 - Added additional flags to serve command
 - Update npm packages
