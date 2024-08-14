@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -39,7 +39,7 @@
   },
   "config": {
     "WP_VER": "6.6.1",
-    "PHP_VER": "8.1",
+    "PHP_VER": "8.2",
     "DEFAULTS": {
       "FS_METHOD": "direct",
       "WP_DEBUG": true,
