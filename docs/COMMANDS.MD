@@ -154,13 +154,17 @@ Serve the current project
 <b>Usage:</b> caweb serve [options]
 
 <b>Options:</b>
---audit                            Performs WordPress CSS-Audit.
-                                   Default: true
+--template &lt;template&gt;              Serves the project using templating.
+                                   Default: default
+                                   Choices: default,blank
+--scheme &lt;scheme&gt;                  Serves the project using template colorscheme.
+                                   Default: oceanside
+                                   Choices: delta,eureka,mono,oceanside,orangecounty,pasorobles,sacramento,santabarbara,santacruz,shasta,sierra,trinity
 --no-audit                         Skips WordPress CSS-Audit.
                                    Default: false
---a11y                             Performs IBM Accessibility Checker.
-                                   Default: true
 --no-a11y                          Skips IBM Accessibility Checker.
+                                   Default: false
+--no-jshint                        Skips JSHint.
                                    Default: false
 </pre>
 ### `caweb shell`
@@ -208,8 +212,8 @@ Sync changes from one WordPress instance to another.
 <b>Usage:</b> caweb sync [options] [target] [dest]
 
 <b>Arguments:</b>
-target                             Target Site URL.
-dest                               Destination Site URL.
+target                             Target Site URL, this is the site containing the latest changes.
+dest                               Destination Site URL, this is the site where the latest changes should go.
 
 <b>Options:</b>
 --interactive                      Runs the sync process with prompts
@@ -220,6 +224,8 @@ dest                               Destination Site URL.
 --menu-ids &lt;ids...&gt;                Sync specific Menu IDs.
 --page-ids &lt;ids...&gt;                Sync specific Page IDs.
 --post-ids &lt;ids...&gt;                Sync specific Post IDs.
+--debug                            Enable debug output.
+                                   Default: false
 </pre>
 ### `caweb update-block`
 Updates a CA.gov Design System Block.
