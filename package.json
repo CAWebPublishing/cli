@@ -56,7 +56,7 @@
     }
   },
   "dependencies": {
-    "@caweb/webpack": "^1.2.8",
+    "@caweb/webpack": "^1.2.9",
     "@inquirer/prompts": "^5.3.8",
     "@wordpress/create-block": "^4.48.0",
     "@wordpress/env": "^10.5.0",
