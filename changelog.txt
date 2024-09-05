@@ -1,3 +1,6 @@
+v1.6.11
+- Removed debugging messages from sync process
+
 v1.6.10
 - Updated npm packages
 

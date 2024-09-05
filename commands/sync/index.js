@@ -295,9 +295,6 @@ export default async function sync({
             debug
         );
 
-        console.log( debug );
-        console.log( pages );
-        console.log( pageIds );
         // pages can be nested so we have to collect any parent items.
         pages = await getParentItems( 
             pages, 
