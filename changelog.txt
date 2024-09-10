@@ -1,3 +1,7 @@
+v1.6.12
+- Updated npm packages
+- Updated create-block npm dependencies
+
 v1.6.11
 - Removed debugging messages from sync process
 
