@@ -31,8 +31,6 @@ export default async function webpack({
 
     // we use our default config from the @caweb/html-webpack-plugin
     const defaultConfigPath = path.resolve(projectPath, '..', 'webpack', 'webpack.config.js' );
-    let webpackConfig = await import('file://' + defaultConfigPath);
-    let customConfig = {};
 
     // Since we use @wordpress/scripts webpack config we can leverage
     // the environment variables as well.
@@ -53,8 +51,6 @@ export default async function webpack({
             '--merge'
         )
 
-        customConfig = await import('file://' + path.join(appPath, 'webpack.config.cjs' )).default;
-
     // ESM
     }else if( fs.existsSync(path.join(appPath, 'webpack.config.js' )) ){
         webPackArgs.push(
@@ -63,13 +59,8 @@ export default async function webpack({
             '--merge'
         )
 
-        customConfig = await import('file://' + path.join(appPath, 'webpack.config.js' ));
     }
 
-    if( customConfig.length ){
-        webpackConfig = deepmerge(webpackConfig.default, customConfig.default);
-    }
-    
     // add the template flag to the node options
     process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS} --template ${template}`;
 
