@@ -1,3 +1,6 @@
+v1.6.15
+- Updated WordPress core to 6.6.2
+
 v1.6.14
 - Fixed issue with webpack config in common js format 
 - Updated npm packages
