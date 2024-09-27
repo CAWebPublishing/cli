@@ -1,3 +1,6 @@
+v1.6.20
+- Updated npm packages
+
 v1.6.19
 - Added false option to webpack serve
 - webpack commands no longer using NODE_OPTIONS
