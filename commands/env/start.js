@@ -3,7 +3,7 @@
  */
 import path from 'path';
 import fs from 'fs';
-import { v2 as dockerCompose } from 'docker-compose';
+import * as dockerCompose from 'docker-compose';
 import yaml from 'js-yaml';
 
 /**
