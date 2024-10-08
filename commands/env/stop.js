@@ -3,7 +3,7 @@
  */
 import path from 'path';
 import loadConfig from '@wordpress/env/lib/config/load-config.js';
-import { v2 as dockerCompose } from 'docker-compose';
+import * as dockerCompose from 'docker-compose';
 
 import { default as wpEnvStop } from '@wordpress/env/lib/commands/stop.js';
 
