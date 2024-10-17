@@ -1,5 +1,5 @@
 v1.6.26
-- Updated npm packages
+- Removed auto download of Design System Plugin
 
 v1.6.25
 - Updated npm packages
