@@ -32,7 +32,7 @@ export default async function webpack({
     const webpackCommand = 'build' === process.argv[2] ? 'build' : 'serve' ;
 
     // we use our default config from the @caweb/html-webpack-plugin
-    const defaultConfigPath = path.resolve(projectPath, '..', 'webpack', 'webpack.config.js' );
+    const defaultConfigPath = path.resolve('node_modules', '@caweb', 'html-webpack-plugin', 'webpack.config.js' );
 
     // Since we use @wordpress/scripts webpack config we can leverage
     // the environment variables as well.
@@ -46,18 +46,18 @@ export default async function webpack({
     ].filter(e => e);
 
     // CommonJS
-    if( fs.existsSync( path.join(appPath, 'webpack.config.cjs' ) ) ){
+    if( fs.existsSync( path.resolve( 'webpack.config.cjs' ) ) ){
         webPackArgs.push(
             '--config',
-            path.join(appPath, 'webpack.config.cjs' ),
+            path.resolve('webpack.config.cjs' ),
             '--merge'
         )
 
     // ESM
-    }else if( fs.existsSync(path.join(appPath, 'webpack.config.js' )) ){
+    }else if( fs.existsSync(path.resolve('webpack.config.js' )) ){
         webPackArgs.push(
             '--config',
-            path.join(appPath, 'webpack.config.js' ),
+            path.resolve('webpack.config.js' ),
             '--merge'
         )
 
