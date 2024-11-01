@@ -1,5 +1,8 @@
-v1.6.30
+v1.7.0
+- Updated create-block template dependencies
 - Updated npm packages
+- Added missing npm packages
+- Updated webpack build/serve commands
 
 v1.6.29
 - Updated npm packages
