@@ -1,3 +1,6 @@
+v1.7.1
+- Updated npm packages
+
 v1.7.0
 - Updated create-block template dependencies
 - Updated npm packages
