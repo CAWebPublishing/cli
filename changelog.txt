@@ -1,3 +1,6 @@
+v1.8.1
+- Fixed issue with WordPress core reference
+
 v1.8.0
 - Updated WordPress core to 6.7
 - updated npm packages 
