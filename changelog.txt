@@ -1,3 +1,6 @@
+v1.8.3
+- Updated npm packages
+
 v1.8.2
 - Updated WordPress core to 6.7.1
 
