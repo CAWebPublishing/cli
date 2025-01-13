@@ -1,3 +1,6 @@
+v1.8.8
+- Updated npm packages 
+
 v1.8.7
 - Fixed issue with rimraf default export
 - Updated npm packages
