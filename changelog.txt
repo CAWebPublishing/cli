@@ -1,3 +1,7 @@
+v1.9.0
+- Update WordPress core
+- Updated npm packages 
+
 v1.8.14
 - Updated npm packages 
 
