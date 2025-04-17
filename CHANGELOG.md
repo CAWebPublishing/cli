@@ -1,4 +1,7 @@
 v1.10.0
+- Corrected WordPress core version
+
+v1.10.0
 - Update WordPress core
 
 v1.9.11
