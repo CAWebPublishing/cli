@@ -1,3 +1,7 @@
+
+v1.9.11
+- Updated npm packages 
+
 v1.10.0
 - Corrected WordPress core version
 
