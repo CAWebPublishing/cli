@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.10.5",
+  "version": "1.10.6",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -70,6 +70,7 @@
     "inquirer-select-pro": "^1.0.0-alpha.9",
     "ora": "^8.2.0",
     "resolve-bin": "^1.0.1",
+    "rimraf": "^6.0.1",
     "terminal-link": "^4.0.0"
   }
 }
