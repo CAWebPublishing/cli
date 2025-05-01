@@ -1,3 +1,6 @@
+v1.10.6
+- Added missing rimraf dependency
+
 v1.10.5
 - Updated npm packages 
 
