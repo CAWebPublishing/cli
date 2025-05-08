@@ -1,3 +1,6 @@
+v1.11.0
+- Updated WP Core to 6.8.1
+
 v1.10.12
 - Updated npm packages 
 
