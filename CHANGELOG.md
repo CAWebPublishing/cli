@@ -1,3 +1,6 @@
+v1.11.1
+- Added new create-site command which generates a caweb.json file bases on a series of questions
+
 v1.11.0
 - Updated WP Core to 6.8.1
 

@@ -8,8 +8,6 @@ import fs from 'fs';
  * Internal dependencies
  */
 import { 
-    appPath,
-    projectPath,
     runCmd
 } from '../../lib/index.js';
 
