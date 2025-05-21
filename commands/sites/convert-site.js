@@ -89,7 +89,7 @@ function sanitizeJson(json){
 }
 
 /**
- * Converts the raw attributes to a json object.
+ * Converts the string attributes to a json object. Used when parsing attributes from the html
  * 
  * @param {string} rawAttrs Raw attribute string to convert.
  * @returns {object} The converted attributes.
@@ -109,11 +109,83 @@ function convertRawAttrs( rawAttrs ) {
 		let key = a.split( '=' )[0].trim();
 		let value = a.split( '=' )[1].replace(/"/g, '').trim();
 
-		attrs[key] = value;
+		if( attrs[key] ) {
+			attrs[key] += ` ${value}`;
+		}else{
+			attrs[key] = value;
+		}
 	});
 
 	return attrs;
 	
+}
+
+/**
+ * Converts attributes from json object to a string. Used when generating shortcodes.
+ * 
+ * @param {*} attributes 
+ * @returns 
+ */
+function getAttrString(attributes, builder) {
+		let attrString = '';
+		for( let key in attributes ) {
+			if( attributes[key] ) {
+				let value = 'object' === typeof attributes[key] ? 
+					JSON.stringify( attributes[key] ): attributes[key].trim();
+
+				if( 'divi' === builder ) {
+					// divi uses shortcode with different attributes
+					switch( key ) {
+						case 'class':
+							key = 'module_class';
+							break;
+						case 'id':
+							key = 'module_id';
+							break;
+						case 'style':
+							key = [];
+
+							value.split(';').forEach( (v) => {
+								let k = v.split(':')[0].trim();
+								let s = v.split(':')[1].trim();
+
+								// style mappings
+								switch( k ) {
+									case 'background-image':
+										k = 'background_image';
+										s = s.replace(/url\((.*?)\).*/g, '$1').replace(/["']/g, '');	
+										break;
+
+									case 'background-repeat':
+										k = 'background_position';
+										s = s.replace(/(.*?)(repeat|no-repeat)/g, '$2');
+										break;
+									default:
+										k = '';
+										break;
+								}
+
+								if( k ) {
+									key.push(`${k}="${s}"`);
+								}
+							});
+							break;
+						// if we don't know what the attribute is, we want to set it to an empty string
+						default:
+							key = '';
+							break
+					}
+				}
+
+				if( '' !== key && 'string' === typeof key ) {
+					attrString += ` ${key}="${value}"`;
+				}else if( 'object' === typeof key ) {
+					attrString += ` ${key.join(' ')}`;
+				}
+			}
+		}
+
+		return attrString;
 }
 
 /**
@@ -129,7 +201,7 @@ function convertRawAttrs( rawAttrs ) {
  * @param {boolean} opts.closing True if the element is closing. Defaults to false. 
  * @returns {string} 
  */
-function addElement( tag, opts = {} ) {
+function addElement( tag, opts = {}, builder = 'none' ) {
 	let defaultOpts = {
 		attrs : {},
 		content: '', 
@@ -138,22 +210,6 @@ function addElement( tag, opts = {} ) {
 		isSelfClosing: false,
 		closing: false
 	}
-	const getAttrString = (attributes) => {
-		let attrString = '';
-		for( const key in attributes ) {
-			if( attributes[key] ) {
-				// if the attribute is an object, we want to convert it to a string
-				if( typeof attributes[key] === 'object' ) {
-					attrString += ` ${key}="${JSON.stringify( attributes[key] )}"`;
-				}else{
-					attrString += ` ${key}="${attributes[key]}"`;
-				}
-
-			}
-		}
-
-		return attrString;
-	}
 
 	let { attrs, content, limiter, isUnclosed, isSelfClosing } = {...defaultOpts, ...opts};
 
@@ -161,11 +217,16 @@ function addElement( tag, opts = {} ) {
 	let lmtrObj = getLimiter( limiter );
 	
 	// generate attribute string
-	let attrString = getAttrString( attrs );
+	let attrString = getAttrString( attrs, builder );
 
-	let output = `${lmtrObj.open}${tag}${attrString}${isSelfClosing ? ' /' : ''}${lmtrObj.close}${content}`
+	// if the tag is empty, we want to return the content
+	if( ! tag ) {
+		return content;	
+	}
+
+	let output = `${lmtrObj.open}${tag}${attrString}${tag && isSelfClosing ? ' /' : ''}${lmtrObj.close}${content}`
 	
-	if( ! isUnclosed && ! isSelfClosing ) {
+	if( ! isUnclosed && ! isSelfClosing && tag) {
 		output += closeElement(tag, lmtrObj );
 	}
 
@@ -182,19 +243,21 @@ function closeElement( tag, limiter ) {
 	let lmtrObj = 'string' === typeof limiter ? getLimiter( limiter ) : limiter;
 	return `${lmtrObj.open}/${tag}${lmtrObj.close}`
 }
-/**
- * Converts a json dom object into shortcodes.
- * 
- * @param {object} content JSON object to convert.
- * 
- * @returns {string} The converted shortcode output.
- */
 
 /**
  * Generates shortcodes from the json object.
+ * Converts a json dom object into shortcodes.
  * 
  * 
  * @param {array[object]} mainContent Array of json objects to convert.
+ * @param {object} opts Json object of configurations used during the conversion process.
+ * @param {string} opts.limiter The type of limiter to use. Choices are 'angle' or 'bracket'.
+ * @param {boolean} opts.openElement Current opened element. Defaults to false.
+ * @param {boolean} opts.inFullwidth True if the element is in a fullwidth section. Defaults to false.
+ * @param {boolean} opts.inSection True if the element is in a section. Defaults to false.
+ * @param {boolean} opts.inRow True if the element is in a row. Defaults to false.
+ * @param {boolean} opts.inColumn True if the element is in a column. Defaults to false.
+ * @param {number} opts.columnCount The number of columns in the row. Defaults to 0.
  * @returns 
  */
 function generateShortcodes( mainContent,  opts = {
@@ -263,13 +326,36 @@ function generateShortcodes( mainContent,  opts = {
 				if( classes.includes('container-fluid') && ! opts.inFullwidth) {
 					opts.inFullwidth = true;
 
-					output += addElement(
-						'et_pb_fullwidth_section', 
-						{ 
-							limiter:opts.limiter, 
-							content: generateShortcodes(content, opts) 
+					let hasContainers = content.filter((r,i) => { 
+						if(r.attributes.class.match(/container/g)){
+							// we add the raw attributes to the containers
+							// this allows the sections to use the fluid attributes
+							// we do remove the container-fluid class
+							r.rawAttrs = r.rawAttrs + ` ${rawAttrs.replace('container-fluid', '')}`;
+							return true;
 						}
-					);
+					}).length
+
+					if( ! hasContainers ) {
+						output += addElement(
+							'et_pb_fullwidth_section', 
+							{ 
+								limiter:opts.limiter, 
+								content: generateShortcodes(content, opts) 
+							}
+						);
+					}else{
+						opts.inFullwidth = false;
+
+						output += addElement(
+							'', 
+							{ 
+								content: generateShortcodes(content, opts) 
+							}
+						);
+
+					}
+					
 					
 					opts.inFullwidth = false;
 
@@ -277,12 +363,18 @@ function generateShortcodes( mainContent,  opts = {
 				}else if( classes.includes('container') && ! opts.inSection ) {
 					opts.inSection = true;
 
+					// sections don't need the container class
+					// we remove the container class from the attributes
+					attrs.class = attrs.class.replace('container', '');
+
 					output += addElement( 
 						'et_pb_section', 
 						{ 
 							limiter:opts.limiter, 
-							content: generateShortcodes(content, opts) 
-						}
+							content: generateShortcodes(content, opts),
+							attrs 
+						},
+						'divi'
 					);
 					
 					opts.inSection = false;
@@ -293,12 +385,17 @@ function generateShortcodes( mainContent,  opts = {
 					// if the div has a class of row, we want to get the total number of columns
 					opts.columnCount = content.filter((r,i) => r.attributes?.class?.match(/(col)[-\w\d]*/g) ).length;
 
+					// sections don't need the row class
+					// we remove the row class from the attributes
+					attrs.class = attrs.class.replace('row', '');
+
 					output += addElement(
 						'et_pb_row', 
 						{ 
 							limiter: opts.limiter, 
 							content: generateShortcodes(content, opts) 
-						}
+						},
+						'divi'
 					);
 					
 					// reset the column count
@@ -342,6 +439,11 @@ function generateShortcodes( mainContent,  opts = {
 							break;
 					}
 
+					// columns don't need the col class
+					// we remove the col class from the attributes
+					attrs.class = attrs.class.replace(/(col)[-\w\d]*/g, '');
+
+
 					// if the div has a class of col, we want to convert it to a shortcode
 					opts.openElement = 'et_pb_column';
 
@@ -352,10 +454,12 @@ function generateShortcodes( mainContent,  opts = {
 							limiter: opts.limiter, 
 							isUnclosed: true,
 							attrs: {
+								...attrs,
 								type: colType 
 							},  
 							content: generateShortcodes(content, opts) 
-						}
+						},
+						'divi'
 					);
 
 					// we have to close any open elements before closing the column

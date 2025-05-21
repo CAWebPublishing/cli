@@ -21,6 +21,7 @@
   "scripts": {
     "caweb": "node bin/caweb.js",
     "doc": "node ./docs/tool/index.js",
+    "testa": "node ./test.js",
     "test": "echo \"Error: run tests from root\" && exit 0"
   },
   "homepage": "https://github.com/CAWebPublishing/cli#readme",
