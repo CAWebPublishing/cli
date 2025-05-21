@@ -14,6 +14,7 @@ import { appPath, writeLine } from '../../lib/index.js';
 import {
 	promptForGeneralInfo,
 	promptForSocial,
+	promptForGoogleOptions,
 	promptForAlerts,
 	promptForHeader,
 	promptForFooter
@@ -24,13 +25,13 @@ import {
  */
 
 /**
- * Test code.
+ * Creates a new CAWebPublishing Site Configuration file
  * 
  * @param {Object}  options
  * @param {Object}  options.spinner A CLI spinner which indicates progress.
  * @param {boolean} options.debug   True if debug mode is enabled.
- * @param {boolean} options.siteTitle   Which environment to test in.
- * @param {boolean} options.siteHeaderFeatures   Which environment to test in.
+ * @param {boolean} options.siteTitle   Site Title.
+ * @param {boolean} options.silent   Runs the site creation process without prompts, this is useful for CI/CD pipelines.
  */
 export default async function createSite({
 	spinner,
@@ -82,6 +83,7 @@ export default async function createSite({
 			header: await promptForHeader(),
 			alerts: await promptForAlerts(),
 			social: await promptForSocial(),
+			google: await promptForGoogleOptions(),
 			footer: await promptForFooter(),
 		};
 

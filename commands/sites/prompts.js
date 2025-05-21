@@ -351,10 +351,12 @@ async function promptForAlerts(){
             // + 4 for the header and info message
             clearLine((alerts.length * 3) + 4);
 
-            writeLine('Alerts Stored.', {color: 'yellow', char: '#', borderColor: 'yellow'});
         }
 
-    
+    // clear the header and info lines
+    clearLine(4);
+
+    writeLine('Alerts Stored.', {color: 'yellow', char: '#', borderColor: 'yellow'});
 
     return alerts;
 }
@@ -534,11 +536,78 @@ async function promptForGeneralInfo(title){
     return info;
 }
 
+/**
+ * Prompt for Google Settings
+ * 
+ */
+async function promptForGoogleOptions(){
+    writeLine('Google Options', {color: 'magenta', char: '#', borderColor: 'magenta'});
+    writeLine('The following features are available services provided by Google.', {color: 'cyan', prefix: 'i'});
+
+    let defaultFeatures = [
+        {'search': {checked: true}}, 
+        /**
+         * @todo: create prompts for the following features
+         */
+        // {'analytics': {checked: false}}, 
+        // {'analytics-4': {checked: false}}, 
+        // {'tag-manager': {checked: false}}, 
+        // {'meta': {checked: false}},
+        // {'translate': {checked: false}}
+    ];
+    let google = {};
+    let options = [];
+
+    // if no features are passed, set the default features
+    defaultFeatures.forEach(feature => {
+        let keyName = Object.keys(feature)[0];
+        let checked = feature[keyName].checked;
+
+        options.push({
+            // replace - with space and make first letter upper case
+            name: keyName.replace('-', ' ').replace(/^\w| \w/g, c => c.toUpperCase()),
+            value: keyName,
+            checked
+        })
+    })
+
+     // prompt for the features to configure
+    let features = await select({
+            message: 'Select which of the following features you would like to configure...\n',
+            multiple: true,
+            canToggleAll: true,
+            options,
+            defaultValue: options.map(o => o.checked ? o.value : false ).filter( e => e)
+        }, {clearPromptOnDone: true}).catch(() => {process.exit(1);});
+
+    // if search is selected, prompt for search configurations.
+    if( features.includes('search') ){
+
+        writeLine('Search Engine ID', {bold: true});
+        writeLine('Enter your unique Google search engine ID, if you don\'t have one see an administrator.', {color: 'cyan', prefix: 'i'});
+
+        google.search = await input({ message: 'ID:'},{clearPromptOnDone: true}).catch(() => {process.exit(1);})
+
+        // clear lines 
+        clearLine(2);
+
+        writeLine('Google Search Stored.', {color: 'yellow', char: '#', borderColor: 'yellow'});
+    }
+
+    // clear lines for each google feature
+    // + 4 for the header and info message
+    clearLine((Object.keys(google).length * 3) + 4);
+
+    writeLine('Google Options Stored.', {color: 'yellow', char: '#', borderColor: 'yellow'});
+    return google;
+}
+
 export {
     bullet,
     info,
     promptForGeneralInfo,
     promptForSocial,
+    promptForGoogleOptions,
     promptForAlerts,
     promptForHeader,
     promptForFooter

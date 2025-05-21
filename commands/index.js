@@ -30,6 +30,7 @@ import createBlock from './blocks/create-block.js';
 import updateBlock from './blocks/update-block.js';
 
 import createSite from './sites/create-site.js';    
+import convertSite from './sites/convert-site.js';
 
 // These are default wp-env commands, we overwrite these commands so we can run additional steps.
 import start from './env/start.js';
@@ -55,5 +56,6 @@ export {
     shell,
     createBlock,
     updateBlock,
-    createSite
+    createSite,
+    convertSite
 }
