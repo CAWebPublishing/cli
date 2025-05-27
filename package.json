@@ -59,6 +59,9 @@
     }
   },
   "dependencies": {
+    "@caweb/a11y-webpack-plugin": "^1.0.9",
+    "@caweb/css-audit-webpack-plugin": "^1.0.12",
+    "@caweb/jshint-webpack-plugin": "^2.0.1",
     "@caweb/webpack": "^1.4.0-beta.3",
     "@inquirer/prompts": "^7.5.1",
     "@wordpress/create-block": "^4.66.0",
@@ -78,10 +81,5 @@
     "resolve-bin": "^1.0.1",
     "rimraf": "^6.0.1",
     "terminal-link": "^4.0.0"
-  },
-  "devDependencies": {
-    "@caweb/a11y-webpack-plugin": "^1.0.9",
-    "@caweb/css-audit-webpack-plugin": "^1.0.12",
-    "@caweb/jshint-webpack-plugin": "^2.0.1"
   }
 }

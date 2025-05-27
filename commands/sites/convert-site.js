@@ -57,6 +57,37 @@ function getLimiter( type ) {
 	return limiter;
 }
 
+function findElementByClass(node, search ) {
+		let found = false;
+
+		node.forEach( n => {
+			let classes = n.classList ? [...n.classList.values()] : [];
+
+			if( classes.includes(search) ) {
+				// we found the element we are looking for
+				// we want to return the element
+				found = n.childNodes[0].toString();
+			}else{
+				found = findElementByClass(n.childNodes, search);
+			}
+		});
+
+		return found;
+}
+
+function findSiblingElement(node, search) {
+	let found  = false;
+		node.forEach( n => {
+			if( search === n.rawTagName ) {
+				// we found the element we are looking for
+				// we want to return the element
+				found = n;
+			}
+		});
+
+		return found;
+}
+
 /**
  * This function is used to sanitize the JSON data.
  * 
@@ -76,10 +107,16 @@ function sanitizeJson(json){
 			obj.childNodes = obj.childNodes.filter( c => c );
 		}
 
-		// blank lines are not needed
-		if( '' === obj.rawTagName && ( obj['_rawText'] && '' === obj['_rawText'].trim() ) ) {
-			// if the value is a string, we want to remove it
-			delete json[j];
+		// blank tag names indicate text nodes
+		if( '' === obj.rawTagName  ) {
+			// blank lines are not needed
+			if(  obj['_rawText'] && '' === obj['_rawText'].trim() ){
+				delete json[j];
+			}else{
+				// this will remove all new lines and double spacing
+				// this might also remove formatting. Need to test more
+				json[j]['_rawText'] = obj['_rawText'].replace(/([\n\r]|\s{2,})/g, '')
+			}
 		}
 
 		
@@ -126,14 +163,14 @@ function convertRawAttrs( rawAttrs ) {
  * @param {*} attributes 
  * @returns 
  */
-function getAttrString(attributes, builder) {
+function getAttrString(attributes, limiter) {
 		let attrString = '';
 		for( let key in attributes ) {
 			if( attributes[key] ) {
 				let value = 'object' === typeof attributes[key] ? 
 					JSON.stringify( attributes[key] ): attributes[key].trim();
 
-				if( 'divi' === builder ) {
+				if( 'bracket' === limiter ) {
 					// divi uses shortcode with different attributes
 					switch( key ) {
 						case 'class':
@@ -170,10 +207,7 @@ function getAttrString(attributes, builder) {
 								}
 							});
 							break;
-						// if we don't know what the attribute is, we want to set it to an empty string
-						default:
-							key = '';
-							break
+						
 					}
 				}
 
@@ -201,7 +235,7 @@ function getAttrString(attributes, builder) {
  * @param {boolean} opts.closing True if the element is closing. Defaults to false. 
  * @returns {string} 
  */
-function addElement( tag, opts = {}, builder = 'none' ) {
+function addElement( tag, opts = {} ) {
 	let defaultOpts = {
 		attrs : {},
 		content: '', 
@@ -217,14 +251,14 @@ function addElement( tag, opts = {}, builder = 'none' ) {
 	let lmtrObj = getLimiter( limiter );
 	
 	// generate attribute string
-	let attrString = getAttrString( attrs, builder );
+	let attrString = getAttrString( attrs, limiter );
 
 	// if the tag is empty, we want to return the content
 	if( ! tag ) {
 		return content;	
 	}
 
-	let output = `${lmtrObj.open}${tag}${attrString}${tag && isSelfClosing ? ' /' : ''}${lmtrObj.close}${content}`
+	let output = `${lmtrObj.open}${tag}${attrString}${tag && isSelfClosing ? ' /' : ''}${lmtrObj.close}${content.trim()}`
 	
 	if( ! isUnclosed && ! isSelfClosing && tag) {
 		output += closeElement(tag, lmtrObj );
@@ -373,8 +407,7 @@ function generateShortcodes( mainContent,  opts = {
 							limiter:opts.limiter, 
 							content: generateShortcodes(content, opts),
 							attrs 
-						},
-						'divi'
+						}
 					);
 					
 					opts.inSection = false;
@@ -394,8 +427,7 @@ function generateShortcodes( mainContent,  opts = {
 						{ 
 							limiter: opts.limiter, 
 							content: generateShortcodes(content, opts) 
-						},
-						'divi'
+						}
 					);
 					
 					// reset the column count
@@ -429,13 +461,17 @@ function generateShortcodes( mainContent,  opts = {
 					let colType = '';
 					// calculate the column type
 					switch( colSize ) {
+						// 1 column
+						case 12:
+							colType = '4_4';
+							break;
 						// 2 columns
 						case 6:
 							colType = '1_2';
 							break;
-						// 1 column
-						case 12:
-							colType = '4_4';
+						// 3 columns	
+						case 4:
+							colType = '1_3';
 							break;
 					}
 
@@ -458,8 +494,7 @@ function generateShortcodes( mainContent,  opts = {
 								type: colType 
 							},  
 							content: generateShortcodes(content, opts) 
-						},
-						'divi'
+						}
 					);
 
 					// we have to close any open elements before closing the column
@@ -478,14 +513,21 @@ function generateShortcodes( mainContent,  opts = {
 					if( opts.inFullwidth ) {
 						// output += addElement('', { limiter: 'none', content: generateShortcodes(content) });
 					}else{
-						// figure out what kind of div element we are dealing with	
-						output += addElement(
-							type, 
-							{ 
-								limiter: opts.limiter, 
-								content: generateShortcodes(content, opts) 
-							}
-						);
+						if( classes.includes('card') && classes.includes('blurb') ){
+							// this is a blurb module
+							output += generateModuleShortcode('blurb', content);
+							
+						}else{
+							// figure out what kind of div element we are dealing with	
+							output += addElement(
+								type, 
+								{ 
+									limiter: opts.limiter, 
+									content: generateShortcodes(content, opts) 
+								}
+							);
+
+						}
 					}
 				}
 
@@ -575,7 +617,7 @@ function generateShortcodes( mainContent,  opts = {
 				break;
 			// default is a string element
 			default:
-				
+				// console.log( htmlElement)
 				output += htmlElement; 
 				break;
 				
@@ -585,6 +627,32 @@ function generateShortcodes( mainContent,  opts = {
 	}
 
 	return output;
+}
+
+function generateModuleShortcode(module, content ){
+
+	switch( module ) {
+		case 'blurb':
+			// blurb module
+			let attrs = {
+				title: findElementByClass(content, 'card-title'),
+			};
+
+			let img =  findSiblingElement(content, 'img');
+			
+			if( img ){
+				let imgAttrs = convertRawAttrs( img.rawAttrs );
+				attrs.image = imgAttrs.src
+			}
+
+			return addElement(
+				'et_pb_blurb', 
+				{
+					limiter: 'bracket', 
+					attrs
+				}
+			);
+	}
 }
 
 /**

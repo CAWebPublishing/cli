@@ -16,10 +16,14 @@ caweb-cli-*.tgz
 public
 src 
 
+# ignore @caweb/webpack directories these are used for testing
+helpers
+
 # ignore @caweb/template directories these are used for testing
 build
 content
 media 
+components
 
 # lets not save site data
 caweb.json
