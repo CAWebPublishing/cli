@@ -1,3 +1,8 @@
+v1.11.1
+- Fixed issue with build/serve command requesting wrong webpack.config.js file
+- Added new create-site command which generates a caweb.json file bases on a series of questions
+- Added new convert-site command will attempt to convert a site into shortcodes
+
 v1.11.0
 - Updated WP Core to 6.8.1
 

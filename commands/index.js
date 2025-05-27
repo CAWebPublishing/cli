@@ -25,16 +25,19 @@ import shell from './tasks/shell.js';
 
 import sync from './sync/index.js';
 
-import updatePlugins from './tasks/update-plugins.js'
-import createBlock from './blocks/create-block.js'
-import updateBlock from './blocks/update-block.js'
+import updatePlugins from './tasks/update-plugins.js';
+import createBlock from './blocks/create-block.js';
+import updateBlock from './blocks/update-block.js';
 
-import test from './test.js';
+import createSite from './sites/create-site.js';    
+import convertSite from './sites/convert-site.js';
 
 // These are default wp-env commands, we overwrite these commands so we can run additional steps.
 import start from './env/start.js';
 import destroy from './env/destroy.js';
 import stop from './env/stop.js';
+
+// import test from './test.js';
 
 export {
     a11y,
@@ -52,5 +55,7 @@ export {
     updatePlugins,
     shell,
     createBlock,
-    updateBlock
+    updateBlock,
+    createSite,
+    convertSite
 }

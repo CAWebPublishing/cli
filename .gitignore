@@ -14,6 +14,19 @@ docker-compose\.yml
 docker-compose\.override\.yml
 caweb-cli-*.tgz
 public
+src 
+
+# ignore @caweb/webpack directories these are used for testing
+helpers
+
+# ignore @caweb/template directories these are used for testing
+build
+content
+media 
+components
+
+# lets not save site data
+caweb.json
 
 # wp core (as of 6.3.2)
 db-config\.php

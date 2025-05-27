@@ -8,8 +8,6 @@ import fs from 'fs';
  * Internal dependencies
  */
 import { 
-    appPath,
-    projectPath,
     runCmd
 } from '../../lib/index.js';
 
@@ -31,8 +29,8 @@ export default async function webpack({
 } ) {
     const webpackCommand = 'build' === process.argv[2] ? 'build' : 'serve' ;
 
-    // we use our default config from the @caweb/html-webpack-plugin
-    const defaultConfigPath = path.resolve('node_modules', '@caweb', 'html-webpack-plugin', 'webpack.config.js' );
+    // we use our default config from the @caweb/webpack
+    const defaultConfigPath = path.resolve('node_modules', '@caweb', 'webpack', 'webpack.config.js' );
 
     // Since we use @wordpress/scripts webpack config we can leverage
     // the environment variables as well.
