@@ -82,13 +82,34 @@ environment                        Which environment to use.
 --scripts                          Execute any configured lifecycle scripts.
                                    Default: true
 </pre>
+### `caweb convert-site`
+Attempts to convert a site.
+<pre>
+<b>Usage:</b> caweb convert-site [options]
+
+<b>Options:</b>
+--builder [builder]                Editor style to use for the pages.
+                                   Default: wp
+                                   Choices: plain,divi,gutenberg
+</pre>
 ### `caweb create-block`
-Scaffold for WordPress plugin to register CA.gov Design System Block.
+Scaffold for WordPress plugin to register Gutenberg Blocks.
 <pre>
 <b>Usage:</b> caweb create-block [options] &lt;slug&gt;
 
 <b>Arguments:</b>
 slug                               Plugin slug to use.
+</pre>
+### `caweb create-site`
+Creates a new CAWebPublishing Site Configuration file.
+<pre>
+<b>Usage:</b> caweb create-site [options]
+
+<b>Options:</b>
+--site-title [title]               Site Title
+                                   Default: cli
+--silent,-s                        Runs the site creation process without prompts, this is useful for CI/CD pipelines.
+                                   Default: false
 </pre>
 ### `caweb destroy`
 Deletes docker containers, volumes, and networks associated with the CAWebPublishing instances and removes local files.
@@ -149,7 +170,7 @@ command                            The command to run.
                                    Default: .
 </pre>
 ### `caweb serve`
-Serve the current project
+Serves the current project using CAWebPublishing templates.
 <pre>
 <b>Usage:</b> caweb serve [options]
 
@@ -159,7 +180,7 @@ Serve the current project
                                    Choices: default,blank
 --scheme &lt;scheme&gt;                  Serves the project using template colorscheme.
                                    Default: oceanside
-                                   Choices: delta,eureka,mono,oceanside,orangecounty,pasorobles,sacramento,santabarbara,santacruz,shasta,sierra,trinity
+                                   Choices: delta,eureka,mono,oceanside,orangecounty,pasorobles,sacramento,santabarbara,santacruz,shasta,sierra,trinity,false
 --no-audit                         Skips WordPress CSS-Audit.
                                    Default: false
 --no-a11y                          Skips IBM Accessibility Checker.
@@ -228,7 +249,7 @@ dest                               Destination Site URL, this is the site where 
                                    Default: false
 </pre>
 ### `caweb update-block`
-Updates a CA.gov Design System Block.
+Updates a Gutenberg Block.
 <pre>
 <b>Usage:</b> caweb update-block [options] &lt;slug&gt;
 

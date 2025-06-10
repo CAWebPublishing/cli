@@ -3,29 +3,22 @@
  */
 import path from 'path';
 import fs from 'fs';
-import { confirm } from '@inquirer/prompts';
 import chalk from 'chalk';
-import { HTMLToJSON } from 'html-to-json-parser';
 import jsdom from 'jsdom';
 import { parse } from 'node-html-parser';
 
 /**
  * Internal dependencies
  */
-import { appPath, writeLine } from '../../lib/index.js';
+import { appPath, projectPath, writeLine } from '../../lib/index.js';
 
-import {
-	promptForGeneralInfo,
-	promptForSocial,
-	promptForGoogleOptions,
-	promptForAlerts,
-	promptForHeader,
-	promptForFooter
-} from './prompts.js';
+import validatePage from './validation.js';
 
 /**
  * Constants used during the conversion process.
  */
+const { DIVI_VER } = JSON.parse( fs.readFileSync( path.join(projectPath, 'package.json') ) ).config;
+
 /**
  * Modules allow list
  */
@@ -55,37 +48,6 @@ function getLimiter( type ) {
 	}
 
 	return limiter;
-}
-
-function findElementByClass(node, search ) {
-		let found = false;
-
-		node.forEach( n => {
-			let classes = n.classList ? [...n.classList.values()] : [];
-
-			if( classes.includes(search) ) {
-				// we found the element we are looking for
-				// we want to return the element
-				found = n.childNodes[0].toString();
-			}else{
-				found = findElementByClass(n.childNodes, search);
-			}
-		});
-
-		return found;
-}
-
-function findSiblingElement(node, search) {
-	let found  = false;
-		node.forEach( n => {
-			if( search === n.rawTagName ) {
-				// we found the element we are looking for
-				// we want to return the element
-				found = n;
-			}
-		});
-
-		return found;
 }
 
 /**
@@ -188,14 +150,57 @@ function getAttrString(attributes, limiter) {
 
 								// style mappings
 								switch( k ) {
+									case 'background-color':
+										k = 'background_color';
+										break;
 									case 'background-image':
 										k = 'background_image';
-										s = s.replace(/url\((.*?)\).*/g, '$1').replace(/["']/g, '');	
+
+										let gradient = s.replace(/.*[,\s]*linear-gradient\((.*?)\).*/g, '$1').replace(/["']/g, '');
+
+										if( gradient ) {
+											// if the gradient is present we want to add the appropriate values
+											let gradientValues = gradient.split(',');
+
+											key.push(`background_color_gradient_direction="${gradientValues[0].trim()}"`);
+											key.push(`background_color_gradient_stops="${gradientValues.slice(1).join('|')}"`);
+											key.push('use_background_color_gradient="on"');
+										}
+
+										s = s.replace(/url\((.*?)\).*/g, '$1').replace(/["']/g, '');
 										break;
 
 									case 'background-repeat':
-										k = 'background_position';
+										k = 'background_repeat';
 										s = s.replace(/(.*?)(repeat|no-repeat)/g, '$2');
+										break;
+									
+									case 'background-position':
+										k = 'background_position';
+										/**
+										 * position can be 4 different syntaxes so lets split the values
+										 * @link https://developer.mozilla.org/en-US/docs/Web/CSS/background-position
+										 */
+										let values = s.split(' ');
+										// for whatever reason Divi has these values inverted
+										
+										switch( values.length ) {
+											case 1:
+												s = values[0];
+												break;
+											case 2:
+												s = `${values[1]}_${values[0]}`;
+												break;
+											case 3:
+											case 4:
+												s = `${values[2]}_${values[0]}`;
+												break;
+										}
+										break;
+									
+									case 'background-size':
+										k = 'background_size';
+										
 										break;
 									default:
 										k = '';
@@ -210,8 +215,11 @@ function getAttrString(attributes, limiter) {
 						
 					}
 				}
-
+				
 				if( '' !== key && 'string' === typeof key ) {
+					// we have to encode certain characters
+					value = value.replaceAll('"', '%22');
+
 					attrString += ` ${key}="${value}"`;
 				}else if( 'object' === typeof key ) {
 					attrString += ` ${key.join(' ')}`;
@@ -277,6 +285,7 @@ function closeElement( tag, limiter ) {
 	let lmtrObj = 'string' === typeof limiter ? getLimiter( limiter ) : limiter;
 	return `${lmtrObj.open}/${tag}${lmtrObj.close}`
 }
+
 
 /**
  * Generates shortcodes from the json object.
@@ -406,7 +415,10 @@ function generateShortcodes( mainContent,  opts = {
 						{ 
 							limiter:opts.limiter, 
 							content: generateShortcodes(content, opts),
-							attrs 
+							attrs: {
+								_builder_version: DIVI_VER,
+								...attrs,
+							}
 						}
 					);
 					
@@ -513,9 +525,14 @@ function generateShortcodes( mainContent,  opts = {
 					if( opts.inFullwidth ) {
 						// output += addElement('', { limiter: 'none', content: generateShortcodes(content) });
 					}else{
-						if( classes.includes('card') && classes.includes('blurb') ){
-							// this is a blurb module
-							output += generateModuleShortcode('blurb', content);
+						if( classes.includes('card') ){
+							// this is Divi blurb module
+							if( classes.includes('blurb') ) {
+								output += generateModuleShortcode('blurb', htmlElement );
+							}else{
+								// this is our card module
+								output += generateModuleShortcode('ca_card', htmlElement );
+							}
 							
 						}else{
 							// figure out what kind of div element we are dealing with	
@@ -546,17 +563,11 @@ function generateShortcodes( mainContent,  opts = {
 			case 'h6':
 				// we let the h1-h6 process know element is opened
 				// this allows other elements to be added to the header modules
-				opts.openElement = 'et_pb_heading';
+				// opts.openElement = 'et_pb_heading';
 
-				output += addElement(
-					opts.openElement, 
-					{
-						limiter: opts.limiter, 
-						content: generateShortcodes(content, opts)
-					}
-				);
 
-				opts.openElement = false;
+				output += generateModuleShortcode('heading', htmlElement);
+				// opts.openElement = false;
 				break;
 			
 			case 'img':
@@ -582,7 +593,8 @@ function generateShortcodes( mainContent,  opts = {
 				// these elements get added to a text module
 				}else{
 					// if not already opened
-					if( ! opts.openElement ) {
+					// or the last opened element is a column
+					if( ! opts.openElement || 'et_pb_column' === opts.openElement ) {
 						opts.openElement = 'et_pb_text';
 
 						// this allows other elements to be added to the text modules
@@ -629,30 +641,245 @@ function generateShortcodes( mainContent,  opts = {
 	return output;
 }
 
-function generateModuleShortcode(module, content ){
+function generateModuleShortcode(module, element  ){
+	let content = '';
+	let attrs = {};
+	let moduleName = 'et_pb_' + module;
 
 	switch( module ) {
-		case 'blurb':
-			// blurb module
-			let attrs = {
-				title: findElementByClass(content, 'card-title'),
-			};
+		case 'blurb': {
+			/**
+			 * if blurb module is requested
+			 * we try and make the shortcode as if the element
+			 * was made with a Card Component
+			 */
 
-			let img =  findSiblingElement(content, 'img');
+			let header = element.querySelector('.card-header');
+			let title = element.querySelector('.card-title');
+			let img = element.children.filter( c => c.tagName.toLowerCase() === 'img' );
 			
-			if( img ){
-				let imgAttrs = convertRawAttrs( img.rawAttrs );
-				attrs.image = imgAttrs.src
+			content = element.querySelector('.card-body');
+
+			// the link_option_url is determined by either the 
+			// .card-header options link or the .card-title data-url
+			// .card-header will take precedence over the .card-title
+			if( header && header.querySelector('.options a') ) {
+				let link = header.querySelector('.options a');
+				attrs.link_option_url = link.getAttribute('href');
 			}
 
-			return addElement(
-				'et_pb_blurb', 
-				{
-					limiter: 'bracket', 
-					attrs
+			// if the element has a .card-title, we want to add it to the attributes
+			if( title ) {
+				attrs.title = title.text.trim();
+
+				// if the link_option_url is not set, we want to set it to the title's data-url
+				if( ! attrs.link_option_url && title.getAttribute('data-url') ) {
+					attrs.link_option_url = title.getAttribute('data-url');
 				}
-			);
+
+				// text orientation
+				attrs.text_orientation = 'left';
+
+				if( title.classList.contains('text-center') ){
+					attrs.text_orientation = 'center';
+				}else if( title.classList.contains('text-right') ){
+					attrs.text_orientation = 'right';
+				}
+
+				// remove the .card-title from the content
+				title.remove();
+			}
+			
+			// if the element has an image, we want to add it to the attributes
+			if( img ){
+				attrs.image = img[0].getAttribute('src')
+			}
+
+			// if the element has a .card-body
+			if( content ){
+				// if the content has a class of text-light,
+				if(content.classList.contains('text-light')){
+					attrs.background_color = 'light';
+				
+					// background_layout opposite background_color 
+					attrs.background_layout = 'dark';
+				}else{
+
+					attrs.background_color = 'dark';
+				
+					// background_layout opposite background_color 
+					attrs.background_layout = 'light';
+				}
+
+				content = content.innerHTML.trim();
+			}
+
+			// remove the card layout class from class list
+			element.classList.remove('card');
+			element.classList.remove('blurb');
+			element.classList.remove('bg-transparent');
+			for( const c of element.classList.values() ) {
+				if( c.startsWith('card-') ) {
+					element.classList.remove(c);
+				}
+			}
+			break;
+		}
+		case 'ca_card': {
+			/**
+			 * if card module is requested
+			 */
+			let header = element.querySelector('.card-header');
+			let title = element.querySelector('.card-title');
+			let img = element.children.filter( c => c.tagName.toLowerCase() === 'img' );
+			let layout = element.classList.toString().match(/card-(\w+)/g)[0].replace('card-', '');
+
+			content = element.querySelector('.card-body');
+
+			// card layout
+			attrs.card_layout = layout || 'default';
+
+			// .card-header
+			if( header ) {
+				// the link_option_url is determined by either the 
+				// .card-header options link or the .card-title data-url
+				if( header.querySelector('.options a') ){
+					let link = header.querySelector('.options a');
+
+					attrs.show_button = 'on';
+					attrs.button_link = link.getAttribute('href');
+				}
+
+				attrs.include_header = 'on';
+				attrs.title = header.text.trim();
+
+			}
+			
+			// if the element has a .card-title
+			if( title ) {
+
+				// if the link_option_url is not set, we want to set it to the title's data-url
+				if( ! attrs.link_option_url && title.getAttribute('data-url') ) {
+					
+					attrs.show_button = 'on';
+					attrs.button_link = link.getAttribute('href');
+				}
+			}
+
+			// if the element has an image, we want to add it to the attributes
+			if( img ){
+				attrs.show_image = 'on';
+				attrs.featured_image = img[0].getAttribute('src');
+			}
+
+			// if the element has a .card-body
+			if( content ){
+				// if the content has a class of text-light,
+				if(content.classList.contains('text-light')){
+					attrs.background_color = 'light';
+				
+					// background_layout opposite background_color 
+					attrs.background_layout = 'dark';
+				}else{
+
+					attrs.background_color = 'dark';
+				
+					// background_layout opposite background_color 
+					attrs.background_layout = 'light';
+				}
+
+				content = content.innerHTML.trim();
+			}
+
+			// remove the card layout class from class list
+			element.classList.remove('card');
+			for( const c of element.classList.values() ) {
+				if( c.startsWith('card-') ) {
+					element.classList.remove(c);
+				}
+			}
+			break;
+		}
+		case 'heading': {
+			let title_font = [];
+			let title_text_color = '';
+
+			attrs = {
+				title: element.innerHTML.trim(),
+				title_level: element.tagName.toLowerCase()
+			};
+
+			for( const c of element.classList.values() ) {
+				// font weight classes
+				if( c.startsWith('fw-') ) {
+					let fontWeight = {
+						lighter: '200',
+						light: '300',
+						normal: '400',
+						medium: '500',
+						semibold: '600',
+						bold: '700',
+						extrabold: '800',
+					}
+
+
+					let fontWeightValue = c.replace('fw-', '');
+					
+					title_font[1] = fontWeight[fontWeightValue] || fontWeight.normal;
+
+					// remove the class from the class list
+					element.classList.remove(c);
+				// text classes
+				}else if( c.startsWith('text-') ) {
+					let fontColors = {
+						'light': 'ededef',
+						'dark': '3b3a48',
+						'white': 'fff',
+						'black': '000',
+					}
+
+					let fontColorValue = c.replace('text-', '');
+
+					if( fontColors[fontColorValue] ) {
+						title_text_color = `#${fontColors[fontColorValue]}`;
+					}
+
+					
+					// remove the class from the class list
+					element.classList.remove(c);
+				}
+			}
+
+			if( title_font.length ) {
+				attrs.title_font = title_font.join('|');
+			}
+
+			if( title_text_color ) {
+				attrs.title_text_color = title_text_color;
+			}
+
+			content = element.innerHTML.trim()
+
+			break;
+		}
 	}
+
+	if( element.classList.length ){
+		attrs.class = [...element.classList.values()].join(' ').trim();
+	}
+
+	//  return the module shortcode
+	return addElement(
+		moduleName, 
+		{
+			limiter: 'bracket', 
+			attrs: {
+				_builder_version: DIVI_VER,
+				...attrs
+			},
+			content
+		}
+	);
 }
 
 /**
@@ -668,11 +895,12 @@ export default async function convertSite({
 	debug} ) {
 		spinner.stop();
 		
-		// let buildPath = path.join( appPath, 'content' );
 		let buildPath = path.join( appPath, 'build' );
+		let siteData = fs.existsSync( appPath, 'caweb.json' ) ? JSON.parse( fs.readFileSync( path.join(appPath, 'caweb.json') ) ) : {};
+		let pages = [];
 
 		/**
-		 * Return all .htlm files in the build directory
+		 * Return all .html files in the build directory
 		 * 
 		 * exclusions:
 		 * - serp.html - This a search engine results page, we don't need to parse this
@@ -684,11 +912,12 @@ export default async function convertSite({
 		for( const file of sitePages ) {
 			// get the file path
 			let filePath = path.join( buildPath, file );
-			let fileMarkup = fs.readFileSync( filePath, 'utf8' );
 			
 			// We use jsdom to emulate a browser environment and get the window.document
 			let fileMarkupJSon = await jsdom.JSDOM.fromFile( filePath );
 			let { document } = fileMarkupJSon.window;
+
+			validatePage( document );
 
 			// all we need is the document #page-container #main-content
 			let mainContent = document.querySelector( '#page-container #main-content' );
@@ -701,6 +930,7 @@ export default async function convertSite({
 			
 				// sanitize the json
 				mainContentJson = sanitizeJson( mainContentJson.childNodes )[0];
+
 				/**
 				 * Main content is allowed 2 elements 
 				 * - main - renders the main content
@@ -719,7 +949,16 @@ export default async function convertSite({
 						shortcodeContent += generateShortcodes( [mainContent.childNodes[e]] );
 					}
 
-					console.log( `shortcodeContent: ${shortcodeContent}` );
+					// site info
+					let slug = file.replace( '.html', '' );
+					let title = slug.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+					pages.push({
+						title,
+						slug,
+						shortcodeContent
+					});
+
 				}
 
 				
@@ -727,63 +966,27 @@ export default async function convertSite({
 
 		}
 
-		return
-		let siteData = {};
-
-		// check if the site data file exists
-		if( fs.existsSync( filePath ) ) {
-			let file = fs.readFileSync( filePath, 'utf8' );
-			let data = JSON.parse( file );
-
-			// check if the data file has site data
-			if( data.site ) {
-				const continueProcess = await confirm(
-					{ 
-						message: `Site data already exists, existing data will be overwritten.\nWould you like to continue?`,
-						default: true
-					},
-					{
-						clearPromptOnDone: true,
-					}
-				).catch(() => {process.exit(1);});
-
-				// if the user wants to continue, set the site data
-				// otherwise exit the process
-				if( continueProcess ){
-					siteData = data.site;
-				}else{
-					spinner.fail( 'Site creation cancelled.' );
-					process.exit( 0 );
-				}
-			}
-		}
-
-		writeLine('CAWebPublishing Site Creation Process', {char: '#', borderColor: 'green'});
-		writeLine('This process will create a site configuration file for CAWebPublishing.', {color: 'cyan', prefix: 'i'});
-		writeLine('Please answer the following questions to create your site configuration file.', {color: 'cyan', prefix: 'i'});
-		writeLine('You can skip any question by pressing enter.', {color: 'cyan', prefix: 'i'});
-		writeLine('You can also edit the configuration file later.', {color: 'cyan', prefix: 'i'});
-
-		// populate the site data
+		// add sync entry and pages to siteData
 		siteData = {
-			...await promptForGeneralInfo(siteTitle),
-			header: await promptForHeader(),
-			alerts: await promptForAlerts(),
-			social: await promptForSocial(),
-			google: await promptForGoogleOptions(),
-			footer: await promptForFooter(),
-		};
+			...siteData,
+			sync:{
+				...siteData.sync || {},
+				static:{
+					user: 'static',
+					pwd: 'static',
+					url: 'static'
+				}
+			},
+			media: path.join( appPath, 'build', 'media' ),
+			pages,
+		}
 
 		// write the site data to the file
 		fs.writeFileSync(
 			path.join( appPath, 'caweb.json' ),
-			JSON.stringify( {site:siteData}, null, 4 )
+			JSON.stringify( siteData, null, 4 )
 		);
-
-		writeLine('CAWebPublishing Site Creation Process Complete', {char: '#', borderColor: 'green'});
-		writeLine('You can now start the site by running the following command:', {color: 'cyan', prefix: 'i'});
-		writeLine(`npm run caweb serve`, {color: 'cyan', prefix: 'i'});
-
-		spinner.start('CAWebPublishing Site Configuration file saved.');
+		
+		writeLine( chalk.green( 'Site converted successfully.' ) );
 		
 };
