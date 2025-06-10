@@ -1,3 +1,10 @@
+v1.11.2
+- Updated commands readme.md
+- createTaxonomies function now returns the collection
+- Sync command now allows for syncing from static to local
+- Added some validation during convert-site process
+- CAWeb Card Module added to the generateModuleShortcodes function more to come
+
 v1.11.1
 - Fixed issue with build/serve command requesting wrong webpack.config.js file
 - Added new create-site command which generates a caweb.json file bases on a series of questions
