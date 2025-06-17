@@ -29,7 +29,7 @@ Let's see if we can convert the site into a CAWebPublishing WordPress Instance.
 
 ## Everything converted successfully...
 Ok so lets launch your CAWebPublishing WordPress Instance.
-<pre>npm run launch</pre>
+<pre>npm run launch:sync</pre>
 **\* Requirement:**  
 - You must have Docker installed and running in order for this to work.
 - As of date, CAWebPublishing requires Divi in order to function properly on WordPress

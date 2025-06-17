@@ -1,4 +1,6 @@
 v1.12.1
+- Updated Get Started directions
+- create-site command will now create content/pages directory if it doesn't exist
 - Fixed issue with exported name not found
 
 v1.12.0
