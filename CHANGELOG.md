@@ -1,3 +1,6 @@
+v1.12.1
+- Fixed issue with exported name not found
+
 v1.12.0
 - Added new gen-scripts command which will added various scripts to the project
 - Updated start command, removed our phpMyAdmin container since wp-env now provides it
