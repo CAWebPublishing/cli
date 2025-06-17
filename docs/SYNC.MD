@@ -9,6 +9,11 @@ Sync Configuration Example:
 <pre>
 {
     "sync": {
+        "static": {
+            "user": "static",
+            "pwd": "static",
+            "url": "static"
+        }
         "local": {
             "user": "&lt;Username&gt;",
             "pwd": "<a href="https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/#basic-authentication-with-application-passwords">Application Password</a>",

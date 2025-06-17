@@ -4,7 +4,6 @@
 import path from 'path';
 import fs from 'fs';
 import * as dockerCompose from 'docker-compose';
-import yaml from 'js-yaml';
 
 /**
  * WordPress dependencies
@@ -25,12 +24,14 @@ import {
 	projectPath,
 	configureCAWeb,
 	downloadSources,
+	generateCLIConfig,
 	configureWordPress,
-	runCmd
+	runCmd,
+	runCLICmds
 } from '../../lib/index.js';
-import wpEnvConfig from '../../configs/wp-env.js';
-import dockerConfig from '../../configs/docker-compose.js';
 
+import { wpEnvConfig, wpEnvOverrideConfig } from '../../configs/wp-env.js';
+import {default as SyncProcess} from '../sync/index.js';
 
 /**
  * Starts the development server.
@@ -41,6 +42,7 @@ import dockerConfig from '../../configs/docker-compose.js';
  * @param {string}  options.xdebug  The Xdebug mode to set.
  * @param {boolean} options.scripts Indicates whether or not lifecycle scripts should be executed.
  * @param {boolean} options.debug   True if debug mode is enabled.
+ * @param {boolean} options.sync   Will attempt to sync changes from a CAWebPublishing static site to this WordPress instance..
  * @param {boolean} options.bare   True if excluding any CAWeb Configurations.
  * @param {boolean} options.plugin   True if root directory is a plugin.
  * @param {boolean} options.theme   True if root directory is a theme.
@@ -54,6 +56,7 @@ export default async function start({
 	xdebug,
 	scripts,
 	debug,
+	sync,
 	bare,
 	plugin,
 	theme,
@@ -61,22 +64,50 @@ export default async function start({
 	subdomain
 }) {
 
-	spinner.text = 'Writing configuration file...';
+	
+	
+	// Write CAWeb .wp-env.override.json file.
+	if( ! fs.existsSync( path.join(appPath, '.wp-env.override.json')) ){
+		spinner.stop()
+	
+		// Keys should not be saved in the repository so we store them in the override.json file.
+		fs.writeFileSync(
+			path.join(appPath, '.wp-env.override.json'),
+			JSON.stringify( await wpEnvOverrideConfig(bare, multisite, subdomain, plugin, theme), null, 4 )
+		);
+
+		spinner.start('Writing .wp-env.override.json file...');
+
+	}
 	
 	// Write CAWeb .wp-env.json file.
-	fs.writeFileSync(
-		path.join(appPath, '.wp-env.json'),
-		JSON.stringify( wpEnvConfig(bare, multisite, plugin, theme), null, 4 )
-	);
+	if( ! fs.existsSync( path.join(appPath, '.wp-env.json')) || update ){
+		spinner.stop()
+		
+		fs.writeFileSync(
+			path.join(appPath, '.wp-env.json'),
+			JSON.stringify( wpEnvConfig(bare, multisite, subdomain, plugin, theme), null, 4 )
+		);
+
+		spinner.start('Writing .wp-env.json file...');
+	}
 
 	// Get current wp-env cache key
 	const config = await loadConfig(path.resolve('.'));
 	const { workDirectoryPath } = config;
 	const cacheKey = await getCache(CONFIG_CACHE_KEY, {workDirectoryPath});
-	
-	// Set extra congiguration for WordPress.
+
+	// Set extra configuration for WordPress.
 	// Increase max execution time to 300 seconds.
 	process.env.WORDPRESS_CONFIG_EXTRA = 'set_time_limit(300);';
+
+	// we can enable phpMyAdmin since @wordpress/env:10.14.0
+	if( config.env.development.config.WP_ENV_PHPMYADMIN_PORT ){
+		process.env.WP_ENV_PHPMYADMIN_PORT = config.env.development.config.WP_ENV_PHPMYADMIN_PORT;	
+	}
+	if( config.env.tests.config.WP_ENV_TESTS_PHPMYADMIN_PORT ){
+		process.env.WP_ENV_TESTS_PHPMYADMIN_PORT = config.env.tests.config.WP_ENV_TESTS_PHPMYADMIN_PORT;	
+	}
 
 	// wp-env launch.
 	await wpEnvStart({
@@ -87,6 +118,13 @@ export default async function start({
 		debug,
 	})
 
+	// Save pretext from wp-env if it exists for later.
+	let preText = undefined !== spinner.prefixText ? spinner.prefixText.slice(0, -1) : '';
+
+	// We aren't done lets clear the default WordPress text.			
+	spinner.prefixText = '';
+	spinner.text = '';
+
 	// Check if we should configure settings.
 	const shouldConfigureWp = ( update || 
 		( await didCacheChange( CONFIG_CACHE_KEY, cacheKey, {
@@ -96,40 +134,18 @@ export default async function start({
 		// the majority of update tasks involve connecting to the internet. (Such
 		// as downloading sources and pulling docker images.)
 		( await canAccessWPORG() );
-		
-		
-	// Save pretext from wp-env if it exists for later.
-	let preText = undefined !== spinner.prefixText ? spinner.prefixText.slice(0, -1) : '';
-
-	// We aren't done lets clear the default WordPress text.			
-	spinner.prefixText = '';
-	spinner.text = '';
-
-	// Download any resources required for CAWeb.
-	if( shouldConfigureWp && ! bare ){
-		await downloadSources({spinner, config});
-	}
-		
-	// Write docker-compose.override.yml file to workDirectoryPath.
-	fs.writeFileSync(
-		path.join(workDirectoryPath, 'docker-compose.override.yml'),
-		yaml.dump( dockerConfig(workDirectoryPath) )
-	);
 
 	// Only run configurations when config has changed.
 	if( shouldConfigureWp ){
-
-		// We need to bring the WordPress and CLI instances up again so they pick up
-		// any config changes that may have been added to the docker-compose.override.yml.
-		await dockerCompose.upMany(
-			[
-				'wordpress', 'tests-wordpress',
-				'cli', 'tests-cli'
-			], {
-			cwd: workDirectoryPath,
-			commandOptions: ['--build', '--force-recreate'],
-			log: debug
-		})
+		// Download any resources required for CAWeb.
+		if( ! bare ){
+			spinner.text = 'Downloading CAWeb resources...';
+			// Download sources for development and tests.
+			await Promise.all( [
+				downloadSources('development', {spinner, config}),
+				downloadSources('tests', {spinner, config})
+			] );
+		}
 
 		// Make additional WordPress Configurations.
 		await Promise.all( [
@@ -140,7 +156,7 @@ export default async function start({
 				times: 2,
 			} )
 		] );
-
+		
 		// Make CAWeb WordPress Configurations.
 		await Promise.all( [
 			retry( () => configureCAWeb( 'development', config, spinner ), {
@@ -151,35 +167,18 @@ export default async function start({
 			} ),
 		] );
 
-		// Create an Application Password for the user.
-		/*
-		const devAppPwd = await runCLICmd(
-				'wp',
-					[
-						`user application-password create 1 caweb`,
-						'--porcelain'
-					]
-				);
-		*/
+		
+		if( sync ){
+			// sync any static information.
+			spinner.text = `Syncing CAWebPublishing development Environment...`;
+			// Sync the static site to the local WordPress instance.
+			await SyncProcess({spinner, debug, target: 'static', dest: 'local'})
+		}
 		
 	}
 
-	// Start phpMyAdmin Service.
-	spinner.text = 'Starting phpMyAdmin Service';
-
-	await dockerCompose.upOne(
-		'phpmyadmin', 
-		{
-			cwd: workDirectoryPath,
-			commandOptions: ['--build', '--force-recreate'],
-			log: debug
-		}
-	)
-
-	spinner.prefixText = preText + 
-		`phpMyAdmin site started at http://localhost:8080\n\n`;
+	spinner.prefixText = preText;
 
 
 	spinner.text = 'Done!';
-
 };

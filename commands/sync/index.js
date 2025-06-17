@@ -15,7 +15,7 @@ import { confirm, input, password } from '@inquirer/prompts';
  * Internal dependencies
  */
 import {
-	appPath,
+    appPath,
     getTaxonomies,
     createTaxonomies
 } from '../../lib/index.js';
@@ -28,9 +28,6 @@ import {
     promptForSync,
     promptForId
 } from './prompts.js';
-import { get } from 'http';
-import { connect } from 'http2';
-import { create } from 'domain';
 
 const errors = [];
 const configFile = path.join(appPath, 'caweb.json');
@@ -171,9 +168,10 @@ function getStaticNavItems(navJson, destUrl){
  * @param {Array} options.include   Include specific IDs only.
  */
 export default async function sync({
-	spinner,
-	debug,
-	target,
+    spinner,
+    debug,
+    config,
+    target,
     dest,
     interactive,
     tax,
@@ -189,7 +187,7 @@ export default async function sync({
     // read caweb configuration file.    
     let serviceConfig = fs.existsSync(configFile) ? JSON.parse( fs.readFileSync(configFile) ) : { sync: {} };
 
-    process.env.WP_CLI_CONFIG_PATH  = path.join(workDirectoryPath, 'config.yml');
+    // process.env.WP_CLI_CONFIG_PATH  = path.join(workDirectoryPath, 'config.yml');
     
     target = serviceConfig.sync[target];
     dest = serviceConfig.sync[dest];
@@ -294,6 +292,7 @@ export default async function sync({
     // we create a taxonomies object based off of the static data.
     if( 'static' === target.url  ){
         let mediaPath = serviceConfig.media;
+        let cawebSettings = [];
 
         // iterate over pages and create a pages object.
         for( let page of serviceConfig.pages ){
@@ -334,13 +333,14 @@ export default async function sync({
 
         }
 
+        let currentDate = new Date();
+        let uploadDir = path.join(
+            'wp-content', 'uploads',
+            currentDate.getFullYear().toString(), (currentDate.getMonth() + 1).toString().padStart(2, '0')
+        );
+
         // if the media path exists
         if( fs.existsSync(mediaPath) ){
-            let currentDate = new Date();
-            let uploadDir = path.join(
-                'wp-content', 'uploads',
-                currentDate.getFullYear().toString(), (currentDate.getMonth() + 1).toString().padStart(2, '0')
-            );
 
             // we read all the files in the media directory and create a media object.
             fs.readdirSync(mediaPath, {recursive: true}).forEach( (file) => {
@@ -376,8 +376,50 @@ export default async function sync({
                     });
                 }   
             })
+
         }
         
+        // Favicon is one level up from the media path.
+        let icoFile = path.join(mediaPath, '..', 'favicon.ico');
+
+        if( fs.existsSync(icoFile) && fs.statSync(icoFile).isFile() ){
+            // read the file and create a media object.
+            let icoBlob = fs.readFileSync(icoFile);
+
+            // and new media object
+            media.push({
+                source_url: icoFile,
+                title: 'favicon.ico',
+                alt_text: 'Fav Icon',
+                media_details:{},
+                date: currentDate.toISOString(),
+                data: new Blob([icoBlob])
+            });
+        }
+
+        // Default Organization Logo.
+        // since all files in the media path are copied to the uploads directory,
+        // we only do the default one if the user hasn't added their own logo.
+        // the default logo is usually stored one level up from the media path.
+        // and in the caweb/template/media/logo.png
+        if( ! fs.existsSync(path.join(mediaPath, 'logo.png')) ){
+            let logoFile = path.join(mediaPath, '..', 'caweb', 'template', 'media', 'logo.png');
+ 
+            // read the file and create a media object.
+            let logoBlob = fs.readFileSync(logoFile);
+
+            // and new media object
+            media.push({
+                source_url: logoFile,
+                title: path.basename(logoFile),
+                alt_text: 'Organization Logo',
+                media_details:{},
+                date: currentDate.toISOString(),
+                data: new Blob([logoBlob])
+            });
+
+        }
+
         // Settings
         settings[0] = {
             title: serviceConfig?.site?.title,
@@ -657,7 +699,6 @@ export default async function sync({
             }
         }
     }
-    
 
     /**
      * Now we have all the data we can begin to create the taxonomies on the target.
@@ -687,7 +728,7 @@ export default async function sync({
         spinner.text = `Creating all pages to ${dest.url}`;
         createdPages = await createTaxonomies( pages, destOptions, 'pages', spinner );
     }
-
+    
      // Posts.
     if( posts ){
         spinner.text = `Creating all posts to ${dest.url}`;

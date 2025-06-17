@@ -61,7 +61,9 @@ async function generateOverridesMD() {
 
 };
 
-
+/**
+ * Generates the COMMANDS.MD
+ */
 async function generateCommandsMD() {
 
 	let commands = []
@@ -107,6 +109,15 @@ async function generateCommandsMD() {
 
 };
 
+/**
+ * Adds a command option/argument to the output.
+ * 
+ * @param {*} flags Option/Argument flag name.
+ * @param {*} description Option/Argument flag description. 
+ * @param {*} defaultValue Option/Argument default value.
+ * @param {*} argChoices Option/Argument choices.
+ * @returns {string}
+ */
 function addOption({
 	flags,
 	description,

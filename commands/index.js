@@ -5,6 +5,8 @@
 import clean from '@wordpress/env/lib/commands/clean.js';
 import logs from '@wordpress/env/lib/commands/logs.js';
 import run from '@wordpress/env/lib/commands/run.js';
+import stop from '@wordpress/env/lib/commands/stop.js';
+import destroy from '@wordpress/env/lib/commands/destroy.js';
 import installPath from '@wordpress/env/lib/commands/install-path.js';
 
 /**
@@ -21,35 +23,36 @@ const hint = new JSHintPlugin().hint;
 import A11yPlugin from '@caweb/a11y-webpack-plugin';
 const a11y = new A11yPlugin().a11yCheck;
 
-import shell from './tasks/shell.js';
 
 import sync from './sync/index.js';
 
-import updatePlugins from './tasks/update-plugins.js';
 import createBlock from './blocks/create-block.js';
 import updateBlock from './blocks/update-block.js';
 
 import createSite from './sites/create-site.js';    
 import convertSite from './sites/convert-site.js';
 
-// These are default wp-env commands, we overwrite these commands so we can run additional steps.
+// These are wp-env commands
+// we overwrite the start command so we can run additional steps.
 import start from './env/start.js';
-import destroy from './env/destroy.js';
-import stop from './env/stop.js';
+import shell from './env/shell.js';
+import updatePlugins from './env/update-plugins.js';
 
 // import test from './test.js';
+import genScripts from './gen-scripts.js';
 
 export {
+    genScripts,
     a11y,
     audit,
     hint,
     webpack,
     clean,
-	logs,
-	run,
-	installPath,
+    logs,
+    run,
+    installPath,
     start,
-	stop,
+    stop,
     destroy,
     sync,
     updatePlugins,

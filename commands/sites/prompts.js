@@ -28,8 +28,7 @@ const headerNav = [
         "sub": [
                     {
                         "label": "Accessibility",
-                        "url": "https://caweb.cdt.ca.gov/accessibility-2/",
-                        "description": "Accessibility"
+                        "url": "https://caweb.cdt.ca.gov/accessibility-2/"
                     },
                 ]
     }
@@ -157,7 +156,7 @@ async function promptForHeader(){
     }
 
     // if navigation is selected, prompt for navigation configurations.
-     if( features.includes('navigation') ){
+    if( features.includes('navigation') ){
         
         writeLine('Navigation', {bold: true});
         writeLine('The Navigation is a set of links that are displayed to navigate your site.', {color: 'cyan', prefix: 'i'});
@@ -184,8 +183,6 @@ async function promptForHeader(){
         clearLine((header.nav.length * 3) + 2);
     }
 
-    // clear lines
-    clearLine(6);
     writeLine('Header Configurations Stored.', {color: 'yellow', char: '#', borderColor: 'yellow'});
 
     // return the header object
@@ -230,7 +227,7 @@ async function promptForFooter(){
 
     // clear lines for each link plus the link stored message
     // + 5 for the header and info message
-    clearLine((footer.nav.length * 3) + 5);
+    clearLine((footer.nav.length * 3) + 2);
 
     writeLine('Footer Configurations Stored.', {color: 'yellow', char: '#', borderColor: 'yellow'});
     
@@ -518,15 +515,37 @@ async function promptForGeneralInfo(title){
    writeLine('General Site Information', {color: 'magenta', char: '#', borderColor: 'magenta'});
 
    let info = {
-    title: await input({
-            message: 'What is the title of the site?',
-            default: title,
-            required: true,
-        },
-        {
-            clearPromptOnDone: true,
-        }
-    ).catch(() => {process.exit(1);})
+        title: await input({
+                message: 'What is the title of the site?',
+                default: title,
+                required: true,
+            },
+            {
+                clearPromptOnDone: true,
+            }
+        ).catch(() => {
+            // clear lines.
+            clearLine(10);
+            process.exit(1);
+        }),
+        domain: await input({
+                message: 'What is the domain of the site?',
+                default: 'http://localhost',
+                validate: (input) => {
+                    if( ! input.startsWith('http') && ! input.startsWith('https') ){
+                        return 'Domain must start with http or https.';
+                    }
+                    return true;
+                }
+            },
+            {
+                clearPromptOnDone: true,
+            }
+        ).catch(() => {
+            // clear lines.
+            clearLine(10);
+            process.exit(1);
+        }),
    };
 
     // clear lines.

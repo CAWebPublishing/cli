@@ -1,3 +1,18 @@
+v1.12.0
+- Added new gen-scripts command which will added various scripts to the project
+- Updated start command, removed our phpMyAdmin container since wp-env now provides it
+- Update convert-site, create-site, and sync processes
+- Added GetStarted documentation
+- Added default sources to download-sources
+- Added CAWEB_FAV_ICON environment variable to options.js which will update the CAWeb Options fav icon
+- Added CAWEB_ORG_LOGO environment variable to options.js which will update the CAWeb Options organization logo
+- docker compose override file no longer gets generated
+- cli config.yml no longer gets generated
+- Added default .htaccess for single site instances
+- Application Password now gets generated whenever instance is updated
+- Stop and Destroy command no longer needs to be overwritten
+- shell and update-plugins commands moved to env directory
+
 v1.11.2
 - Updated commands readme.md
 - createTaxonomies function now returns the collection

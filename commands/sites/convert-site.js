@@ -22,9 +22,13 @@ const { DIVI_VER } = JSON.parse( fs.readFileSync( path.join(projectPath, 'packag
 /**
  * Modules allow list
  */
+const commonElements = ['div', 'a', 'b', 'p', 'br', 'span', 'strong', 'ul', 'ol', 'li'];
+
+
 const allowedModules = {
-	'et_pb_text': ['p', 'span', 'a', 'b'],
-	'et_pb_heading': ['span', 'a', 'b']
+	'et_pb_text': [...commonElements, 'code'],
+	'et_pb_heading': ['span', 'a', 'b'],
+	'et_pb_code': commonElements,
 }
 
 
@@ -100,7 +104,7 @@ function convertRawAttrs( rawAttrs ) {
 
 	let attrs = {};
 
-	// attributes follow the format of key="value" key="value"
+	// attributes follow the format of key="value"
 	// we want to split the string by "space
 	let attrArray = rawAttrs.split( '" ' );
 
@@ -144,7 +148,8 @@ function getAttrString(attributes, limiter) {
 						case 'style':
 							key = [];
 
-							value.split(';').forEach( (v) => {
+							value.split(';').filter(Boolean).forEach( (v) => {
+
 								let k = v.split(':')[0].trim();
 								let s = v.split(':')[1].trim();
 
@@ -266,7 +271,9 @@ function addElement( tag, opts = {} ) {
 		return content;	
 	}
 
-	let output = `${lmtrObj.open}${tag}${attrString}${tag && isSelfClosing ? ' /' : ''}${lmtrObj.close}${content.trim()}`
+	content = content.trim();
+
+	let output = `${lmtrObj.open}${tag}${attrString}${tag && isSelfClosing ? ' /' : ''}${lmtrObj.close}${content}`
 	
 	if( ! isUnclosed && ! isSelfClosing && tag) {
 		output += closeElement(tag, lmtrObj );
@@ -285,7 +292,6 @@ function closeElement( tag, limiter ) {
 	let lmtrObj = 'string' === typeof limiter ? getLimiter( limiter ) : limiter;
 	return `${lmtrObj.open}/${tag}${lmtrObj.close}`
 }
-
 
 /**
  * Generates shortcodes from the json object.
@@ -333,13 +339,13 @@ function generateShortcodes( mainContent,  opts = {
 
 		// we convert the raw attributes to a json object
 		let attrs = convertRawAttrs( rawAttrs );
-
+		
 		/**
 		 * We dont want to convert empty elements
 		 */
 		if( ! content.length ){
-			// image tags are self closing and don't have content this is ok.
-			if( 'img' === type ) {
+			// image tags and br are self closing and don't have content this is ok.
+			if( ['img', 'br'].includes( type ) ) {
 				// do nothing this is ok.
 			// no length no type blank spaces
 			} else if( '' !== type ){
@@ -369,6 +375,10 @@ function generateShortcodes( mainContent,  opts = {
 				if( classes.includes('container-fluid') && ! opts.inFullwidth) {
 					opts.inFullwidth = true;
 
+					// fullwidth sections don't need the container-fluid class
+					// we remove the container-fluid class from the attributes
+					attrs.class = attrs.class.replace('container-fluid', '');
+
 					let hasContainers = content.filter((r,i) => { 
 						if(r.attributes.class.match(/container/g)){
 							// we add the raw attributes to the containers
@@ -381,10 +391,17 @@ function generateShortcodes( mainContent,  opts = {
 
 					if( ! hasContainers ) {
 						output += addElement(
-							'et_pb_fullwidth_section', 
+							'et_pb_section', 
 							{ 
 								limiter:opts.limiter, 
-								content: generateShortcodes(content, opts) 
+								content: generateShortcodes(content, opts),
+								attrs: {
+									_builder_version: DIVI_VER,
+									fullwidth: 'on',
+									inner_width: 'auto',
+									inner_max_width: '1080px',
+									...attrs,
+								}
 							}
 						);
 					}else{
@@ -473,17 +490,29 @@ function generateShortcodes( mainContent,  opts = {
 					let colType = '';
 					// calculate the column type
 					switch( colSize ) {
-						// 1 column
-						case 12:
-							colType = '4_4';
+						// 1/4 columns	
+						case 3:
+							colType = '1_4';
 							break;
-						// 2 columns
+						// 1/3 columns	
+						case 4:
+							colType = '1_3';
+							break;
+						// 1/2 columns
 						case 6:
 							colType = '1_2';
 							break;
-						// 3 columns	
-						case 4:
-							colType = '1_3';
+						// 2/3 columns
+						case 8:
+							colType = '2_3';
+							break;
+						// 3/4 column
+						case 9:
+							colType = '3_4';
+							break;
+						// 1 column
+						case 12:
+							colType = '4_4';
 							break;
 					}
 
@@ -539,8 +568,9 @@ function generateShortcodes( mainContent,  opts = {
 							output += addElement(
 								type, 
 								{ 
-									limiter: opts.limiter, 
-									content: generateShortcodes(content, opts) 
+									limiter: 'angle', 
+									content: generateShortcodes(content, opts),
+									attrs
 								}
 							);
 
@@ -552,7 +582,17 @@ function generateShortcodes( mainContent,  opts = {
 
 			// code module
 			case 'code':
-				output += addElement(setFullwidthTag('et_pb_code', opts.inFullwidth), {attrs, limiter: 'bracket', content: generateShortcodes(content)} );
+				// if already opened
+				let codeElement = 'et_pb_column' === opts.openElement  ? 
+					setFullwidthTag('et_pb_code', opts.inFullwidth) :
+					'code'  
+
+					output += addElement(
+						codeElement, 
+						{
+							attrs, limiter: 'code' === codeElement ? 'angle' : 'bracket', 
+							content: generateShortcodes(content, opts)
+						} );
 				break;
 			// header modules
 			case 'h1':
@@ -564,7 +604,6 @@ function generateShortcodes( mainContent,  opts = {
 				// we let the h1-h6 process know element is opened
 				// this allows other elements to be added to the header modules
 				// opts.openElement = 'et_pb_heading';
-
 
 				output += generateModuleShortcode('heading', htmlElement);
 				// opts.openElement = false;
@@ -581,11 +620,16 @@ function generateShortcodes( mainContent,  opts = {
 				);
 
 				break;
-			// all theses elements can go in a text module
+			// all theses elements can go in other modules
+			// they also need to be added to the allowedModules list
 			case 'a':
 			case 'b':
 			case 'p':
+			case 'ol':
+			case 'ul':
+			case 'li':
 			case 'span':
+			case 'strong':
 				
 				if( opts.inFullwidth ) {
 					// figure out what to do with these elements if in a fullwidth section
@@ -614,7 +658,6 @@ function generateShortcodes( mainContent,  opts = {
 							} 
 						);
 
-
 					// a text module has already been opened so we just add to it
 					}else {
 						output += addElement(
@@ -629,7 +672,6 @@ function generateShortcodes( mainContent,  opts = {
 				break;
 			// default is a string element
 			default:
-				// console.log( htmlElement)
 				output += htmlElement; 
 				break;
 				
@@ -641,6 +683,127 @@ function generateShortcodes( mainContent,  opts = {
 	return output;
 }
 
+/**
+ * Bootstraps to Object conversion process.
+ * 
+ * @param {*} classes 
+ * @param {*} styles 
+ * @returns {object}
+ */
+function bsToProp(classes, styles = {}) {
+	let props = {};
+
+	let fontWeight = {
+		lighter: '200',
+		light: '300',
+		normal: '400',
+		medium: '500',
+		semibold: '600',
+		bold: '700',
+		extrabold: '800',
+	}
+	let fontColors = {
+		'light': 'ededef',
+		'dark': '3b3a48',
+		'white': 'fff',
+		'black': '000',
+	}
+	let alignments = {
+		'left': 'left',
+		'center': 'center',
+		'right': 'right',
+	}
+
+	for( const c of classes.values() ) {
+		if( c.startsWith('fw-') ) {
+			let fontWeightValue = c.replace('fw-', '');
+			props.font_weight = fontWeight[fontWeightValue] || fontWeight.normal;
+			classes.remove(c);
+		}
+
+		if( c.startsWith('text-') ) {
+			let textUtil = c.replace('text-', '');
+			// text orientation
+			if( alignments[textUtil] ){
+				props.text_orientation = alignments[textUtil];
+				classes.remove(c);
+			}
+
+			// text color
+			if( fontColors[textUtil] ) {
+				props.font_color = fontColors[textUtil];
+				classes.remove(c);
+			}
+
+		}
+	}
+
+	if( styles && styles.length ) {
+		styles.split(';').filter(Boolean).forEach( (v) => {
+			let k = v.split(':')[0].trim();
+			let s = v.split(':')[1].trim();
+			// style mappings
+			switch( k ) {
+				case 'background-color':
+					props.background_color = s;
+				case 'background-image':
+					let gradient = s.replace(/.*[,\s]*linear-gradient\((.*?)\).*/g, '$1').replace(/["']/g, '');
+
+					if( gradient ) {
+						// if the gradient is present we want to add the appropriate values
+						let gradientValues = gradient.split(',');
+
+						props.background_color_gradient_direction = gradientValues[0].trim();
+						props.background_color_gradient_stops = gradientValues.slice(1).join('|');
+						props.use_background_color_gradient = 'on';
+					}
+
+					props.background_image = s.replace(/url\((.*?)\).*/g, '$1').replace(/["']/g, '');
+				break;
+				case 'background-repeat':
+					props.background_repeat = s.replace(/(.*?)(repeat|no-repeat)/g, '$2');
+				break;
+				case 'background-position':
+					/**
+					 * position can be 4 different syntaxes so lets split the values
+					 * @link https://developer.mozilla.org/en-US/docs/Web/CSS/background-position
+					 */
+					let values = s.split(' ');
+					// for whatever reason Divi has these values inverted
+				
+					switch( values.length ) {
+						case 1:
+							s = values[0];
+							break;
+						case 2:
+							s = `${values[1]}_${values[0]}`;
+							break;
+						case 3:
+						case 4:
+							s = `${values[2]}_${values[0]}`;
+						break;
+					}
+					props.background_position = s;
+				break;
+				case 'background-size':
+					props.background_size = s;
+				case 'color':
+					props.font_color = s;
+				break;
+			}
+		});
+	}
+	
+	return props;
+}
+
+/**
+ * Generates a Divi module shortcode from the module name and element.
+ * 
+ * @param {*} module 
+ * @param {*} element 
+ * @returns 
+ */
 function generateModuleShortcode(module, element  ){
 	let content = '';
 	let attrs = {};
@@ -767,7 +930,7 @@ function generateModuleShortcode(module, element  ){
 			}
 
 			// if the element has an image, we want to add it to the attributes
-			if( img ){
+			if( img && img.length ) {
 				attrs.show_image = 'on';
 				attrs.featured_image = img[0].getAttribute('src');
 			}
@@ -801,61 +964,23 @@ function generateModuleShortcode(module, element  ){
 			break;
 		}
 		case 'heading': {
-			let title_font = [];
-			let title_text_color = '';
 
 			attrs = {
 				title: element.innerHTML.trim(),
-				title_level: element.tagName.toLowerCase()
+				title_level: element.tagName.toLowerCase(),
+				...bsToProp(element.classList, element?._rawAttrs?.style),
 			};
 
-			for( const c of element.classList.values() ) {
-				// font weight classes
-				if( c.startsWith('fw-') ) {
-					let fontWeight = {
-						lighter: '200',
-						light: '300',
-						normal: '400',
-						medium: '500',
-						semibold: '600',
-						bold: '700',
-						extrabold: '800',
-					}
-
-
-					let fontWeightValue = c.replace('fw-', '');
-					
-					title_font[1] = fontWeight[fontWeightValue] || fontWeight.normal;
-
-					// remove the class from the class list
-					element.classList.remove(c);
-				// text classes
-				}else if( c.startsWith('text-') ) {
-					let fontColors = {
-						'light': 'ededef',
-						'dark': '3b3a48',
-						'white': 'fff',
-						'black': '000',
-					}
-
-					let fontColorValue = c.replace('text-', '');
-
-					if( fontColors[fontColorValue] ) {
-						title_text_color = `#${fontColors[fontColorValue]}`;
-					}
-
-					
-					// remove the class from the class list
-					element.classList.remove(c);
-				}
+			// if there was a text orientation, it needs to be title_text_align.
+			if( attrs.text_orientation ) {
+				attrs.title_text_align = attrs.text_orientation;
+				delete attrs.text_orientation;
 			}
 
-			if( title_font.length ) {
-				attrs.title_font = title_font.join('|');
-			}
-
-			if( title_text_color ) {
-				attrs.title_text_color = title_text_color;
+			// if there was a font color, it needs to be title_text_color.
+			if( attrs.font_color ) {
+				attrs.title_text_color = attrs.font_color;
+				delete attrs.font_color;
 			}
 
 			content = element.innerHTML.trim()
@@ -896,8 +1021,26 @@ export default async function convertSite({
 		spinner.stop();
 		
 		let buildPath = path.join( appPath, 'build' );
-		let siteData = fs.existsSync( appPath, 'caweb.json' ) ? JSON.parse( fs.readFileSync( path.join(appPath, 'caweb.json') ) ) : {};
+		let favicon = path.join( appPath, 'build', 'favicon.ico' );
+		let logo = fs.existsSync(path.join(appPath, 'build', 'media', 'logo.png') ) ?
+			path.join(appPath, 'build', 'media', 'logo.png') :
+			path.join(appPath, 'build', 'caweb', 'template', 'media', 'logo.png');
+		
+		let siteData = fs.existsSync( appPath, 'caweb.json' ) ? 
+			JSON.parse( fs.readFileSync( path.join(appPath, 'caweb.json') ) ) : 
+			{
+				site:{
+					favicon,
+					logo
+				}
+			};
+
 		let pages = [];
+		
+		// if site data has no site object, we want to create it
+		if( ! siteData.site ) {
+			siteData.site = {favicon, logo};
+		}
 
 		/**
 		 * Return all .html files in the build directory
@@ -964,6 +1107,16 @@ export default async function convertSite({
 				
 			}
 
+		}
+		
+		// if no favicon is set, we want to set the default favicon
+		if( ! siteData?.favicon ){
+			siteData.favicon = favicon;
+		}
+
+		// if no logo is set, we want to set the default logo
+		if( ! siteData?.logo ){
+			siteData.logo = logo;
 		}
 
 		// add sync entry and pages to siteData
