@@ -24,7 +24,6 @@ import {
 	projectPath,
 	configureCAWeb,
 	downloadSources,
-	generateCLIConfig,
 	configureWordPress,
 	runCmd,
 	runCLICmds

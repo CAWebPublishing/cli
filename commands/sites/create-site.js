@@ -105,6 +105,11 @@ export default async function createSite({
 			);
 		}
 
+		// create content/pages directory if it doesn't exist
+		if( ! fs.existsSync( path.join( appPath, 'content', 'pages' ) ) ) {
+			fs.mkdirSync( path.join( appPath, 'content', 'pages' ), { recursive: true });
+		}
+		
 		// create media directory if it doesn't exist
 		if( ! fs.existsSync( path.join( appPath, 'media' ) ) ) {
 			fs.mkdirSync( path.join( appPath, 'media' ) );
