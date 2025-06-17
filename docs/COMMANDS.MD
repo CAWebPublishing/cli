@@ -120,6 +120,11 @@ Deletes docker containers, volumes, and networks associated with the CAWebPublis
 --scripts                          Execute any configured lifecycle scripts.
                                    Default: true
 </pre>
+### `caweb gen-scripts`
+Adds some general basic scripts commonly used in most projects to your package.json.
+<pre>
+<b>Usage:</b> caweb gen-scripts [options]
+</pre>
 ### `caweb install-path`
 Get the path where all of the environment files are stored. This includes the Docker files, WordPress, PHPUnit files, and any sources that were downloaded.
 <pre>
@@ -211,6 +216,8 @@ tests on port http://localhost:8889 (override with WP_ENV_TESTS_PORT).
 --xdebug &lt;mode&gt;                    Enables Xdebug. If not passed, Xdebug is turned off. If no modes are set, uses "debug". You may set multiple Xdebug modes by passing them in a comma-separated list: `--xdebug=develop,coverage`. See https://xdebug.org/docs/all_settings#mode for information about Xdebug modes.
 --scripts                          Execute any configured lifecycle scripts.
                                    Default: true
+--sync                             Will attempt to sync changes from a CAWebPublishing static site to this WordPress instance.
+                                   Default: false
 --bare                             True if excluding any downloads from CAWeb, use this if you want to use a local version of the CAWeb Theme, Configurations will still be applied.
                                    Default: false
 -p, --plugin                       True if root directory is a plugin.

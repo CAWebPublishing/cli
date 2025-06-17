@@ -9,7 +9,7 @@ import chalk from 'chalk';
 /**
  * Internal dependencies
  */
-import { appPath, writeLine } from '../../lib/index.js';
+import { appPath, writeLine, clearLine } from '../../lib/index.js';
 
 import {
 	promptForGeneralInfo,
@@ -78,6 +78,7 @@ export default async function createSite({
 		writeLine('You can also edit the configuration file later.', {color: 'cyan', prefix: 'i'});
 
 		// populate the site data
+		// prompt for each section
 		siteData = {
 			...await promptForGeneralInfo(siteTitle),
 			header: await promptForHeader(),
@@ -93,10 +94,31 @@ export default async function createSite({
 			JSON.stringify( {site:siteData}, null, 4 )
 		);
 
+		// if there is no src directory, create it
+		if( ! fs.existsSync( path.join( appPath, 'src' ) ) ) {
+			fs.mkdirSync( path.join( appPath, 'src' ) );
+
+			// create the index.js file
+			fs.writeFileSync(
+				path.join( appPath, 'src', 'index.js' ),
+				`// This is the main entry point for your CAWebPublishing site.\n// You can start coding your site here.\n\nconsole.log('Welcome to your CAWebPublishing site!');`
+			);
+		}
+
+		// create media directory if it doesn't exist
+		if( ! fs.existsSync( path.join( appPath, 'media' ) ) ) {
+			fs.mkdirSync( path.join( appPath, 'media' ) );
+		}
+
+		// clearLines for stored messages
+		// clearlines = (6 * 3) + 7
+		// (sectionCount * storedMessageLines) + Intro Lines
+		clearLine( (6 * 3) + 7 );
+
 		writeLine('CAWebPublishing Site Creation Process Complete', {char: '#', borderColor: 'green'});
 		writeLine('You can now start the site by running the following command:', {color: 'cyan', prefix: 'i'});
 		writeLine(`npm run caweb serve`, {color: 'cyan', prefix: 'i'});
 
-		spinner.start('CAWebPublishing Site Configuration file saved.');
-		
+		spinner.text = `CAWebPublishing Site Configuration file saved at ${path.join( appPath, 'caweb.json' )}.`;
+
 };

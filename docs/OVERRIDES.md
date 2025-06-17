@@ -2,7 +2,7 @@
 Any fields here will take precedence over .wp-env.json.
 ## <ins>Special Config Values</ins>
 ### <ins>CAWeb Options</ins>
-`CAWEB_TEMPLATE_VER` - Updates CAWeb State Template Version  
+`CAWEB_FAV_ICON` - Updates CAWeb Fav Icon  
 `CAWEB_NAV_MENU_STYLE` - Updates CAWeb Header Menu Type  
 `CAWEB_COLORSCHEME` - Updates CAWeb Color Scheme  
 `CAWEB_TITLE_DISPLAY` - Updates CAWeb Title Display Default  
@@ -26,7 +26,8 @@ Any fields here will take precedence over .wp-env.json.
 `CAWEB_UTILITY_LINK3_LABEL` - Updates CAWeb Custom Link 3 Label  
 `CAWEB_UTILITY_LINK3_URL` - Updates CAWeb Custom Link 3 URL  
 `CAWEB_UTILITY_LINK3_NEW_WINDOW` - Updates CAWeb Custom Link 3 Open in New Tab  
-`CAWEB_CAWEB_ORG_LOGO_ALT_TEXT` - Updates CAWeb Organization Logo-Alt Text  
+`CAWEB_ORG_LOGO` - Updates CAWeb Organization Logo-Brand  
+`CAWEB_ORG_LOGO_ALT_TEXT` - Updates CAWeb Organization Logo-Alt Text  
 `CAWEB_GOOGLE_SEARCH_ENGINE_ID` - Updates CAWeb Search Engine ID  
 `CAWEB_GOOGLE_ANALYTICS_ID` - Updates CAWeb Analytics ID  
 `CAWEB_GOOGLE_ANALYTICS4_ID` - Updates CAWeb Analytics 4 ID  
