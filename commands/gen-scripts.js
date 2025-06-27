@@ -43,7 +43,7 @@ export default async function genScripts({
 			"launch": "caweb launch",
 			"launch:multi": "caweb launch --multisite",
 			"launch:multi:subdomain": "caweb launch --multisite --subdomain",
-			"launch:sync": "caweb launch --sync --update --bare",
+			"launch:sync": "caweb launch --sync --update",
 			"launch:update": "caweb launch --update",
 			"stop": "caweb stop",
 			"shutdown": "caweb destroy",
