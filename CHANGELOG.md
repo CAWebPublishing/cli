@@ -1,3 +1,7 @@
+v1.12.2
+- Removed bare flag from launch:sync script
+- Initialized sync property if none exists
+
 v1.12.1
 - Updated Get Started directions
 - create-site command will now create content/pages directory if it doesn't exist
