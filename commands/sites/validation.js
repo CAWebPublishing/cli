@@ -1,5 +1,4 @@
 import { parse } from 'node-html-parser';
-import { writeLine } from '../../lib/index.js';
 
 /**
  * Validates the HTML of a page.
