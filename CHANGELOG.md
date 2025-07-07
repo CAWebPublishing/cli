@@ -1,3 +1,6 @@
+v1.12.3
+- Updated spinner error handling so that thrown errors display the message without the stack trace
+
 v1.12.2
 - Removed bare flag from launch:sync script
 - Initialized sync property if none exists
