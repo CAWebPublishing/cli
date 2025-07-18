@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.13.1",
+  "version": "1.13.2",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -58,13 +58,11 @@
       "COOKIE_DOMAIN": "",
       "COOKIEPATH": "",
       "SITECOOKIEPATH": "",
-      "CONCATENATE_SCRIPTS": false,
-      "WP_ENV_PHPMYADMIN_PORT": 9999,
-      "WP_ENV_TESTS_PHPMYADMIN_PORT": 9998
+      "CONCATENATE_SCRIPTS": false
     }
   },
   "dependencies": {
-    "@caweb/webpack": "^1.5.1",
+    "@caweb/webpack": "^1.5.3",
     "@inquirer/prompts": "^7.6.0",
     "@wordpress/create-block": "^4.69.0",
     "@wordpress/env": "^10.26.0",
