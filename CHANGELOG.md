@@ -1,3 +1,6 @@
+v1.13.1
+- Removed webpack npm plugins 
+
 v1.13.0
 - Updated WP Core to 6.8.2
 - Updated npm packages
