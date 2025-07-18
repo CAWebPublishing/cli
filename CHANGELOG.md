@@ -1,3 +1,7 @@
+v1.13.2
+- Updated npm packages
+- Removed WP_ENV_PHPMYADMIN_PORT and WP_ENV_TESTS_PHPMYADMIN_PORT config variables
+
 v1.13.1
 - Removed webpack npm plugins 
 
