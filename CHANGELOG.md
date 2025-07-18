@@ -1,3 +1,7 @@
+v1.13.0
+- Updated WP Core to 6.8.2
+- Updated npm packages
+
 v1.12.4
 - Added output-folder flag to audit command
 - Updated npm packages
