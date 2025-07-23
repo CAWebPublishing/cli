@@ -1,3 +1,6 @@
+v1.13.3
+- Updated spinner error handling, some Docker compose errors weren't displaying properly
+
 v1.13.2
 - Updated npm packages
 - Removed WP_ENV_PHPMYADMIN_PORT and WP_ENV_TESTS_PHPMYADMIN_PORT config variables
