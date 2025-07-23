@@ -1,3 +1,6 @@
+v1.13.4
+- Updated npm packages
+
 v1.13.3
 - Updated spinner error handling, some Docker compose errors weren't displaying properly
 
