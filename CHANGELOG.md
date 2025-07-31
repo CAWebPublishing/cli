@@ -1,3 +1,6 @@
+v1.13.6
+- Fixed issue with CAWeb FavIcon and Org Logo not linking appropriately due to port being in wrong location
+
 v1.13.5
 - Updated npm packages
 
