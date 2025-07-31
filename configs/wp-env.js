@@ -101,35 +101,27 @@ function wpEnvConfig ( bare, multisite, subdomain, plugin, theme ) {
         // add caweb logo
         if( cawebJson?.logo ){
             // dev configurations
-            envConfig.env.development.config['CAWEB_ORG_LOGO'] = `${envConfig.config['WP_SITEURL']}/` + path.join(
-                uploadDir,
-                path.basename(cawebJson.logo) + // add the port
-                ('80' !== envConfig.env.development.port ? `:${envConfig.env.development.port}` : '')
-            ).replace(/\\/g, '/');
+            envConfig.env.development.config['CAWEB_ORG_LOGO'] = `${envConfig.config['WP_SITEURL']}` + 
+                ('80' !== envConfig.env.development.port ? `:${envConfig.env.development.port}/` : '/') +
+                path.join( uploadDir, path.basename(cawebJson.logo) ).replace(/\\/g, '/');
                 
             // tests configurations
-            envConfig.env.tests.config['CAWEB_ORG_LOGO'] = `${envConfig.config['WP_SITEURL']}/` + path.join(
-                uploadDir,
-                path.basename(cawebJson.logo) + // add the port
-                ('80' !== envConfig.env.tests.port ? `:${envConfig.env.tests.port}` : '')
-            ).replace(/\\/g, '/');
+            envConfig.env.tests.config['CAWEB_ORG_LOGO'] = `${envConfig.config['WP_SITEURL']}` + 
+                ('80' !== envConfig.env.tests.port ? `:${envConfig.env.tests.port}/` : '/') +
+                path.join( uploadDir, path.basename(cawebJson.logo) ).replace(/\\/g, '/');
         }
 
         // add caweb favicon
         if( cawebJson?.favicon ){
             // dev configurations
-            envConfig.env.development.config['CAWEB_FAV_ICON'] = `${envConfig.config['WP_SITEURL']}/` + path.join(
-                uploadDir,
-                path.basename(cawebJson.favicon) + // add the port
-                ('80' !== envConfig.env.development.port ? `:${envConfig.env.development.port}` : '')
-            ).replace(/\\/g, '/');
+            envConfig.env.development.config['CAWEB_FAV_ICON'] = `${envConfig.config['WP_SITEURL']}` + 
+                ('80' !== envConfig.env.development.port ? `:${envConfig.env.development.port}/` : '/') +
+                path.join( uploadDir, path.basename(cawebJson.favicon) ).replace(/\\/g, '/');
                 
             // tests configurations
-            envConfig.env.tests.config['CAWEB_FAV_ICON'] = `${envConfig.config['WP_SITEURL']}/` + path.join(
-                uploadDir,
-                path.basename(cawebJson.favicon) + // add the port
-                ('80' !== envConfig.env.tests.port ? `:${envConfig.env.tests.port}` : '')
-            ).replace(/\\/g, '/');
+            envConfig.env.tests.config['CAWEB_FAV_ICON'] = `${envConfig.config['WP_SITEURL']}` + 
+                ('80' !== envConfig.env.tests.port ? `:${envConfig.env.tests.port}/` : '/') +
+                path.join( uploadDir, path.basename(cawebJson.favicon) ).replace(/\\/g, '/');
 
         }
 
