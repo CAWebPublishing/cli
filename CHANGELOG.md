@@ -1,4 +1,7 @@
-v1.13.7
+v1.13.8
+- Added the @wordpress/env@10.33.0 retry, md5, load config and parsing of configs into ECMA since they were no longer being exported
+
+v1.13.7 - Unpublished
 - Updated npm packages
 
 v1.13.6

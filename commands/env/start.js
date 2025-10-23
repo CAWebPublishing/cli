@@ -10,7 +10,7 @@ import * as dockerCompose from 'docker-compose';
  */
 import { default as wpEnvStart} from '@wordpress/env/lib/commands/start.js';
 import loadConfig from '@wordpress/env/lib/config/load-config.js';
-import retry from '@wordpress/env/lib/retry.js';
+import retry from '../../lib/helpers.js';
 import { didCacheChange, getCache } from '@wordpress/env/lib/cache.js';
 import { canAccessWPORG } from '@wordpress/env/lib/wordpress.js';
 

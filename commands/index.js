@@ -2,12 +2,14 @@
  * External dependencies
  */
 // These are default wp-env commands. No need to overwrite these commands
-import clean from '@wordpress/env/lib/commands/clean.js';
-import logs from '@wordpress/env/lib/commands/logs.js';
-import run from '@wordpress/env/lib/commands/run.js';
-import stop from '@wordpress/env/lib/commands/stop.js';
-import destroy from '@wordpress/env/lib/commands/destroy.js';
-import installPath from '@wordpress/env/lib/commands/install-path.js';
+import {
+    clean,
+    logs,
+    run,
+    stop,
+    destroy,
+    installPath
+} from '@wordpress/env';
 
 /**
  * Internal dependencies
