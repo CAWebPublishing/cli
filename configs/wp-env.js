@@ -13,6 +13,7 @@ import {
 } from '../lib/helpers.js';
 import { promptForDivi } from './prompts.js';
 import { config, env } from 'process';
+import { CAWEB_OPTIONS, DIVI_OPTIONS } from'../lib/wordpress/options.js';
 
 const localFile = path.join(projectPath, 'package.json');
 const pkg = JSON.parse( fs.readFileSync(localFile) );
@@ -32,25 +33,72 @@ const cawebJson = fs.existsSync( path.join(appPath, 'caweb.json') ) ?
  * 
  * @returns object
  */
-function wpEnvConfig ( bare, multisite, subdomain, plugin, theme ) {
+async function wpEnvConfig ( {workDirectoryPath: cwd , bare, multisite, subdomain, plugin, theme} ) {
     let themes = [];
     let plugins = [];
+    let args = {cwd, bare, multisite, subdomain, plugin, theme};
+    let argString = Object.entries( args ).map( ([k, v]) => `--${k} ${v}` ).join( ' ' );
+
+    let setupFile = path.join( projectPath, 'lib', 'wordpress', 'setup', 'index.js' );
     
     let envConfig = {
         core: `WordPress/WordPress#${pkg.config.WP_VER}`,
         phpVersion: `${pkg.config.PHP_VER}`,
         multisite,
+        themes: [ 
+            `CAWebPublishing/CAWeb#${pkg.config.CAWEB_VER}` 
+        ],
+        plugins: [
+            'CAWebPublishing/caweb-dev',
+            `https://downloads.wordpress.org/plugin/query-monitor.${pkg.config.QUERY_MONITOR}.zip`,
+        ],
         env: {
-            development: { port: 8888, config: {} },
-            tests: { port: 8889, config: {} }
+            development: { 
+                port: 8888, 
+                phpmyadminPort: 9998,
+                config: {} 
+        },
+            tests: { 
+                port: 8889, 
+                phpmyadminPort: 9999,
+                config: {} 
+            }
+        },
+        lifecycleScripts: {
+            afterStart: `node ${ setupFile } ${ argString }`,
+        },
+        config: {
+            ...pkg.config.DEFAULTS
         }
     }
 
-    if( multisite && subdomain ){
-        pkg.config.DEFAULTS.SUBDOMAIN_INSTALL= true;
+    if( multisite ){
+        if( ! bare ){   
+            // if multisite set default theme to CAWeb
+            // this allows for any new sites created to use CAWeb as the default theme.
+            pkg.config.DEFAULTS.WP_DEFAULT_THEME = 'CAWeb';
+        }
+        // if subdomain add the subdomain constant
+        if( subdomain ){
+            pkg.config.DEFAULTS.SUBDOMAIN_INSTALL= true;
+        }
     }
 
-    envConfig.config = pkg.config.DEFAULTS
+    // iterate over available CAWeb options.
+	Object.entries(CAWEB_OPTIONS).forEach(([k,v]) => {
+        envConfig.config[k] = v.defaultValue;
+	})
+
+    // iterate over available Divi options.
+	Object.entries(DIVI_OPTIONS).forEach(([group, options]) => {
+        // we dont want to set any automatic update options here.
+        if( 'et_automatic_updates_options' === group ) return;
+
+        // iterate over each group options.
+		Object.entries(options).forEach(([key, data]) => {
+            envConfig.config[key] = data.defaultValue;
+        })
+	})
 
     // if root directory is a theme
     if( theme ){
@@ -131,7 +179,6 @@ function wpEnvConfig ( bare, multisite, subdomain, plugin, theme ) {
     
 }
 
-
 /**
  * Build .wp-env.override.json
  * 
@@ -143,16 +190,12 @@ function wpEnvConfig ( bare, multisite, subdomain, plugin, theme ) {
  * 
  * @returns object
  */
-async function wpEnvOverrideConfig(){
-    let divi = await promptForDivi();
-     
-    let config = {
+async function wpEnvOverrideConfig({workDirectoryPath}){
+    return {
         config: {
-            ...divi
+            ...await promptForDivi()
         }
     }
-
-    return config;
 }
 
 export {

@@ -41,6 +41,8 @@ files                              Files or directory path to CSS files.
                                    Default: html
 --filename [name]                  If using a format that outputs to a file, specify the file name.
                                    Default: css-audit
+--output-folder [path]             Where the audit should be saved.
+                                   Default: audits
 --colors                           Runs colors audit.
                                    Default: true
 --no-colors                        Skips colors audit.
@@ -214,6 +216,8 @@ tests on port http://localhost:8889 (override with WP_ENV_TESTS_PORT).
 --update                           Download source updates and apply WordPress configuration.
                                    Default: false
 --xdebug &lt;mode&gt;                    Enables Xdebug. If not passed, Xdebug is turned off. If no modes are set, uses "debug". You may set multiple Xdebug modes by passing them in a comma-separated list: `--xdebug=develop,coverage`. See https://xdebug.org/docs/all_settings#mode for information about Xdebug modes.
+--spx                              A simple profiling extension for PHP that provides low-overhead profiling with a built-in web UI.
+                                   Default: 
 --scripts                          Execute any configured lifecycle scripts.
                                    Default: true
 --sync                             Will attempt to sync changes from a CAWebPublishing static site to this WordPress instance.
@@ -262,18 +266,4 @@ Updates a Gutenberg Block.
 
 <b>Arguments:</b>
 slug                               Plugin slug to update.
-</pre>
-### `caweb update-plugins`
-Updates all plugins in the WordPress environment.
-<pre>
-<b>Usage:</b> caweb update-plugins [options] [slug]
-
-<b>Arguments:</b>
-slug                               Plugin slug to update.
-                                   Default: all
-
-<b>Options:</b>
---environment &lt;env&gt;                Which environment to use.
-                                   Default: development
-                                   Choices: development,tests
 </pre>

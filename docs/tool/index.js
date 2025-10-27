@@ -10,6 +10,7 @@ import fs from 'fs';
 import { CAWEB_OPTIONS, DIVI_OPTIONS } from '../../lib/index.js';
 import cli from '../../lib/cli.js';
 
+let SYSTEM_OPTIONS = JSON.parse( fs.readFileSync( path.resolve('.', 'package.json') ) ).config.DEFAULTS;
 
 generateCommandsMD();
 generateOverridesMD();
@@ -40,6 +41,12 @@ async function generateOverridesMD() {
 		'## <ins>Special Config Values</ins>',
 	];
 
+	// Generate wp-config.php Options overrides.
+	output.push('### <ins>wp-config.php Constant Options</ins>');
+	Object.entries(SYSTEM_OPTIONS).forEach( ([key, value]) => {
+		output.push(`\`${key}\` - Default value: ${value}  `);
+	} );
+	
 	// Generate CAWeb Options overrides.
 	output.push('### <ins>CAWeb Options</ins>');
 	for (const [key, option] of Object.entries(CAWEB_OPTIONS)) {
@@ -145,5 +152,3 @@ function addOption({
 
 	return output;
 }
-
-export default generateOverridesMD; 

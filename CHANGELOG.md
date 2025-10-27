@@ -1,3 +1,9 @@
+v1.14.0
+- Added the @wordpress/env@10.33.0 md5 utility helpers since they were no longer being exported
+- Removed download-sources file, resources are download via the .wp-env.json file now
+- Removed update-plugins command
+- Simplified startup by creating new afterStart Lifecycle Script
+
 v1.13.7
 - Updated npm packages
 

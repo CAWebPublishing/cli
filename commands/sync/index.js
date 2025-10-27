@@ -3,7 +3,6 @@
  */
 import path from 'path';
 import fs from 'fs';
-import loadConfig from '@wordpress/env/lib/config/load-config.js';
 import axios from 'axios';
 
 // since we are in a spinner,
@@ -181,9 +180,6 @@ export default async function sync({
     postIds
 } ) {
 
-    // this gets the working directory path after wp-env validation
-    const {workDirectoryPath} = await loadConfig(path.resolve('.'));
-
     // read caweb configuration file.    
     let serviceConfig = fs.existsSync(configFile) ? JSON.parse( fs.readFileSync(configFile) ) : { sync: {} };
 
@@ -217,7 +213,9 @@ export default async function sync({
             process.exit(1)
         }
     }
-        
+       
+    console.log( target)
+    console.log( dest )
     /**
      * each instance has to have a url, user, pwd property
      */

@@ -4,17 +4,17 @@
 import path from 'path';
 import fs from 'fs';
 import * as dockerCompose from 'docker-compose';
-
+import os from 'os';
+import deepmerge from 'deepmerge';
 /**
  * WordPress dependencies
  */
-import { default as wpEnvStart} from '@wordpress/env/lib/commands/start.js';
-import loadConfig from '@wordpress/env/lib/config/load-config.js';
-import retry from '@wordpress/env/lib/retry.js';
-import { didCacheChange, getCache } from '@wordpress/env/lib/cache.js';
-import { canAccessWPORG } from '@wordpress/env/lib/wordpress.js';
+import WPEnv from '@wordpress/env';
+import { md5} from '../../lib/helpers.js';
+// import { canAccessWPORG } from '../../lib/wordpress/index.js';
 
 const CONFIG_CACHE_KEY = 'config_checksum';
+const CACHE_FILE_NAME = 'wp-env-cache.json';
 
 /**
  * Internal dependencies
@@ -22,8 +22,8 @@ const CONFIG_CACHE_KEY = 'config_checksum';
 import { 
 	appPath,
 	projectPath,
+	currentPath,
 	configureCAWeb,
-	downloadSources,
 	configureWordPress,
 	runCmd,
 	runCLICmds
@@ -31,6 +31,38 @@ import {
 
 import { wpEnvConfig, wpEnvOverrideConfig } from '../../configs/wp-env.js';
 import {default as SyncProcess} from '../sync/index.js';
+
+/**
+ * Gets the directory in which generated files are created.
+ *
+ * By default: '~/.wp-env/'. On Linux with snap packages: '~/wp-env/'. Can be
+ * overridden with the WP_ENV_HOME environment variable.
+ *
+ * @return {Promise<string>} The absolute path to the `wp-env` home directory.
+ */
+async function getCacheDirectory() {
+	// Allow user to override download location.
+	if ( process.env.WP_ENV_HOME ) {
+		return path.resolve( process.env.WP_ENV_HOME );
+	}
+
+	/**
+	 * Installing docker with Snap Packages on Linux is common, but does not
+	 * support hidden directories. Therefore we use a public directory when
+	 * snap packages exist.
+	 *
+	 * @see https://github.com/WordPress/gutenberg/issues/20180#issuecomment-587046325
+	 */
+	let usesSnap;
+	try {
+		fs.statSync( '/snap' );
+		usesSnap = true;
+	} catch {
+		usesSnap = false;
+	}
+
+	return path.resolve( os.homedir(), usesSnap ? 'wp-env' : '.wp-env' );
+}
 
 /**
  * Starts the development server.
@@ -55,6 +87,7 @@ export default async function start({
 	xdebug,
 	scripts,
 	debug,
+	spx,
 	sync,
 	bare,
 	plugin,
@@ -62,122 +95,85 @@ export default async function start({
 	multisite,
 	subdomain
 }) {
+	let configFilePath = path.resolve( appPath, '.wp-env.json' );
+	let configOverrideFilePath = path.resolve( appPath, '.wp-env.override.json' );
 
-	
-	
+	const workDirectoryPath = path.resolve(
+		await getCacheDirectory(),
+		md5( configFilePath )
+	);
+
+	// Keys should not be saved in the repository so we store them in the override.json file.
 	// Write CAWeb .wp-env.override.json file.
-	if( ! fs.existsSync( path.join(appPath, '.wp-env.override.json')) ){
+	if( ! fs.existsSync( configOverrideFilePath ) ){
 		spinner.stop()
 	
-		// Keys should not be saved in the repository so we store them in the override.json file.
 		fs.writeFileSync(
-			path.join(appPath, '.wp-env.override.json'),
-			JSON.stringify( await wpEnvOverrideConfig(bare, multisite, subdomain, plugin, theme), null, 4 )
+			configOverrideFilePath,
+			JSON.stringify( await wpEnvOverrideConfig({workDirectoryPath,bare, multisite, subdomain, plugin, theme}), null, 4 )
 		);
 
 		spinner.start('Writing .wp-env.override.json file...');
 
+	}else {
+		let overrideConfig = JSON.parse( fs.readFileSync( configOverrideFilePath ) );
+
+		// if the override file doesn't have Divi credentials prompt for them again.
+		if( ! overrideConfig.config.ET_USERNAME || ! overrideConfig.config.ET_API_KEY ){
+			spinner.stop()
+
+			let diviConfig = await wpEnvOverrideConfig({workDirectoryPath,bare, multisite, subdomain, plugin, theme});
+
+			fs.writeFileSync(
+				configOverrideFilePath,
+				JSON.stringify( deepmerge( overrideConfig, diviConfig ), null, 4 )
+			);
+
+			spinner.start('Writing .wp-env.override.json file...');
+		} 
 	}
 	
 	// Write CAWeb .wp-env.json file.
-	if( ! fs.existsSync( path.join(appPath, '.wp-env.json')) || update ){
+	if( ! fs.existsSync( configFilePath ) || update ){
 		spinner.stop()
 		
 		fs.writeFileSync(
-			path.join(appPath, '.wp-env.json'),
-			JSON.stringify( wpEnvConfig(bare, multisite, subdomain, plugin, theme), null, 4 )
+			configFilePath,
+			JSON.stringify( await wpEnvConfig({workDirectoryPath,bare, multisite, subdomain, plugin, theme}), null, 4 )
 		);
 
 		spinner.start('Writing .wp-env.json file...');
 	}
 
-	// Get current wp-env cache key
-	const config = await loadConfig(path.resolve('.'));
-	const { workDirectoryPath } = config;
-	const cacheKey = await getCache(CONFIG_CACHE_KEY, {workDirectoryPath});
-
 	// Set extra configuration for WordPress.
 	// Increase max execution time to 300 seconds.
 	process.env.WORDPRESS_CONFIG_EXTRA = 'set_time_limit(300);';
 
-	// we can enable phpMyAdmin since @wordpress/env:10.14.0
-	if( config.env.development.config.WP_ENV_PHPMYADMIN_PORT ){
-		process.env.WP_ENV_PHPMYADMIN_PORT = config.env.development.config.WP_ENV_PHPMYADMIN_PORT;	
-	}
-	if( config.env.tests.config.WP_ENV_TESTS_PHPMYADMIN_PORT ){
-		process.env.WP_ENV_TESTS_PHPMYADMIN_PORT = config.env.tests.config.WP_ENV_TESTS_PHPMYADMIN_PORT;	
-	}
-
 	// wp-env launch.
-	await wpEnvStart({
+	await WPEnv.start({
 		spinner,
 		update,
 		xdebug,
+		spx,
 		scripts,
 		debug,
 	})
 
-	// Save pretext from wp-env if it exists for later.
-	let preText = undefined !== spinner.prefixText ? spinner.prefixText.slice(0, -1) : '';
+	if( sync ){
+		// Save pretext from wp-env if it exists for later.
+		let preText = undefined !== spinner.prefixText ? spinner.prefixText.slice(0, -1) : '';
 
-	// We aren't done lets clear the default WordPress text.			
-	spinner.prefixText = '';
-	spinner.text = '';
-
-	// Check if we should configure settings.
-	const shouldConfigureWp = ( update || 
-		( await didCacheChange( CONFIG_CACHE_KEY, cacheKey, {
-			workDirectoryPath,
-		} ) )) &&
-		// Don't reconfigure everything when we can't connect to the internet because
-		// the majority of update tasks involve connecting to the internet. (Such
-		// as downloading sources and pulling docker images.)
-		( await canAccessWPORG() );
-
-	// Only run configurations when config has changed.
-	if( shouldConfigureWp ){
-		// Download any resources required for CAWeb.
-		if( ! bare ){
-			spinner.text = 'Downloading CAWeb resources...';
-			// Download sources for development and tests.
-			await Promise.all( [
-				downloadSources('development', {spinner, config}),
-				downloadSources('tests', {spinner, config})
-			] );
-		}
-
-		// Make additional WordPress Configurations.
-		await Promise.all( [
-			retry( () => configureWordPress( 'development', config, spinner, multisite, subdomain ), {
-				times: 2,
-			} ),
-			retry( () => configureWordPress( 'tests', config, spinner, multisite, subdomain ), {
-				times: 2,
-			} )
-		] );
+		// We aren't done lets clear the default WordPress text.			
+		spinner.prefixText = '';
 		
-		// Make CAWeb WordPress Configurations.
-		await Promise.all( [
-			retry( () => configureCAWeb( 'development', config, spinner ), {
-				times: 2,
-			} ),
-			retry( () => configureCAWeb( 'tests', config, spinner ), {
-				times: 2,
-			} ),
-		] );
+		// sync any static information.
+		spinner.text = `Syncing CAWebPublishing development Environment...`;
+		// Sync the static site to the local WordPress instance.
+		await SyncProcess({spinner, debug, target: 'static', dest: 'local'})
 
-		
-		if( sync ){
-			// sync any static information.
-			spinner.text = `Syncing CAWebPublishing development Environment...`;
-			// Sync the static site to the local WordPress instance.
-			await SyncProcess({spinner, debug, target: 'static', dest: 'local'})
-		}
-		
+		// Restore pretext.
+		spinner.prefixText = preText;
 	}
-
-	spinner.prefixText = preText;
-
 
 	spinner.text = 'Done!';
 };

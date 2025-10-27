@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import run from '@wordpress/env/lib/commands/run.js';
+import {default as run} from '@wordpress/env';
 
 /**
  * Internal dependencies

@@ -1,6 +1,22 @@
 ## [.wp-env.override.json](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#wp-env-override-json)
 Any fields here will take precedence over .wp-env.json.
 ## <ins>Special Config Values</ins>
+### <ins>wp-config.php Constant Options</ins>
+`FS_METHOD` - Default value: direct  
+`WP_DEBUG` - Default value: true  
+`WP_DEBUG_LOG` - Default value: true  
+`WP_DEBUG_DISPLAY` - Default value: false  
+`WP_MEMORY_LIMIT` - Default value: 256M  
+`WP_MAX_MEMORY_LIMIT` - Default value: 512M  
+`WP_PERMALINK` - Default value: /%year%/%monthnum%/%postname%/  
+`WP_POST_REVISIONS` - Default value: true  
+`WP_SITEURL` - Default value: http://localhost  
+`WP_HOME` - Default value: http://localhost  
+`ADMIN_COOKIE_PATH` - Default value: /  
+`COOKIE_DOMAIN` - Default value:   
+`COOKIEPATH` - Default value:   
+`SITECOOKIEPATH` - Default value:   
+`CONCATENATE_SCRIPTS` - Default value: false  
 ### <ins>CAWeb Options</ins>
 `CAWEB_FAV_ICON` - Updates CAWeb Fav Icon  
 `CAWEB_NAV_MENU_STYLE` - Updates CAWeb Header Menu Type  
