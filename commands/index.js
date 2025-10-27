@@ -2,12 +2,15 @@
  * External dependencies
  */
 // These are default wp-env commands. No need to overwrite these commands
-import clean from '@wordpress/env/lib/commands/clean.js';
-import logs from '@wordpress/env/lib/commands/logs.js';
-import run from '@wordpress/env/lib/commands/run.js';
-import stop from '@wordpress/env/lib/commands/stop.js';
-import destroy from '@wordpress/env/lib/commands/destroy.js';
-import installPath from '@wordpress/env/lib/commands/install-path.js';
+import WPEnv from '@wordpress/env';
+const {
+    clean,
+    logs,
+    run,
+    stop,
+    destroy,
+    installPath
+} = WPEnv;
 
 /**
  * Internal dependencies
@@ -36,7 +39,6 @@ import convertSite from './sites/convert-site.js';
 // we overwrite the start command so we can run additional steps.
 import start from './env/start.js';
 import shell from './env/shell.js';
-import updatePlugins from './env/update-plugins.js';
 
 // import test from './test.js';
 import genScripts from './gen-scripts.js';
@@ -55,7 +57,6 @@ export {
     stop,
     destroy,
     sync,
-    updatePlugins,
     shell,
     createBlock,
     updateBlock,
