@@ -3,30 +3,20 @@
  */
 import path from 'path';
 import fs from 'fs';
-import * as dockerCompose from 'docker-compose';
-import os from 'os';
 import deepmerge from 'deepmerge';
+import os from 'os';
+
 /**
  * WordPress dependencies
  */
 import WPEnv from '@wordpress/env';
-import { md5} from '../../lib/helpers.js';
-// import { canAccessWPORG } from '../../lib/wordpress/index.js';
-
-const CONFIG_CACHE_KEY = 'config_checksum';
-const CACHE_FILE_NAME = 'wp-env-cache.json';
 
 /**
  * Internal dependencies
  */
 import { 
 	appPath,
-	projectPath,
-	currentPath,
-	configureCAWeb,
-	configureWordPress,
-	runCmd,
-	runCLICmds
+	md5
 } from '../../lib/index.js';
 
 import { wpEnvConfig, wpEnvOverrideConfig } from '../../configs/wp-env.js';
@@ -74,7 +64,6 @@ async function getCacheDirectory() {
  * @param {boolean} options.scripts Indicates whether or not lifecycle scripts should be executed.
  * @param {boolean} options.debug   True if debug mode is enabled.
  * @param {boolean} options.sync   Will attempt to sync changes from a CAWebPublishing static site to this WordPress instance..
- * @param {boolean} options.bare   True if excluding any CAWeb Configurations.
  * @param {boolean} options.plugin   True if root directory is a plugin.
  * @param {boolean} options.theme   True if root directory is a theme.
  * @param {boolean} options.multisite   True if converting to multisite.
@@ -89,7 +78,6 @@ export default async function start({
 	debug,
 	spx,
 	sync,
-	bare,
 	plugin,
 	theme,
 	multisite,
@@ -98,6 +86,7 @@ export default async function start({
 	let configFilePath = path.resolve( appPath, '.wp-env.json' );
 	let configOverrideFilePath = path.resolve( appPath, '.wp-env.override.json' );
 
+	// taken from @wordpress/env source code so we can get the working directory path before the env starts.
 	const workDirectoryPath = path.resolve(
 		await getCacheDirectory(),
 		md5( configFilePath )
@@ -110,7 +99,7 @@ export default async function start({
 	
 		fs.writeFileSync(
 			configOverrideFilePath,
-			JSON.stringify( await wpEnvOverrideConfig({workDirectoryPath,bare, multisite, subdomain, plugin, theme}), null, 4 )
+			JSON.stringify( await wpEnvOverrideConfig({workDirectoryPath, multisite, subdomain, plugin, theme}), null, 4 )
 		);
 
 		spinner.start('Writing .wp-env.override.json file...');
@@ -122,7 +111,7 @@ export default async function start({
 		if( ! overrideConfig.config.ET_USERNAME || ! overrideConfig.config.ET_API_KEY ){
 			spinner.stop()
 
-			let diviConfig = await wpEnvOverrideConfig({workDirectoryPath,bare, multisite, subdomain, plugin, theme});
+			let diviConfig = await wpEnvOverrideConfig({workDirectoryPath, multisite, subdomain, plugin, theme});
 
 			fs.writeFileSync(
 				configOverrideFilePath,
@@ -138,7 +127,7 @@ export default async function start({
 		
 	fs.writeFileSync(
 		configFilePath,
-		JSON.stringify( await wpEnvConfig({workDirectoryPath,bare, multisite, subdomain, plugin, theme}), null, 4 )
+		JSON.stringify( await wpEnvConfig({workDirectoryPath, multisite, subdomain, plugin, theme}), null, 4 )
 	);
 
 	spinner.start('Writing .wp-env.json file...');

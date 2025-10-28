@@ -12,8 +12,8 @@ import {
     projectPath
 } from '../lib/helpers.js';
 import { promptForDivi } from './prompts.js';
-import { config, env } from 'process';
 import { CAWEB_OPTIONS, DIVI_OPTIONS } from'../lib/wordpress/options.js';
+import { env } from 'process';
 
 const localFile = path.join(projectPath, 'package.json');
 const pkg = JSON.parse( fs.readFileSync(localFile) );
@@ -25,7 +25,6 @@ const cawebJson = fs.existsSync( path.join(appPath, 'caweb.json') ) ?
 /**
  * Build .wp-env.json
  * 
- * @param {boolean} bare   True if excluding any CAWeb Configurations.
  * @param {boolean} multisite   True if converting to multisite.
  * @param {boolean} subdomain   True if converting to multisite subdomain.
  * @param {boolean} plugin   True if root directory is a plugin.
@@ -33,14 +32,19 @@ const cawebJson = fs.existsSync( path.join(appPath, 'caweb.json') ) ?
  * 
  * @returns object
  */
-async function wpEnvConfig ( {workDirectoryPath: cwd , bare, multisite, subdomain, plugin, theme} ) {
+async function wpEnvConfig ( {workDirectoryPath: cwd , multisite, subdomain, plugin, theme} ) {
     let themes = [];
     let plugins = [];
-    let args = {cwd, bare, multisite, subdomain, plugin, theme};
+    let args = {cwd, multisite, subdomain, plugin, theme};
     let argString = Object.entries( args ).map( ([k, v]) => `--${k} ${v}` ).join( ' ' );
 
     let setupFile = path.join( projectPath, 'lib', 'wordpress', 'setup', 'index.js' );
     
+    if( multisite && subdomain ){
+        // if subdomain add the subdomain constant
+        pkg.config.DEFAULTS.SUBDOMAIN_INSTALL= true;
+    }
+
     let envConfig = {
         core: `WordPress/WordPress#${pkg.config.WP_VER}`,
         phpVersion: `${pkg.config.PHP_VER}`,
@@ -72,16 +76,9 @@ async function wpEnvConfig ( {workDirectoryPath: cwd , bare, multisite, subdomai
         }
     }
 
-    if( multisite ){
-        if( ! bare ){   
-            // if multisite set default theme to CAWeb
-            // this allows for any new sites created to use CAWeb as the default theme.
-            pkg.config.DEFAULTS.WP_DEFAULT_THEME = 'CAWeb';
-        }
+    if( multisite && subdomain ){
         // if subdomain add the subdomain constant
-        if( subdomain ){
-            pkg.config.DEFAULTS.SUBDOMAIN_INSTALL= true;
-        }
+        envConfig.config.SUBDOMAIN_INSTALL= true;
     }
 
     // iterate over available CAWeb options.
@@ -182,7 +179,6 @@ async function wpEnvConfig ( {workDirectoryPath: cwd , bare, multisite, subdomai
 /**
  * Build .wp-env.override.json
  * 
- * @param {boolean} bare   True if excluding any CAWeb Configurations.
  * @param {boolean} multisite   True if converting to multisite.
  * @param {boolean} subdomain   True if converting to multisite subdomain.
  * @param {boolean} plugin   True if root directory is a plugin.

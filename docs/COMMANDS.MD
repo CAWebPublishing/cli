@@ -222,8 +222,6 @@ tests on port http://localhost:8889 (override with WP_ENV_TESTS_PORT).
                                    Default: true
 --sync                             Will attempt to sync changes from a CAWebPublishing static site to this WordPress instance.
                                    Default: false
---bare                             True if excluding any downloads from CAWeb, use this if you want to use a local version of the CAWeb Theme, Configurations will still be applied.
-                                   Default: false
 -p, --plugin                       True if root directory is a plugin.
                                    Default: false
 -t, --theme                        True if root directory is a theme.

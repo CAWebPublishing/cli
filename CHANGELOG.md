@@ -1,3 +1,6 @@
+v1.14.3
+- bare flag removed, Divi is now installed if its not already installed.
+
 v1.14.2
 - .wp-env.json is now always generated.
 
