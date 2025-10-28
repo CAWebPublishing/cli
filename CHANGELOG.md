@@ -1,3 +1,6 @@
+v1.14.2
+- .wp-env.json is now always generated.
+
 v1.14.1
 - Fixed issue with System Options not being found
 - Updated npm packages

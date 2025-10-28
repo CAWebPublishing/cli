@@ -134,16 +134,14 @@ export default async function start({
 	}
 	
 	// Write CAWeb .wp-env.json file.
-	if( ! fs.existsSync( configFilePath ) || update ){
-		spinner.stop()
+	spinner.stop()
 		
-		fs.writeFileSync(
-			configFilePath,
-			JSON.stringify( await wpEnvConfig({workDirectoryPath,bare, multisite, subdomain, plugin, theme}), null, 4 )
-		);
+	fs.writeFileSync(
+		configFilePath,
+		JSON.stringify( await wpEnvConfig({workDirectoryPath,bare, multisite, subdomain, plugin, theme}), null, 4 )
+	);
 
-		spinner.start('Writing .wp-env.json file...');
-	}
+	spinner.start('Writing .wp-env.json file...');
 
 	// Set extra configuration for WordPress.
 	// Increase max execution time to 300 seconds.
