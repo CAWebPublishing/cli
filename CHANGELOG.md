@@ -1,3 +1,7 @@
+v1.14.4
+- Further cleaned up afterStart script
+- Fixed issue with CAWeb Options not being set properly
+
 v1.14.3
 - bare flag removed, Divi is now installed if its not already installed.
 
