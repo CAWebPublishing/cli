@@ -1,4 +1,7 @@
-v1.14.5
+v1.14.7 
+- Fixed issue with shell command not working properly
+
+v1.14.6
 - Updated npm packages
 
 v1.14.5

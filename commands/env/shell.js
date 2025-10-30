@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import {default as run} from '@wordpress/env';
+import WPEnv from '@wordpress/env';
 
 /**
  * Internal dependencies
@@ -21,7 +21,7 @@ export default async function shell({
 	debug
 }) {
 
-	await run({
+	await WPEnv.run({
 		container: 'tests' === environment ? 'tests-cli' : 'cli',
 		command: ['bash'],
 		"": "",
