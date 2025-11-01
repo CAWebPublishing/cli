@@ -26,7 +26,7 @@ export default async function webpack({
 	debug,
     scheme,
     template,
-    noExternals
+    externals
 } ) {
     const webpackCommand = 'build' === process.argv[2] ? 'build' : 'serve' ;
 
@@ -36,7 +36,7 @@ export default async function webpack({
     // Since we use @wordpress/scripts webpack config we can leverage
     // the environment variables as well.
     process.env.WP_COPY_PHP_FILES_TO_DIST  = true;
-    process.env.WP_NO_EXTERNALS = noExternals;
+    process.env.WP_NO_EXTERNALS = externals;
 
     // add our default config as an extension.
     // users can overwrite any values by creating a webconfig of their own.
