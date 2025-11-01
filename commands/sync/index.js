@@ -153,6 +153,10 @@ function getStaticNavItems(navJson, destUrl){
 
 }
 
+function uniqueArray(arr) {
+    return arr.filter((obj, index, self) => index === self.findIndex(item => item.id === obj.id ));
+}
+
 /**
  * Sync Environments.
  * 
@@ -183,8 +187,6 @@ export default async function sync({
     // read caweb configuration file.    
     let serviceConfig = fs.existsSync(configFile) ? JSON.parse( fs.readFileSync(configFile) ) : { sync: {} };
 
-    // process.env.WP_CLI_CONFIG_PATH  = path.join(workDirectoryPath, 'config.yml');
-    
     target = serviceConfig.sync[target];
     dest = serviceConfig.sync[dest];
 
@@ -214,8 +216,6 @@ export default async function sync({
         }
     }
        
-    console.log( target)
-    console.log( dest )
     /**
      * each instance has to have a url, user, pwd property
      */
@@ -284,6 +284,31 @@ export default async function sync({
 
         spinner.start()
 
+    }else{
+
+        // if no other flags were specified, we sync whatever is in tax
+        tax = ! mediaIds && ! menuIds && ! pageIds && ! postIds ? tax : []
+
+        // if pages ids were specified, we have to sync pages and media
+        if( pageIds && pageIds.length ){
+            tax.push('pages');
+            // tax.push('pages', 'media');
+        }
+
+        // if post ids were specified, we have to sync posts and media
+        if( postIds && postIds.length ){
+            tax.push('posts');
+            // tax.push('posts', 'media');
+        }
+        // if media ids were specified, we have to sync media
+        if( mediaIds && mediaIds.length ){
+            tax.push('media');
+        }
+
+        // if menu ids were specified, we have to sync menus.
+        if( menuIds && menuIds.length ){
+            tax.push('menus');
+        }
     }
 
     // if the request is going from static,
@@ -424,7 +449,6 @@ export default async function sync({
         }
 
     }else{
-
         // Media Library.
         if( tax.includes('media', 'pages', 'posts') ){
             spinner.text = `Collecting Media Library ${target.url}`;
@@ -446,6 +470,8 @@ export default async function sync({
                 'media', 
                 debug
             );
+
+            mediaLibrary = uniqueArray(mediaLibrary);
         }
 
         // Site Settings.
@@ -485,9 +511,10 @@ export default async function sync({
                 'pages',
                 debug
             ) 
-            
-        }
 
+            pages = uniqueArray(pages);
+        }
+        
         // Posts.
         if( tax.includes('posts') ){
             // get all pages/posts
@@ -503,11 +530,13 @@ export default async function sync({
 
             // posts can be nested so we have to collect any parent items.
             posts = await getParentItems( 
-            posts, 
-            targetOptions, 
-            'posts',
-            debug
-        ) 
+                posts, 
+                targetOptions, 
+                'posts',
+                debug
+            ) 
+
+            posts = uniqueArray(posts);
         }
 
         /**
@@ -726,8 +755,8 @@ export default async function sync({
         spinner.text = `Creating all pages to ${dest.url}`;
         createdPages = await createTaxonomies( pages, destOptions, 'pages', spinner );
     }
-    
-     // Posts.
+
+    // Posts.
     if( posts ){
         spinner.text = `Creating all posts to ${dest.url}`;
         await createTaxonomies( posts, destOptions, 'posts', spinner );

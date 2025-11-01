@@ -1,3 +1,7 @@
+v1.14.8
+- Updated sync process and removed debug messages and fixed issues with flags not overwriting correctly
+- Added no-external flag to the build command
+
 v1.14.7 
 - Fixed issue with shell command not working properly
 
