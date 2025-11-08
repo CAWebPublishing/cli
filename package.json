@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.14.10",
+  "version": "1.14.11",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -63,8 +63,8 @@
     }
   },
   "dependencies": {
-    "@caweb/webpack": "^1.5.9",
-    "@inquirer/prompts": "^7.9.0",
+    "@caweb/webpack": "^1.5.10",
+    "@inquirer/prompts": "^7.10.0",
     "@wordpress/create-block": "^4.77.0",
     "@wordpress/env": "^10.34.0",
     "axios": "^1.13.2",
