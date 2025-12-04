@@ -1,3 +1,6 @@
+v1.15.1
+- Updated WordPress core to 6.9
+
 v1.15.0
 - Updated PHP version to 8.4
 - Updated WordPress core to 6.9.0
