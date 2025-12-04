@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.14.11",
+  "version": "1.15.0",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -39,8 +39,8 @@
     "access": "public"
   },
   "config": {
-    "WP_VER": "6.8.3",
-    "PHP_VER": "8.2",
+    "WP_VER": "6.9.0",
+    "PHP_VER": "8.4",
     "CAWEB_VER": "1.13.3",
     "DIVI_VER": "4.27.4",
     "QUERY_MONITOR": "3.20.0",
@@ -64,9 +64,9 @@
   },
   "dependencies": {
     "@caweb/webpack": "^1.5.10",
-    "@inquirer/prompts": "^7.10.0",
-    "@wordpress/create-block": "^4.77.0",
-    "@wordpress/env": "^10.34.0",
+    "@inquirer/prompts": "^8.0.2",
+    "@wordpress/create-block": "^4.79.0",
+    "@wordpress/env": "^10.36.0",
     "axios": "^1.13.2",
     "axios-retry": "^4.5.0",
     "chalk": "^5.6.2",
@@ -78,11 +78,11 @@
     "fs-extra": "^11.3.2",
     "html-to-json-parser": "^2.0.1",
     "inquirer-select-pro": "^1.0.0-alpha.9",
-    "jsdom": "^27.1.0",
+    "jsdom": "^27.2.0",
     "node-html-parser": "^7.0.1",
     "ora": "^9.0.0",
     "resolve-bin": "^1.0.1",
-    "rimraf": "^6.1.0",
+    "rimraf": "^6.1.2",
     "terminal-link": "^5.0.0"
   }
 }
