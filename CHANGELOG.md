@@ -1,3 +1,6 @@
+v1.15.3
+- webpack build/serve command updated too allow all flags to be passed to command
+
 v1.15.2
 - Updated npm packages
 - Removed css-audit submodule
