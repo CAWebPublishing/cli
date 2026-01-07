@@ -1,3 +1,0 @@
-[submodule "bin/css-audit"]
-	path = bin/css-audit
-	url = https://github.com/WordPress/css-audit

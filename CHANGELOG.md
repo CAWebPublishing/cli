@@ -1,3 +1,8 @@
+v1.15.2
+- Updated npm packages
+- Removed css-audit submodule
+- Updated npm workflow
+
 v1.15.1
 - Updated WordPress core to 6.9
 
