@@ -1,3 +1,6 @@
+v1.15.4
+- webpack build/serve command updated filters out unknown flags and passes as argv0
+
 v1.15.3
 - webpack build/serve command updated too allow all flags to be passed to command
 

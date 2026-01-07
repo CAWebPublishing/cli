@@ -11,6 +11,42 @@ import {
     runCmd
 } from '../../lib/index.js';
 
+const webpackAllowedFlags = [
+    "-c",
+    "--config",
+    "--config-name",
+    "-m",
+    "--merge",
+    "--disable-interpret",
+    "--env",
+    "--node-env",
+    "--config-node-env",
+    "--analyze",
+    "--progress",
+    "-j",
+    "--json",
+    "--fail-on-warnings",
+    "-d",
+    "--devtool",
+    "--no-devtool",
+    "--entry",
+    "-e",
+    "--extends",
+    "--mode",
+    "--name",
+    "-o",
+    "--output-path",
+    "--stats",
+    "--no-stats",
+    "-t",
+    "--target",
+    "--no-target",
+    "-w",
+    "--watch",
+    "--no-watch",
+    "--watch-options-stdin",
+    "--no-watch-options-stdin",
+];
 
 /**
  * Build the current project
@@ -65,6 +101,35 @@ export default async function webpack({
     // add the --merge flag to allow merging configs.
     webPackArgs.push( '--merge' );
 
+    let unknown = false;
+    let unkownArgs = [];
+
+    // we have to filter out unknown args to avoid webpack errors
+    webPackArgs = webPackArgs.filter( (e) => {
+                
+                if( e.startsWith('--')  ){
+                    // set unknown flag
+                    unknown = ! webpackAllowedFlags.includes(e);
+
+                    // save unknown flag
+                    if( unknown ){
+                        unkownArgs.push(e);
+                    }
+
+                    // return if known flag 
+                    return webpackAllowedFlags.includes(e);
+                }else{
+                    // save unknown args
+                    if( unknown ){
+                        unkownArgs.push(e);
+                    }
+
+                    // if flag was known return the value, else false 
+                    return ! unknown ? e : false;
+                }
+            } 
+        );
+
     // run the webpackCommand command.
     await runCmd(
 		'webpack', 
@@ -74,6 +139,7 @@ export default async function webpack({
         ],
         {
             stdio: 'inherit',
+            argv0: unkownArgs.join(' ')
         }
 	);
 };
