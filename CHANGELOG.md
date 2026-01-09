@@ -1,3 +1,6 @@
+v1.15.6
+- Updated npm packages
+
 v1.15.5
 - Added script to generate build/serve flags for webpack commands
 - --merge flag is only added if more than one config file is specified
