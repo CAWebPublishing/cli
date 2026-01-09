@@ -1,6 +1,7 @@
 v1.15.5
 - Added script to generate build/serve flags for webpack commands
 - --merge flag is only added if more than one config file is specified
+- --template flag for serve command now uses argParser to allow for passing local file as well
 - Updated npm packages
 
 v1.15.4
