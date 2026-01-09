@@ -35,9 +35,7 @@ help = await runCmd(
 // parse serve help output
 parseHelpOutput( help, serveHelp );
 
-// Remove build flags from serve flags to get only unique serve flags.
-serveHelp = serveHelp.filter( flag => ! buildHelp.includes( flag ) );
-
+// write the webpack-flags.js file
 fs.writeFileSync(
     path.join(process.cwd(), 'commands', 'webpack', 'webpack-flags.js'),
     [
