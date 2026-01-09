@@ -1,3 +1,6 @@
+v1.15.8
+- build/serve flag script no longer filters out duplicates
+
 v1.15.7
 - Updated npm packages
 
