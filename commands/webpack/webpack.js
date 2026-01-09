@@ -11,42 +11,7 @@ import {
     runCmd
 } from '../../lib/index.js';
 
-const webpackAllowedFlags = [
-    "-c",
-    "--config",
-    "--config-name",
-    "-m",
-    "--merge",
-    "--disable-interpret",
-    "--env",
-    "--node-env",
-    "--config-node-env",
-    "--analyze",
-    "--progress",
-    "-j",
-    "--json",
-    "--fail-on-warnings",
-    "-d",
-    "--devtool",
-    "--no-devtool",
-    "--entry",
-    "-e",
-    "--extends",
-    "--mode",
-    "--name",
-    "-o",
-    "--output-path",
-    "--stats",
-    "--no-stats",
-    "-t",
-    "--target",
-    "--no-target",
-    "-w",
-    "--watch",
-    "--no-watch",
-    "--watch-options-stdin",
-    "--no-watch-options-stdin",
-];
+import { buildFlags, serveFlags } from './webpack-flags.js';
 
 /**
  * Build the current project
@@ -65,7 +30,8 @@ export default async function webpack({
     externals
 } ) {
     const webpackCommand = 'build' === process.argv[2] ? 'build' : 'serve' ;
-    
+    const webpackAllowedFlags = 'build' === webpackCommand ? buildFlags : serveFlags ;
+
     // we use our default config from the @caweb/webpack
     const defaultConfigPath = path.resolve('node_modules', '@caweb', 'webpack', 'webpack.config.js' );
     
@@ -98,8 +64,10 @@ export default async function webpack({
 
     }
 
-    // add the --merge flag to allow merging configs.
-    webPackArgs.push( '--merge' );
+    // if -c or --config appears twice in the args we add the --merge flag
+    if( webPackArgs.filter( arg => '-c' === arg || '--config' === arg ).length > 1 ){
+        webPackArgs.push( '--merge' );
+    }        
 
     let unknown = false;
     let unkownArgs = [];

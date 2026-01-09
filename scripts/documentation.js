@@ -7,14 +7,15 @@
 import path from 'node:path';
 import fs from 'fs';
 
-import { CAWEB_OPTIONS, DIVI_OPTIONS } from '../../lib/index.js';
-import cli from '../../lib/cli.js';
+import { CAWEB_OPTIONS, DIVI_OPTIONS } from '../lib/index.js';
+import cli from '../lib/cli.js';
 
 let SYSTEM_OPTIONS = JSON.parse( fs.readFileSync( path.resolve('.', 'package.json') ) ).config.DEFAULTS;
 
 generateCommandsMD();
 generateOverridesMD();
 
+console.log( 'Documentation generated.' );
 
 /**
  * Replace any characters that need to be encoded.

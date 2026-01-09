@@ -69,6 +69,10 @@ files                              Files or directory path to CSS files.
 Builds the current project.
 <pre>
 <b>Usage:</b> caweb build [options]
+
+<b>Options:</b>
+--externals                        Bundles all dependencies into the build including externals.
+                                   Default: false
 </pre>
 ### `caweb clean`
 Cleans the WordPress databases.
