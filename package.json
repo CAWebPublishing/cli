@@ -64,7 +64,6 @@
     }
   },
   "dependencies": {
-    "@caweb/webpack": "^1.5.16",
     "@inquirer/prompts": "^8.2.0",
     "@wordpress/create-block": "^4.80.0",
     "@wordpress/env": "^10.37.0",
@@ -85,5 +84,8 @@
     "resolve-bin": "^1.0.1",
     "rimraf": "^6.1.2",
     "terminal-link": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@caweb/webpack": "^1.5.17"
   }
 }
