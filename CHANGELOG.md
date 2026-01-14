@@ -1,6 +1,3 @@
-v1.16.0
-- @caweb/webpack is now a peerDependency
-
 v1.15.9
 - Updated npm packages
 
