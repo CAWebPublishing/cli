@@ -1,3 +1,6 @@
+v1.15.10
+- Updated workflow should now create a new version branch whenever a package is published
+
 v1.15.9
 - Updated npm packages
 
