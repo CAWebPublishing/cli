@@ -1,5 +1,5 @@
-v1.16.0
-- @caweb/webpack is now a peerDependency
+v1.15.10
+- Updated workflow should now create a new version branch whenever a package is published
 
 v1.15.9
 - Updated npm packages
