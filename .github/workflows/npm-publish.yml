@@ -7,7 +7,13 @@ on:
   push:
     branches:
       - main
-
+  workflow_dispatch:
+    inputs:
+      bypass_needs:
+        description: 'Bypass the needs dependency for create-branch'
+        type: boolean
+        required: false
+        default: false
 permissions:
   id-token: write  # Required for OIDC
   contents: read
@@ -26,6 +32,10 @@ jobs:
   create-branch:
     runs-on: ubuntu-latest
     needs: publish-npm
+    # This condition allows create-branch to run if either:
+    # 1. The workflow was manually dispatched with 'bypass_needs' set to true (from the inputs context)
+    # 2. The prerequisite job 'publish-npm' ran successfully
+    if: ${{ inputs.bypass_needs == 'true' || needs.publish-npm.result == 'success' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
