@@ -1,3 +1,7 @@
+v1.15.11
+- Updated workflow, removed inputs they dont work
+- Updated npm packages
+
 v1.15.10
 - Updated workflow should now create a new version branch whenever a package is published
 
