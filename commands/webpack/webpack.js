@@ -3,6 +3,7 @@
  */
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 /**
  * Internal dependencies
@@ -12,6 +13,8 @@ import {
 } from '../../lib/index.js';
 
 import { buildFlags, serveFlags } from './webpack-flags.js';
+
+const currentPath = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Build the current project
@@ -33,13 +36,17 @@ export default async function webpack({
     const webpackAllowedFlags = 'build' === webpackCommand ? buildFlags : serveFlags ;
 
     // we use our default config from the @caweb/webpack
-    const defaultConfigPath = path.resolve('node_modules', '@caweb', 'webpack', 'webpack.config.js' );
+    const defaultConfigFile = path.resolve('node_modules', '@caweb', 'webpack', 'webpack.config.js' );
+    
+    // we use the cli webpack plugins config
+    const webpackPluginsFile = 'serve' === webpackCommand ? ['--config', path.resolve( currentPath, '..', '..', 'configs','webpack.plugins.js')] : [];
     
     // prepend our default config to the arguments.
     // users can overwrite any values by creating a webconfig of their own.
     let webPackArgs = [
         '--config',
-        defaultConfigPath,
+        defaultConfigFile,
+        ...webpackPluginsFile,
         ...process.argv.splice(3),
     ];
     
