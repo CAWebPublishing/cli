@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 permissions:
   id-token: write  # Required for OIDC
-  contents: read
+  contents: write  # To create branches
 
 jobs:
   publish-npm:

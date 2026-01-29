@@ -1,3 +1,8 @@
+v1.15.12
+- Updated npm packages
+- Updated webpack serve command, now passes external plugins config
+- Updated references in the wordpress afterExecute script
+
 v1.15.11
 - Updated workflow, removed inputs they dont work
 - Updated npm packages
