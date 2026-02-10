@@ -41,4 +41,4 @@ jobs:
       - name: Create Version Branch
         run: |
           git checkout -b "${{ steps.get_version.outputs.version }}" |
-          git push origin "${{ steps.get_version.outputs.version }}"
+          git push --all origin
