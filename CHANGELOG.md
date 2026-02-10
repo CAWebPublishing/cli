@@ -1,3 +1,6 @@
+v1.15.13
+- Updated npm packages
+
 v1.15.12
 - Updated npm packages
 - Updated webpack serve command, now passes external plugins config
