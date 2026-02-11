@@ -1,3 +1,9 @@
+v1.15.17
+- Updated webpack plugins declaration
+- Added image shortcode to site conversion
+- Updated gen-scripts
+- Updated npm packages 
+
 v1.15.16
 - Updated npm packages
 

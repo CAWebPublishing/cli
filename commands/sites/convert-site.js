@@ -623,6 +623,13 @@ function generateShortcodes( mainContent,  opts = {
 			// all theses elements can go in other modules
 			// they also need to be added to the allowedModules list
 			case 'a':
+				// if the element first child is an image
+				if( content[0] && content[0].rawTagName === 'img' ) {
+					// add the anchors attributes to the image
+					content[0].rawAttrs = content[0].rawAttrs + ' ' + rawAttrs;
+					output += generateModuleShortcode('image', content[0] );
+					break;
+				}
 			case 'b':
 			case 'p':
 			case 'ol':
@@ -809,17 +816,20 @@ function generateModuleShortcode(module, element  ){
 	let attrs = {};
 	let moduleName = 'et_pb_' + module;
 
+	// commonly named attributes can be declared here to avoid repetition
+	let header, title, img;
+
 	switch( module ) {
-		case 'blurb': {
+		case 'blurb': 
 			/**
 			 * if blurb module is requested
 			 * we try and make the shortcode as if the element
 			 * was made with a Card Component
 			 */
 
-			let header = element.querySelector('.card-header');
-			let title = element.querySelector('.card-title');
-			let img = element.children.filter( c => c.tagName.toLowerCase() === 'img' );
+			header = element.querySelector('.card-header');
+			title = element.querySelector('.card-title');
+			img = element.children.filter( c => c.tagName.toLowerCase() === 'img' );
 			
 			content = element.querySelector('.card-body');
 
@@ -887,14 +897,14 @@ function generateModuleShortcode(module, element  ){
 				}
 			}
 			break;
-		}
-		case 'ca_card': {
+		
+		case 'ca_card': 
 			/**
 			 * if card module is requested
 			 */
-			let header = element.querySelector('.card-header');
-			let title = element.querySelector('.card-title');
-			let img = element.children.filter( c => c.tagName.toLowerCase() === 'img' );
+			header = element.querySelector('.card-header');
+			title = element.querySelector('.card-title');
+			img = element.children.filter( c => c.tagName.toLowerCase() === 'img' );
 			let layout = element.classList.toString().match(/card-(\w+)/g)[0].replace('card-', '');
 
 			content = element.querySelector('.card-body');
@@ -962,8 +972,8 @@ function generateModuleShortcode(module, element  ){
 				}
 			}
 			break;
-		}
-		case 'heading': {
+		
+		case 'heading': 
 
 			attrs = {
 				title: element.innerHTML.trim(),
@@ -986,7 +996,12 @@ function generateModuleShortcode(module, element  ){
 			content = element.innerHTML.trim()
 
 			break;
-		}
+		
+		case 'image':
+			let {src, href: url} = convertRawAttrs( element.rawAttrs )
+			attrs = { src, url };
+
+		break;
 	}
 
 	if( element.classList.length ){
