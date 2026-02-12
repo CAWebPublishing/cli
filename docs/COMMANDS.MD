@@ -188,7 +188,7 @@ Serves the current project using CAWebPublishing templates.
 <b>Options:</b>
 --template &lt;template&gt;              Serves the project using templating.
                                    Default: default
-                                   Choices: default,blank
+                                   Choices: default,blank,<local file>
 --scheme &lt;scheme&gt;                  Serves the project using template colorscheme.
                                    Default: oceanside
                                    Choices: delta,eureka,mono,oceanside,orangecounty,pasorobles,sacramento,santabarbara,santacruz,shasta,sierra,trinity,false
@@ -197,6 +197,8 @@ Serves the current project using CAWebPublishing templates.
 --no-a11y                          Skips IBM Accessibility Checker.
                                    Default: false
 --no-jshint                        Skips JSHint.
+                                   Default: false
+--no-sitemap                       Skips Sitemap generation.
                                    Default: false
 </pre>
 ### `caweb shell`
