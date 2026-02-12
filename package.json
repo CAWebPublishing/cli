@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.15.18",
+  "version": "1.15.19",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -64,10 +64,10 @@
     }
   },
   "dependencies": {
-    "@caweb/a11y-webpack-plugin": "^2.1.0",
-    "@caweb/css-audit-webpack-plugin": "^2.1.0",
+    "@caweb/a11y-webpack-plugin": "^2.1.1",
+    "@caweb/css-audit-webpack-plugin": "^2.1.1",
     "@caweb/html-webpack-plugin": "^2.1.5",
-    "@caweb/jshint-webpack-plugin": "^2.1.0",
+    "@caweb/jshint-webpack-plugin": "^2.1.1",
     "@caweb/webpack": "^1.6.6",
     "@inquirer/prompts": "^8.2.0",
     "@wordpress/create-block": "^4.82.0",

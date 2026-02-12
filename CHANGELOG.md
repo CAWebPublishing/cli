@@ -1,3 +1,6 @@
+v1.15.19
+- Updated npm packages
+
 v1.15.18
 - Added sitemap to site generation
 - Added new --no-sitemap to serve command
