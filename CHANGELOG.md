@@ -1,3 +1,9 @@
+v1.15.18
+- Added sitemap to site generation
+- Added new --no-sitemap to serve command
+- Updated npm packages
+- Updated docs
+
 v1.15.17
 - Updated webpack plugins declaration
 - Added image shortcode to site conversion
