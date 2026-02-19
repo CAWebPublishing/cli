@@ -1,3 +1,9 @@
+v1.15.22
+- Fixed issue with webpack plugins additional pages not loading on Mac due to file naming path
+- Unknown flags passed to the runCMD are now appended to the CAWEB_NODE_OPTIONS, on Mac unknown flags cant be passed to NODE_OPTIONS
+- webpack build/serve pass unknownArgs to runCMD
+- Updated npm packages
+
 v1.15.21
 - Updated npm packages
 

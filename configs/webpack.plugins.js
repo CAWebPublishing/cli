@@ -36,7 +36,7 @@ let patterns = fs.readdirSync(path.join(templatePath, 'patterns'), { withFileTyp
     .map( ( dirent ) => {
 
                 let fileTemplate = path.join( dirent.parentPath, dirent.name );
-                let filename = fileTemplate.replace(path.join(templatePath, 'patterns'), '').replace(/\\/g, '');
+                let filename = fileTemplate.replace(path.join(templatePath, 'patterns'), '').replace(/^[\\\/]/, '');
 
                 // we ignore the default and blank patterns since those are used as templates and not actual pages
                 // if there is no Google Search Id we ignore the search pattern since that is only used for the Search Results page
@@ -63,7 +63,7 @@ let additionalPages = ! fs.existsSync( basePageDir ) ? [] :
             .map( ( dirent ) => {
 
                 let fileTemplate = path.join( dirent.parentPath, dirent.name );
-                let filename = fileTemplate.replace(basePageDir, '').replace(/\\/, '');
+                let filename = fileTemplate.replace(basePageDir, '').replace(/^[\\\/]/, '');
 
                 // if additionl pages match a pattern page we remove ours
                 let override = patterns.find( (p) => p.filename === filename );
@@ -103,7 +103,7 @@ export default {
             
             let data = {
                     ...caweb.site,
-                    scheme
+                    scheme,
                 };
             
             let compiler = Handlebars.compile( content );
@@ -118,7 +118,7 @@ export default {
                     partial: compiledContent,
                 },
             })
-        }) ,
+        }).filter( Boolean ) ,
 
         // Sitemap Generation
         ( ! flagExists('sitemap') || (flagExists('sitemap') && getArgVal('sitemap'))) && new SitemapWebpackPlugin.default({
