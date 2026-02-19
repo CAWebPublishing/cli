@@ -77,7 +77,7 @@ export default async function webpack({
     }        
 
     let unknown = false;
-    let unkownArgs = [];
+    let unknownArgs = [];
 
     // we have to filter out unknown args to avoid webpack errors
     webPackArgs = webPackArgs.filter( (e) => {
@@ -88,7 +88,7 @@ export default async function webpack({
 
                     // save unknown flag
                     if( unknown ){
-                        unkownArgs.push(e);
+                        unknownArgs.push(e);
                     }
 
                     // return if known flag 
@@ -96,7 +96,7 @@ export default async function webpack({
                 }else{
                     // save unknown args
                     if( unknown ){
-                        unkownArgs.push(e);
+                        unknownArgs.push(e);
                     }
 
                     // if flag was known return the value, else false 
@@ -114,7 +114,7 @@ export default async function webpack({
         ],
         {
             stdio: 'inherit',
-            argv0: unkownArgs.join(' ')
+            unknownArgs
         }
 	);
 };
