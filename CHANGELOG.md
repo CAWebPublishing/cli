@@ -1,3 +1,6 @@
+v1.16.1
+- Updated npm packages
+
 v1.16.0
 - Updated WordPress, Divi and Query Monitor versions
 - Fixed issue with webpack plugins additional pages not loading on Mac due to file naming path
