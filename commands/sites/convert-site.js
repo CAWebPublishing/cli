@@ -498,9 +498,17 @@ function generateShortcodes( mainContent,  opts = {
 						case 4:
 							colType = '1_3';
 							break;
+						// 2/5 columns
+						case 5:
+							colType = '2_5';
+							break;
 						// 1/2 columns
 						case 6:
 							colType = '1_2';
+							break;
+						// 3/5 columns
+						case 7:
+							colType = '3_5';
 							break;
 						// 2/3 columns
 						case 8:
