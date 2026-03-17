@@ -49,6 +49,10 @@ async function wpEnvConfig ( {workDirectoryPath: cwd , multisite, subdomain, plu
         core: `WordPress/WordPress#${pkg.config.WP_VER}`,
         phpVersion: `${pkg.config.PHP_VER}`,
         multisite,
+        port: 8888, 
+        autoPort: true,
+        phpmyadminPort: 9998,
+        testsEnvironment: false,
         themes: [ 
             `CAWebPublishing/CAWeb#${pkg.config.CAWEB_VER}` 
         ],
@@ -56,18 +60,6 @@ async function wpEnvConfig ( {workDirectoryPath: cwd , multisite, subdomain, plu
             'CAWebPublishing/caweb-dev',
             `https://downloads.wordpress.org/plugin/query-monitor.${pkg.config.QUERY_MONITOR}.zip`,
         ],
-        env: {
-            development: { 
-                port: 8888, 
-                phpmyadminPort: 9998,
-                config: {} 
-        },
-            tests: { 
-                port: 8889, 
-                phpmyadminPort: 9999,
-                config: {} 
-            }
-        },
         lifecycleScripts: {
             afterStart: `node ${ setupFile } ${ argString }`,
         },
