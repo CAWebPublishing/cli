@@ -4,12 +4,14 @@
 // These are default wp-env commands. No need to overwrite these commands
 import WPEnv from '@wordpress/env';
 const {
-    clean,
-    logs,
-    run,
     stop,
+    // reset is missing
+    clean,
+    run,
     destroy,
-    installPath
+    // cleanup is missing
+    logs,
+    // status is missing
 } = WPEnv;
 
 /**
@@ -52,7 +54,6 @@ export {
     clean,
     logs,
     run,
-    installPath,
     start,
     stop,
     destroy,
