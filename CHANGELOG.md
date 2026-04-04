@@ -1,3 +1,6 @@
+v1.16.14
+- Updated npm packages
+
 v1.16.13
 - Updated commands to match wp-env
 -- installPath was removed
