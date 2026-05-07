@@ -1,3 +1,7 @@
+v1.16.15
+- Updated npm packages
+- Updated start command, wp-env changed its working directory path naming convention
+
 v1.16.14
 - Updated npm packages
 
