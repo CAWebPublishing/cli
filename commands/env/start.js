@@ -23,6 +23,8 @@ import { wpEnvConfig, wpEnvOverrideConfig } from '../../configs/wp-env.js';
 import {default as SyncProcess} from '../sync/index.js';
 
 /**
+ * Taken from @wordpress/env@11.15.0
+ * 
  * Gets the directory in which generated files are created.
  *
  * By default: '~/.wp-env/'. On Linux with snap packages: '~/wp-env/'. Can be
@@ -52,6 +54,56 @@ async function getCacheDirectory() {
 	}
 
 	return path.resolve( os.homedir(), usesSnap ? 'wp-env' : '.wp-env' );
+}
+
+/**
+ * Taken from @wordpress/env@11.15.0
+ * 
+ * Derives the descriptive cache directory name for a given config file path.
+ *
+ * Format: `wp-env-<project-dir>[-<variant>]-<short-hash>`.
+ *
+ * @param {string} configFilePath Absolute path to the resolved config file.
+ *
+ * @return {string} The directory name to use as the cache directory.
+ */
+function buildDescriptiveCacheDirectoryName( configFilePath ) {
+	const projectDirectory = path.basename( path.dirname( configFilePath ) );
+	const variant = getConfigVariant( configFilePath );
+	const shortHash = md5( configFilePath ).slice( 0, 8 );
+
+	const segments = [ 'wp-env', projectDirectory ];
+	if ( variant ) {
+		segments.push( variant );
+	}
+	segments.push( shortHash );
+
+	return segments.join( '-' );
+}
+
+/**
+ * Taken from @wordpress/env@11.15.0
+ * Extracts a variant label from a config file name.
+ *
+ * Example: `.wp-env.test.json`   -> 'test'
+ *
+ * @param {string} configFilePath Absolute path to the resolved config file.
+ *
+ * @return {string} The sanitized variant, or '' if none could be derived.
+ */
+function getConfigVariant( configFilePath ) {
+	const basename = path.basename( configFilePath, '.json' );
+
+	let variant;
+	if ( basename === '.wp-env' ) {
+		variant = '';
+	} else if ( basename.startsWith( '.wp-env.' ) ) {
+		variant = basename.slice( '.wp-env.'.length );
+	} else {
+		variant = basename;
+	}
+
+	return variant.replace( /[^a-zA-Z0-9._]+/g, '-' ).replace( /^-+|-+$/g, '' );
 }
 
 /**
@@ -86,12 +138,22 @@ export default async function start({
 	let configFilePath = path.resolve( appPath, '.wp-env.json' );
 	let configOverrideFilePath = path.resolve( appPath, '.wp-env.override.json' );
 
-	// taken from @wordpress/env source code so we can get the working directory path before the env starts.
-	const workDirectoryPath = path.resolve(
-		await getCacheDirectory(),
+	// taken from @wordpress/env@11.15.0 source code so we can get the working directory path before the env starts.
+	const cacheDirectory = await getCacheDirectory();
+	let workDirectoryPath = path.resolve(
+		cacheDirectory,
 		md5( configFilePath )
 	);
 
+	// Otherwise, prefer a more descriptive path.
+	if ( ! fs.existsSync( workDirectoryPath ) ) {
+		workDirectoryPath = path.resolve(
+			cacheDirectory,
+			buildDescriptiveCacheDirectoryName( configFilePath )
+		);
+	}
+	// end of taken from @wordpress/env@11.15.0 source code
+	
 	// Keys should not be saved in the repository so we store them in the override.json file.
 	// Write CAWeb .wp-env.override.json file.
 	if( ! fs.existsSync( configOverrideFilePath ) ){
