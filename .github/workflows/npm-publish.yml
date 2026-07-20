@@ -16,8 +16,8 @@ jobs:
   publish-npm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org/
@@ -30,8 +30,8 @@ jobs:
     # 1. The workflow was manually dispatched with 'bypass_needs' set to true (from the inputs context)
     # 2. The prerequisite job 'publish-npm' ran successfully
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org/
