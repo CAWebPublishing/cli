@@ -1,3 +1,6 @@
+v1.17.6
+- Updated npm packages
+
 v1.17.5
 - Updated npm packages
 
