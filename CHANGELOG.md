@@ -1,5 +1,6 @@
-v1.17.6
+v1.18.0
 - Updated npm packages
+- Updated WordPress core to 7.1
 
 v1.17.6
 - Updated npm packages
