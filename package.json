@@ -40,7 +40,7 @@
     "access": "public"
   },
   "config": {
-    "WP_VER": "7.1.1",
+    "WP_VER": "7.1.2",
     "PHP_VER": "8.4",
     "CAWEB_VER": "1.13.4",
     "DIVI_VER": "4.27.5",
