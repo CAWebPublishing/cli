@@ -1,6 +1,6 @@
 {
   "name": "@caweb/cli",
-  "version": "1.18.4",
+  "version": "1.18.5",
   "description": "CAWebPublishing Command Line Interface.",
   "exports": "./lib/env.js",
   "type": "module",
@@ -64,10 +64,10 @@
     }
   },
   "dependencies": {
-    "@caweb/a11y-webpack-plugin": "^2.1.7",
-    "@caweb/css-audit-webpack-plugin": "^2.1.6",
+    "@caweb/a11y-webpack-plugin": "^2.1.8",
+    "@caweb/css-audit-webpack-plugin": "^2.1.7",
     "@caweb/html-webpack-plugin": "^2.1.20",
-    "@caweb/jshint-webpack-plugin": "^2.1.6",
+    "@caweb/jshint-webpack-plugin": "^2.1.7",
     "@caweb/webpack": "^2.0.17",
     "@inquirer/prompts": "^8.7.5",
     "@noble/hashes": "^2.4.0",
@@ -94,7 +94,7 @@
     "terminal-link": "^5.0.0"
   },
   "allowScripts": {
-    "@caweb/css-audit-webpack-plugin@2.1.6": true,
+    "@caweb/css-audit-webpack-plugin@2.1.7": true,
     "accessibility-checker@4.0.34": true,
     "core-js@3.51.0": true,
     "fs-ext-extra-prebuilt@2.2.17": true,
