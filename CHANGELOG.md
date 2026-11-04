@@ -1,4 +1,7 @@
-v1.18.3
+v1.18.5
+- Updated npm packages
+
+v1.18.4
 - Updated npm packages
 - Updated WordPress core to 7.1.4
 
