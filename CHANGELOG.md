@@ -1,3 +1,9 @@
+v1.18.6
+- Updated npm packages
+- Updated WordPress core to 7.1.5
+- removed crypto dependency, using built in node:crypto instead
+- removed axios-retry since it was no longer maintained, using retry-axios
+
 v1.18.5
 - Updated npm packages
 
